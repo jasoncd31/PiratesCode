@@ -17,11 +17,14 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
 - Switch Statements
 
 #### Scurvy Types
-| Javascript Type | Scurvy Types  |
-| --------------  | --------------|
-| var| vargh  
-||      
-|| 
+| Javascript Type     | Scurvy Types   |
+| --------------      | -------------- |
+| var                 | vargh          |
+| boolean (true/false)| booty (aye/nay)|      
+| string              | shanty         |
+| int                 | int            |
+| double              | doubloon       |
+
 
 #### Data Skeletons
 | Data Structure | Data Skeleton |
