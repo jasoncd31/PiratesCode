@@ -13,11 +13,11 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
 - Extremely rude, but detailed error messages
 - Everything is natively private (protect your booty!)
 - Objects are natively passed by copy for security
+- vargh (equivalent to Java's var) can be used for type inference
 
 ### Scurvy Types
 | Javascript Type     | Scurvy Types   |
 | --------------      | -------------- |
-| var                 | vargh          |
 | boolean (true/false)| booty (aye/nay)|      
 | string              | shanty         |
 | int                 | int            |
