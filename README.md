@@ -30,69 +30,89 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
 | Set            | chest         |
 | Dictionary     | map           |
 
+## Pirate Voyages
+
+### Hello World
+
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
 </tr>
 <td>
+
 ```javascript
 console.log(“Hello world!”)
 ```
+
 </td>
+
 <td>
+
 ```
 ahoy “world!” 
 ```
+
 </td>
 </table>
+
+### Variable Assignment
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
 </tr>
 <td>
+
 ```javascript
 var x = 5
 ```
+
 </td>
+
 <td>
+
 ```
 vargh x = 5
 ```
+
 </td>
 </table>
+
+### Function Declarations
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
 </tr>
 <td>
+    
 ```javascript
 function evenOrOdd(x){
     return x %  2 ==  0
 }
-
 ```
 </td>
 <td>
+    
 ```
 captain evenOrOdd(x){
     anchor x % 2 == 0
 }
-
 ```
 </td>
 </table>
+
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
 </tr>
 <td>
+    
 ```javascript
 function add(a, b){
     return a + b;
 }
-
 ```
 </td>
 <td>
+    
 ```
 captain add(a, b) { 
    anchor a+b
@@ -101,20 +121,55 @@ captain add(a, b) {
 </td>
 </table>
 
+### if-statements
+
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
 </tr>
 <td>
+    
+```javascript
+if (x < 10) {
+  return 1;
+} else if (x < 20) {
+  return -1;
+} else {
+  return 0;
+}
+```
+</td>
+<td>
+    
+```
+yo (x < 10) {
+  anchor 1
+} yo ho (x < 20) {
+  anchor -1
+} yo ho ho {
+  anchor 0
+} 
+```
+</td>
+</table>
+
+### Loops
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+    
 ```javascript
 while(true){
-
+    break
 }
 ```
 </td>
 <td>
+    
 ```
-parrot true {
-
+parrot aye {
+    maroon
 }
 ```
 </td>
@@ -124,16 +179,18 @@ parrot true {
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
 </tr>
 <td>
+    
 ```javascript
 for (int x = 0; x < 10; x++) {
-
+    break
 }
 ```
 </td>
 <td>
+    
 ```
 chase vargh x = 0 until 10 {
-
+    maroon
 }
 ```
 </td>
@@ -143,6 +200,29 @@ chase vargh x = 0 until 10 {
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
 </tr>
 <td>
+    
+```python
+for i in array:
+    break
+```
+</td>
+<td>
+    
+```
+chase vargh x through ledger {
+     maroon
+}
+```
+</td>
+</table>
+
+### Classes
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+    
 ```javascript
 class Rectangle {
     constructor(height, width){ 
@@ -152,6 +232,7 @@ class Rectangle {
 ```
 </td>
 <td>
+    
 ```
 ship Rectangle {
     build (height, width) {
@@ -162,9 +243,44 @@ ship Rectangle {
 </td>
 </table>
 
-
-## Pirate Voyages
-
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+    
+```javascript
+class Rectangle {
+    constructor(height, width){ 
+        this.height = height;
+        this.width = width;
+}
 ```
-ahoy "world!"
+</td>
+<td>
+    
 ```
+ship Rectangle {
+    build (height, width) {
+        me.height = height
+        me.width = width
+}
+```
+</td>
+</table>
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+    
+```javascript
+let fruits = ['Apple', 'Banana']
+```
+</td>
+<td>
+    
+```
+vargh fruits = ['Apple', 'Banana']
+```
+</td>
+</table>
