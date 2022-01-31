@@ -23,6 +23,7 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
 | int                 | int            |
 | double              | doubloon       |
 | object              | loot           |
+| tuple ()            | tuple ()       |
 
 
 #### Data Skeletons
