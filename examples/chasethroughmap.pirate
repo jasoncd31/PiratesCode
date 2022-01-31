@@ -1,12 +1,10 @@
-$$ Creates a map named companyMap
-vargh companyMap = map()
+$$ Creates a map named companyMap with items
+map companyMap = {"Gold", (15,17), "Dragons", (101, 666)}
 
 $$ Creates a tuple named home with the data (0,0)
 vargh home = (0,0)
 
 $$ Adds items to companyMap as thus: (Key, Value)
-companyMap.pin("Gold", (15,17))
-companyMap.pin("Dragons", (101, 666))
 companyMap.pin("Enemies", (84, 189))
 
 $$ Iterates through each Key, Value pair tuple in companyMap
