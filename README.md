@@ -143,7 +143,7 @@ if (x < 10) {
 <td>
     
 ```
-yo (x < 10) {
+yo x < 10 {
   anchor 1
 } yo ho (x < 20) {
   anchor -1
