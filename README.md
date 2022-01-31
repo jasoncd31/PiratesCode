@@ -245,6 +245,8 @@ ship Rectangle {
 </td>
 </table>
 
+### Data Skeletons Assignment
+
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
 </tr>
@@ -262,11 +264,30 @@ vargh fruits = ['Apple', 'Banana']
 </td>
 </table>
 
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+    
+```python
+fruit_prices = dict()
+products = set()
+```
+</td>
+<td>
+    
+```
+vargh fruitPrices = map()
+vargh products = chest()
+```
+</td>
+</table>
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
 </tr>
 <td>
+    
     
 ```javascript
 // comment goes here
