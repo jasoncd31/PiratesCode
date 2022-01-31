@@ -23,6 +23,7 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
 | int                 | int            |
 | double              | doubloon       |
 | object              | loot           |
+| tuple ()            | tuple ()       |
 
 
 #### Data Skeletons
@@ -245,30 +246,7 @@ ship Rectangle {
 </td>
 </table>
 
-<table>
-<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
-</tr>
-<td>
-    
-```javascript
-class Rectangle {
-    constructor(height, width){ 
-        this.height = height;
-        this.width = width;
-}
-```
-</td>
-<td>
-    
-```
-ship Rectangle {
-    build (height, width) {
-        me.height = height
-        me.width = width
-}
-```
-</td>
-</table>
+### Data Skeletons Assignment
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
@@ -287,11 +265,31 @@ vargh fruits = ['Apple', 'Banana']
 </td>
 </table>
 
-
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
 </tr>
 <td>
+    
+```python
+fruit_prices = dict()
+products = set()
+```
+</td>
+<td>
+    
+```
+vargh fruitPrices = map()
+vargh products = chest()
+```
+</td>
+</table>
+
+### Comments   
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td> 
     
 ```javascript
 // comment goes here
