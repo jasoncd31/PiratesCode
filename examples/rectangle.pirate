@@ -1,0 +1,24 @@
+ship Rectangle {
+    build (height, weight){
+        me.height = height
+        me.width = width
+    }
+
+    captain area(){
+        anchor me.width * me.height
+    }
+
+    captain getHeight(){
+        anchor me.height
+    }
+
+    captain getWidth(){
+        anchor me.width
+    }
+}
+
+$$ creates a new rectangle called sign
+vargh sign = new Rectangle(5,5)
+
+$$ prints the area
+ahoy sign.area()
