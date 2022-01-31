@@ -1,4 +1,0 @@
-vargh treasureLocation = map()
-treasureLocation.pin("Gold", (15,17))
-treasureLocation.pin("Dragons", (101, 666))
-treasureLocation.pin("Dragons", (101, 666))
