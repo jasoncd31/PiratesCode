@@ -74,6 +74,7 @@ var x = 5
 
 ```
 vargh x = 5
+int x = 5
 ```
 
 </td>
