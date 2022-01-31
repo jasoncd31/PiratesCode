@@ -143,7 +143,7 @@ if (x < 10) {
 <td>
     
 ```
-yo (x < 10) {
+yo x < 10 {
   anchor 1
 } yo ho (x < 20) {
   anchor -1
@@ -283,6 +283,24 @@ let fruits = ['Apple', 'Banana']
     
 ```
 vargh fruits = ['Apple', 'Banana']
+```
+</td>
+</table>
+
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+    
+```javascript
+// comment goes here
+```
+</td>
+<td>
+    
+```
+$$ comment goes here
 ```
 </td>
 </table>
