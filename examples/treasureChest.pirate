@@ -1,0 +1,12 @@
+chest treasure = [1, 2, 3]
+ahoy treasure
+$$ prints [1, 2, 3]
+
+treasure.add(3)
+treasure.add(4)
+ahoy treasure
+$$ prints [1, 2, 3, 4]
+
+treasure.plunder()
+ahoy treasure
+$$ prints []
