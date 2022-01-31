@@ -1,5 +1,5 @@
-$$ Function that loops through the ships, and finds 
-captain whichShip(shanty myShip, chest ships) {
+$$ Function that loops through the ships, and finds the index of the ship given in the list.
+captain whichShip(myShip, ships) {
     chase int i = 0 until length(ships) {
         yo ships[i] == myShip {
             anchor "Yer ship be in index ~index~"
