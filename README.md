@@ -8,7 +8,6 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
 - Mix of Python & Javascript: No parenthesis in if/while/for statements, but does have brackets
 - Pirate-themed language and syntax
 - Static typing
-- Strongly typed
 - Object oriented
 - Built-in data structures
 - Extremely rude, but detailed error messages
