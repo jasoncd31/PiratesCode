@@ -251,31 +251,6 @@ ship Rectangle {
 <td>
     
 ```javascript
-class Rectangle {
-    constructor(height, width){ 
-        this.height = height;
-        this.width = width;
-}
-```
-</td>
-<td>
-    
-```
-ship Rectangle {
-    build (height, width) {
-        me.height = height
-        me.width = width
-}
-```
-</td>
-</table>
-
-<table>
-<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
-</tr>
-<td>
-    
-```javascript
 let fruits = ['Apple', 'Banana']
 ```
 </td>
