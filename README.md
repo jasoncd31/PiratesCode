@@ -16,7 +16,7 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
 - Built-in data structures
 - Switch Statements
 
-#### Scurvy Types
+### Scurvy Types
 | Javascript Type     | Scurvy Types   |
 | --------------      | -------------- |
 | var                 | vargh          |
