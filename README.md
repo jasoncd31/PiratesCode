@@ -7,14 +7,13 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
 ### Swashbuckling Features:
 - Mix of Python & Javascript: No parenthesis in if/while/for statements, but does have brackets
 - Pirate-themed language and syntax
-- Scripting language
 - Static typing
+- Strongly typed
+- Object oriented
+- Built-in data structures
 - Extremely rude, but detailed error messages
 - Everything is natively private (protect your booty!)
 - Objects are natively passed by copy for security
-- String interpolation
-- Built-in data structures
-- Switch Statements
 
 ### Scurvy Types
 | Javascript Type     | Scurvy Types   |
@@ -24,6 +23,7 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
 | string              | shanty         |
 | int                 | int            |
 | double              | doubloon       |
+| object              | loot           |
 
 
 #### Data Skeletons
