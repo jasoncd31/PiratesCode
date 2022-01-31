@@ -283,12 +283,12 @@ vargh products = chest()
 </td>
 </table>
 
+### Comments   
+
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
 </tr>
-<td>
-    
-### Comments    
+<td> 
     
 ```javascript
 // comment goes here
