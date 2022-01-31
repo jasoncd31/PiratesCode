@@ -1,4 +1,5 @@
-![Logo](https://raw.githubusercontent.com/jasoncd31/PiratesCode/docs/piratescodelogo.jpg)
+<img src=./docs/piratescodelogo.jpg width="500" height="500"> 
+
 # PiratesCode
 
 Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wide web! Inspired by the swashbuckling buccaneers of legend, PiratesCode be designed to make programming easy and fun for scurvy new programming recruits. PiratesCode be a language for those fixing to get an education and have fun while doing it! Since we’re all swashbuckling corsairs here, PiratesCode specifically helps ye write secure code so ye can protect your loot. All hop on the Flyin’ Dutchman and set your sails for the sea (of code) with PiratesCode!
@@ -28,6 +29,138 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
 | Array/List     | ledger        |
 | Set            | chest         |
 | Dictionary     | map           |
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+```javascript
+console.log(“Hello world!”)
+```
+</td>
+<td>
+```
+ahoy “world!” 
+```
+</td>
+</table>
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+```javascript
+var x = 5
+```
+</td>
+<td>
+```
+vargh x = 5
+```
+</td>
+</table>
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+```javascript
+function evenOrOdd(x){
+    return x %  2 ==  0
+}
+
+```
+</td>
+<td>
+```
+captain evenOrOdd(x){
+    anchor x % 2 == 0
+}
+
+```
+</td>
+</table>
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+```javascript
+function add(a, b){
+    return a + b;
+}
+
+```
+</td>
+<td>
+```
+captain add(a, b) { 
+   anchor a+b
+}
+```
+</td>
+</table>
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+```javascript
+while(true){
+
+}
+```
+</td>
+<td>
+```
+parrot true {
+
+}
+```
+</td>
+</table>
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+```javascript
+for (int x = 0; x < 10; x++) {
+
+}
+```
+</td>
+<td>
+```
+chase vargh x = 0 until 10 {
+
+}
+```
+</td>
+</table>
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td>
+```javascript
+class Rectangle {
+    constructor(height, width){ 
+        this.height = height;
+        this.width = width;
+}
+```
+</td>
+<td>
+```
+ship Rectangle {
+    build (height, width) {
+        me.height = height
+        me.width = width
+}
+```
+</td>
+</table>
 
 
 ## Pirate Voyages
