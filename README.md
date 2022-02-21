@@ -273,7 +273,7 @@ vargh fruits = ['Apple', 'Banana']
 </table>
 
 <table>
-<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+<tr> <th>Python</th><th>PiratesCode</th><tr>
 </tr>
 <td>
     
