@@ -188,7 +188,7 @@ parrot aye {
 <td>
     
 ```javascript
-for (int x = 0; x < 10; x++) {
+for (var x = 0; x < 10; x++) {
     break
 }
 ```
