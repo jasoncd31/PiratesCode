@@ -17,6 +17,7 @@ Written by [Maya Epps](https://github.com/mayaepps), [Jennifer Siao](https://git
 - Everything is natively private (protect your booty!)
 - Objects are natively passed by copy for security
 - vargh (equivalent to Java's var) can be used for type inference
+- String interpolation
 
 ### Scurvy Types
 | Javascript Type     | Scurvy Types   |
@@ -286,6 +287,27 @@ products = set()
 ```
 vargh fruitPrices = map()
 vargh products = chest()
+```
+</td>
+</table>
+
+### String Interpolation   
+
+<table>
+<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
+</tr>
+<td> 
+    
+```javascript
+var x = 5
+Console.log("The number is ${x}!")
+```
+</td>
+<td>
+    
+```
+vargh x = 5
+ahoy "The number is ~x~!"
 ```
 </td>
 </table>
