@@ -235,6 +235,7 @@ class Rectangle {
     constructor(height, width){ 
         this.height = height;
         this.width = width;
+    }
 }
 ```
 </td>
@@ -245,6 +246,7 @@ ship Rectangle {
     build (height, width) {
         me.height = height
         me.width = width
+    }
 }
 ```
 </td>
