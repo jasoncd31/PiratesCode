@@ -1,46 +1,50 @@
 PiratesCode {
   Program = Stmt+
-  Stmt = print Exp         -- print
-       | (type|"vargh") id "=" Exp      -- vardec
-       | id "=" Exp            -- assignment
-       | while Exp Block         -- while
-       | for (type|"vargh") id "through" id Block  --forloop1
-       | for ("vargh"|"int") id "=" Exp "until" Exp Block --forloop2
-       | function id Params Block  --fundec
-       | class id ClassBlock           --classdec
-       | return Exp              --return
-       | if Exp Block (elseif Exp Block)* (else Block)? --ifelse
+  Stmt = print Exp                    -- print
+       | (type|"vargh") id "=" Exp    -- vardec
+       | id "=" Exp                   -- assignment
+       | while Exp Block              -- while
+       | ForEachLoop
+       | ForLoop
+       | function id Params Block     --fundec
+       | class id ClassBlock          --classdec
+       | return Exp                   --return
+       | IfStmt
        | break
        | comment
+  
+  IfStmt = if Exp Block (elseif Exp Block)* (else Block)?
+  ForEachLoop = for (type|"vargh") id "through" id Block
+  ForLoop = for ("vargh"|"int") id "=" Exp "until" Exp Block
   
   Params = "(" ListOf<id, ","> ")"
   Args   = "(" ListOf<Exp, ","> ")"
   Block = "{" Stmt* "}"
   ClassBlock = "{" ConstructorDec MethodDec* "}"   
   ConstructorDec = construct Params "{" Exp* "}"    --constructor
-  MethodDec =  function id Params Block    --method
+  MethodDec =  function id Params Block             --method
   
 
-  Exp  = ExpAndOr "?" ExpAndOr ":" Exp     -- ternary
-       | ExpAndOr
-  ExpAndOr = ExpAndOr (and|or) Exp0 --binary
-  	   | Exp0
-  Exp0 = Exp1 relop Exp1           -- binary
-       | Exp1
-  Exp1 = Exp1 ("+" | "-") Exp2     -- binary
+  Exp  = Exp0 "?" Exp0 ":" Exp         -- ternary
+       | Exp0
+  Exp0 = Exp0 (and|or) Exp1            --binary
+  	   |Exp1
+  Exp1 = Exp2 relop Exp2               -- binary
        | Exp2
-  Exp2 = Exp2 ("*"|"/"|"%") Exp3   -- binary
+  Exp2 = Exp2 ("+" | "-") Exp3         -- binary
        | Exp3
-  Exp3 = Exp4 "**" Exp3            -- binary
+  Exp3 = Exp3 ("*"|"/"|"%") Exp4       -- binary
        | Exp4
-  Exp4 = num
+  Exp4 = Exp5 "**" Exp4                -- binary
+       | Exp5
+  Exp5 = num
        | id Args                   -- call
        | id "=" Exp                --assign
        | id
        | "(" Exp ")"               -- parens
- 	   | strlit ~keyword           -- string
-       | Exp5
-  Exp5 = GetProperty "=" Exp       --assign
+ 	   | strlit ~keyword           
+       | Exp6
+  Exp6 = GetProperty "=" Exp       --assign
   		| GetProperty              --get
        
   num   = ("-")? digit+ ("." digit+)? (("E"|"e") ("+"|"-")? digit+)?
@@ -70,7 +74,7 @@ PiratesCode {
   and         = "and" ~alnum
   or          = "or" ~alnum
   
-  comment     = "$$" (~"\n" any)* ("\n" | end)
+  comment     = "$$" (~"\n" any)* "\n"
   type        = ("booty"|"shanty"|"int"|"doubloon"|"loot"|"map"|"chest"|"set"|"list") ~alnum
   
  
