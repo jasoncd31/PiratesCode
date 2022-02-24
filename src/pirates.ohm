@@ -1,60 +1,81 @@
 PiratesCode {
-  Program = Stmt+
-  Stmt = print Exp                    -- print
-       | (type|"vargh") id "=" Exp    -- vardec
-       | id "=" Exp                   -- assignment
-       | while Exp Block              -- while
-       | ForEachLoop
-       | ForLoop
-       | function id Params Block     --fundec
-       | class id ClassBlock          --classdec
-       | return Exp                   --return
-       | IfStmt
-       | break
-       | comment
-  
-  IfStmt = if Exp Block (elseif Exp Block)* (else Block)?
-  ForEachLoop = for (type|"vargh") id "through" id Block
-  ForLoop = for ("vargh"|"int") id "=" Exp "until" Exp Block
-  
-  Params = "(" ListOf<id, ","> ")"
-  Args   = "(" ListOf<Exp, ","> ")"
-  Block = "{" Stmt* "}"
-  ClassBlock = "{" ConstructorDec MethodDec* "}"   
-  ConstructorDec = construct Params "{" Exp* "}"    --constructor
-  MethodDec =  function id Params Block             --method
-  
+  Program      = Statement+
 
-  Exp  = Exp0 "?" Exp0 ":" Exp         -- ternary
-       | Exp0
-  Exp0 = Exp0 (and|or) Exp1            --binary
-  	   |Exp1
-  Exp1 = Exp2 relop Exp2               -- binary
-       | Exp2
-  Exp2 = Exp2 ("+" | "-") Exp3         -- binary
-       | Exp3
-  Exp3 = Exp3 ("*"|"/"|"%") Exp4       -- binary
-       | Exp4
-  Exp4 = Exp5 "**" Exp4                -- binary
-       | Exp5
-  Exp5 = num
-       | id Args                   -- call
-       | id "=" Exp                --assign
-       | id
-       | "(" Exp ")"               -- parens
- 	   | strlit ~keyword           
-       | Exp6
-  Exp6 = GetProperty "=" Exp       --assign
-  		| GetProperty              --get
+  Statement    = print Exp              --print
+               | VarDec
+               | FunDec
+               | ClassDec
+               | Assignment
+               | LoopStatement
+               | IfStmt
+               | return Exp             --return
+               | break          
+               | comment 
+               
+  VarDec       = (type | var) id "=" Exp
+
+  FunDec       = function id Params Block 
+
+  ClassDec     = class id ClassBlock
+
+  Assignment   = id "=" Exp
+  
+  ArrayLit	= "[" ListOf<(id | strlit), ","> "]"
+
+  LoopStatement = while Exp Block 									-- while
+               | for (type|"vargh") id "through" id Block           -- ForEachLoop
+               | for ("vargh"|"int") id "=" Exp "until" Exp Block   -- ForLoop
+
+  IfStmt       = if Exp Block (elseif Exp Block)* (else Block)?
+  
+  Params       = "(" ListOf<id, ","> ")"
+
+  Args         = "(" ListOf<Exp, ","> ")"
+
+  Block        = "{" Statement* "}"
+
+  ClassBlock   = "{" ConstructorDec MethodDec* "}" 
+
+  ConstructorDec = construct Params "{" Exp* "}"
+
+  MethodDec    = function id Params Block
+
+  Exp     = ("-" | "not") Exp                   -- unary
+          | Exp0 "?" Exp0 ":" Exp               -- ternary
+          | Exp0
+  Exp0    = Exp0 or Exp1                        -- binary
+  	      | Exp1
+  Exp1    = Exp1 and Exp2                       --binary               
+          | Exp2
+  Exp2    = Exp3 relop Exp3                     -- binary
+          | Exp3
+  Exp3    = Exp3 ("+" | "-") Exp4               -- binary
+          | Exp4
+  Exp4    = Exp4 ("*"|"/"|"%") Exp5             -- binary
+          | Exp5
+  Exp5    = Exp6 "**" Exp5                      -- binary
+          | Exp6
+  Exp6    = GetProperty "=" Exp                 -- assignprop
+  	     | GetProperty
+          | num
+          | true
+          | false
+          | ArrayLit
+          | Call
+          | id Args                             -- call
+          | id "=" Exp                          -- assign
+          | id
+          | "(" Exp ")"                         -- parens
+          | strlit ~keyword           
        
-  num   = ("-")? digit+ ("." digit+)? (("E"|"e") ("+"|"-")? digit+)?
-  id    = ~keyword letter ("_" | letter | digit)*
-  relop = "<=" | "<" | "!=" | "==" | ">=" | ">"
-  GetProperty = this (AccessDot)+
-  AccessDot = "." (id | Call)
-  Call = id Params
+  num     = ("-")? digit+ ("." digit+)? (("E"|"e") ("+"|"-")? digit+)?
 
-  
+  relop   = "<=" | "<" | "!=" | "==" | ">=" | ">"
+
+  GetProperty = this ("." (id | Call))+
+
+  Call    = id Args
+          
   let         = "vargh" ~alnum
   print       = "ahoy" ~alnum
   function    = "captain" ~alnum
@@ -73,17 +94,20 @@ PiratesCode {
   construct   = "build" ~alnum
   and         = "and" ~alnum
   or          = "or" ~alnum
+  var         = "vargh" ~alnum
   
-  comment     = "$$" (~"\n" any)* "\n"
+  comment     = "$$" (~"\n" any)* ("\n" | end)  --comment
+
   type        = ("booty"|"shanty"|"int"|"doubloon"|"loot"|"map"|"chest"|"set"|"list") ~alnum
-  
+
+  id          = ~keyword letter alnum*
  
   keyword     = let | print | function | else | elseif | if | while | repeat
-              | for | break | return | true | false | type | this
+              | for | break | return | true | false | type | this          
               
-              
-  strlit      = "\"" char* ("~" applySyntactic<Exp> "~" char*)* "\""     --expr1
-  			  | "\'" char* ("~" applySyntactic<Exp>  "~" char* )* "\'"   --expr2
+  strlit      = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")
               
   char        = ~"\\" ~"\"" ~"\n" ~"~" any
-}
+  
+ 
+} 
