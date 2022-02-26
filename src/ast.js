@@ -8,62 +8,80 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
   Program(body) {
     return new core.Program(body.ast())
   },
-  Statement_vardec(_type, id, _eq, initializer) { // do we need the type?
+  Statement_print() {
+    return new core
+  }
+  VarDec(_type, id, _eq, initializer) { 
     return new core.VariableDeclaration(id.ast(), initializer.ast())
   },
-  Statement_fundec(_fun, id, params, body) {
+  FunDec(_fun, id, params, body) {
     return new core.FunctionDeclaration(id.ast(), params.asIteration().ast(), body.ast())
   },
-  Statement_assignment(id, _eq, expression) {
-    return new core.Assignment(id.ast(), expression.ast())
+  // ClassDec(_class, id, classBlock) {
+  //   return new core.ClassDeclaration(id.ast(), classBlock.ast())
+  // },
+  Assignment(id, _eq, expression) {
+    return new core.PrintStatement(id.ast(), expression.id())
   },
-  Statement_print(_print, argument) {
-    return new core.PrintStatement(argument.ast())
-  },
-  Statement_while(_while, test, body) {
+  LoopStatement_while(_while, test, body) {
     return new core.WhileStatement(test.ast(), body.ast())
   },
-  ForLoop(_for, _type, id, _eq, expression, _until, expression, body) {
-    return new core.ForLoop(id.ast(), expression.asst(), expression.ast(), body.ast())
+  LoopStatement_ForEach(_for, _type, id1, _through_, id2, body) {
+    return new core.WhileStatement(id1.ast(), id2.ast(), body.ast())
   },
-  ForEachLoop(_for, _type, id, _through, id, body) {
-    return new core.ForEachLoop(id.ast(), id.ast(), body.ast())
+  LoopStatement_For(_for, _type, id, _eq, expression, _until, exp, body) {
+    return new core.WhileStatement(id.ast(), id.ast(), body.ast())
   },
-  IfStmt(_if, test, body, _) {
-    return new core.ForEachLoop(test.ast(), body.ast())
+  IfStmt_long(_if, test, consequent, _else, alternate) {
+    return new core.IfStatement(test.ast(), consequent.ast(), alternate.ast())
+  },
+  IfStmt_short(_if, test, consequent) {
+    return new core.ShortIfStatement(test.ast(), consequent.ast())
   },
   Block(_open, body, _close) {
     return body.ast()
   },
   Exp_unary(op, operand) {
-    return new core.UnaryExpression(op.ast(), operand.ast())
+    return new core.UnaryExpression(op.sourceString, operand.ast())
   },
   Exp_ternary(test, _questionMark, consequent, _colon, alternate) {
     return new core.Conditional(test.ast(), consequent.ast(), alternate.ast())
   },
+  Exp0_binary(left, op, right) {
+    return new core.BinaryExpression(op.sourceString, left.ast(), right.ast())
+  },
   Exp1_binary(left, op, right) {
-    return new core.BinaryExpression(op.ast(), left.ast(), right.ast())
+    return new core.BinaryExpression(op.sourceString, left.ast(), right.ast())
   },
   Exp2_binary(left, op, right) {
-    return new core.BinaryExpression(op.ast(), left.ast(), right.ast())
+    return new core.BinaryExpression(op.sourceString, left.ast(), right.ast())
   },
   Exp3_binary(left, op, right) {
-    return new core.BinaryExpression(op.ast(), left.ast(), right.ast())
+    return new core.BinaryExpression(op.sourceString, left.ast(), right.ast())
   },
   Exp4_binary(left, op, right) {
-    return new core.BinaryExpression(op.ast(), left.ast(), right.ast())
+    return new core.BinaryExpression(op.sourceString, left.ast(), right.ast())
   },
-  Exp5_call(id, args) {
-    return new core.BinaryExpression(id.ast(), args.asIteration().ast())
+  Exp5_binary(left, op, right) {
+    return new core.BinaryExpression(op.sourceString, left.ast(), right.ast())
   },
-  Exp5_assign(id, _eq, expression) {
-    return new core.BinaryExpression(id.ast(), expression.ast(), right.ast())
-  },
-  Exp5_parens(_left, expression, _right) {
+  // Exp6_assignprop(me, _dot, , _eq, expression) {
+  //   return new core.Assignment(prop.ast(), expression.ast())
+  // },
+  Exp6_parens(_left, expression, _right) {
     return new core.BinaryExpression(expression.ast())
   },
   Exp6_assign(id, _eq, exp) {
     return new core.Assignment(id.ast(), exp.ast())
+  },
+  ArrayLit(_left, args, _right) {
+    return new core.ArrayExpression(args.asIteration().ast())
+  },
+  MapLit(_left, args, _right) {
+    return new core.MapExpression(args.asIteration().ast())
+  },
+  MapEntry(left, _colon, right) {
+    return new core.MapEntry(left.ast(), right.ast())
   },
   Call(callee, _left, args, _right) {
     return new core.Call(callee.ast(), args.asIteration().ast())
@@ -79,6 +97,9 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
   },
   num(_whole, _point, _fraction, _e, _sign, _exponent) {
     return new core.Token("Num", this.source)
+  },
+  strlit(_openQuote, chars, _closeQuote) {
+    return new core.Token("Str", this.source)
   },
   _terminal() {
     return new core.Token("Sym", this.source)

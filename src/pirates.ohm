@@ -4,41 +4,44 @@ PiratesCode {
   Statement    = print Exp              --print
                | VarDec
                | FunDec
-               | ClassDec
                | Assignment
                | LoopStatement
                | IfStmt
-               | return Exp             --return
+               | Return           
                | break          
-               | comment 
+               | comment
+               | Call
                
   VarDec       = (type | var) id "=" Exp
 
   FunDec       = function id Params Block 
 
-  ClassDec     = class id ClassBlock
-
   Assignment   = id "=" Exp
   
-  ArrayLit	= "[" ListOf<(id | strlit), ","> "]"
+  ArrayLit	= "[" ListOf<Exp, ","> "]"
 
-  LoopStatement = while Exp Block 									-- while
-               | for (type|"vargh") id "through" id Block           -- ForEachLoop
-               | for ("vargh"|"int") id "=" Exp "until" Exp Block   -- ForLoop
+  MapLit      = "{" ListOf<MapEntry, ","> "}"
+  MapEntry    = Exp ":" Exp
 
-  IfStmt       = if Exp Block (elseif Exp Block)* (else Block)?
+  Return       = return Exp 		--exp
+               | return                 
+
+  LoopStatement = while Exp Block 							   -- while
+               | for (type|"vargh") id "through" id Block           -- ForEach
+               | for ("vargh"|"int") id "=" Exp "until" Exp Block   -- For
+
+  IfStmt      = if Exp Block else (Block | IfStmt)            --long
+              | if Exp Block                                  --short
   
   Params       = "(" ListOf<id, ","> ")"
 
-  Args         = "(" ListOf<Exp, ","> ")"
-
   Block        = "{" Statement* "}"
 
-  ClassBlock   = "{" ConstructorDec MethodDec* "}" 
+  /* ClassBlock   = "{" ConstructorDec MethodDec* "}" 
 
   ConstructorDec = construct Params "{" Exp* "}"
 
-  MethodDec    = function id Params Block
+  MethodDec    = function id Params Block */
 
   Exp     = ("-" | "not") Exp                   -- unary
           | Exp0 "?" Exp0 ":" Exp               -- ternary
@@ -55,26 +58,26 @@ PiratesCode {
           | Exp5
   Exp5    = Exp6 "**" Exp5                      -- binary
           | Exp6
-  Exp6    = GetProperty "=" Exp                 -- assignprop
+  Exp6    = this ("." id)+ "=" Exp                 -- assignprop
   	     | GetProperty
           | num
           | true
           | false
           | ArrayLit
+          | MapLit
           | Call
-          | id Args                             -- call
           | id "=" Exp                          -- assign
           | id
           | "(" Exp ")"                         -- parens
           | strlit ~keyword           
        
-  num     = ("-")? digit+ ("." digit+)? (("E"|"e") ("+"|"-")? digit+)?
+  num     = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
 
   relop   = "<=" | "<" | "!=" | "==" | ">=" | ">"
 
   GetProperty = this ("." (id | Call))+
 
-  Call    = id Args
+  Call    = id "(" ListOf<Exp, ","> ")"
           
   let         = "vargh" ~alnum
   print       = "ahoy" ~alnum
@@ -98,14 +101,15 @@ PiratesCode {
   
   comment     = "$$" (~"\n" any)* ("\n" | end)  --comment
 
-  type        = ("booty"|"shanty"|"int"|"doubloon"|"loot"|"map"|"chest"|"set"|"list") ~alnum
+  type        = ("booty"|"shanty"|"int"|"doubloon"|"loot"|"map"|"chest"|"ledger") ~alnum
 
   id          = ~keyword letter alnum*
  
   keyword     = let | print | function | else | elseif | if | while | repeat
               | for | break | return | true | false | type | this          
               
-  strlit      = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")
+  /*strlit      = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")*/
+  strlit        = "\"" char* "\""
               
   char        = ~"\\" ~"\"" ~"\n" ~"~" any
   

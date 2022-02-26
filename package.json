@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Compiler for PiratesCode",
   "main": "src/piratesCode.js",
-  "type":"module",
+  "type": "module",
   "directories": {
     "doc": "docs",
     "example": "examples",
@@ -24,9 +24,9 @@
   "homepage": "https://github.com/jasoncd31/PiratesCode#readme",
   "devDependencies": {
     "c8": "^7.11.0",
-    "mocha": "^9.2.0"
+    "mocha": "^9.2.1"
   },
   "dependencies": {
-    "ohm-js": "^16.2.0"
+    "ohm-js": "^16.3.0"
   }
 }

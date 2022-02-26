@@ -18,6 +18,13 @@ export class FunctionDeclaration {
     }
 }
 
+// export class ClassDeclaration {
+//     constructor(name, body) {
+//         Object.assign(this, { name, body })
+//     }
+// }
+
+
 export class Assignment {
     constructor(target, source) {
         Object.assign(this, { target, source })
@@ -70,6 +77,25 @@ export class BinaryExpression {
 export class UnaryExpression {
     constructor(op, operand) {
       Object.assign(this, { op, operand })
+    }
+}
+
+export class ArrayExpression {
+    constructor(elements) {
+      this.elements = elements
+    }
+}
+
+export class MapExpression {
+    constructor(elements) {
+      this.elements = elements
+    }
+}
+
+export class MapEntry {
+    constructor(key, value) {
+      this.key = key
+      this.value = value
     }
 }
 

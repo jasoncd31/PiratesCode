@@ -1,5 +1,5 @@
 $$ Creates a map named companyMap with items
-map companyMap = {"Gold", (15,17), "Dragons", (101, 666)}
+map companyMap = {"Gold": (15,17), "Dragons": (101, 666)}
 
 $$ Creates a tuple named home with the data (0,0)
 vargh home = (0,0)

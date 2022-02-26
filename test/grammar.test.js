@@ -5,15 +5,20 @@ import ohm from "ohm-js"
 
 const syntaxChecks = [
   ["print statement", "ahoy \"world!\""],
-  ["declarations", "vargh x = 5\nint x = 5"],
-  ["function declarations", "captain evenOrOdd(x){\nanchor x % 2 == 0\n}"],
+  ["simple return statement", "anchor -5.0"],
+  ["simple break statement", "maroon"],
+  ["declarations", "vargh x = 5\nint x = 5\nvargh bigMap = {\"hi jason\":\"hola jason\", \"hi maya\":\"hola maya\"}"],
+  ["function declarations", "captain isEven(x){\nanchor x % 2 == 0\n}"],
   ["if statements", "yo x < 10 { \nanchor 1 \n} yo ho (x < 20) { \n anchor -1} yo ho ho {\nanchor 0\n} "],
   ["while loops", "parrot aye {\nmaroon\n}"],
   ["for loops", "chase vargh x = 0 until 10 {\nmaroon\n}"],
-  ["for each loops", "chase vargh x through ledger {\nmaroon\n}"],
-  ["class and constructor declarations", "ship Rectangle {\nbuild (height, width) {\nme.height = height\nme.width = width\n}\n}"],
+  ["for each loops", "chase vargh x through list {\nmaroon\n}"],
+  //["class and constructor declarations", "ship Rectangle {\nbuild (height, width) {\nme.height = height\nme.width = width\n}\n}"],
   ["end of program inside comment", "ahoy 1 $$yay"],
   ["comments with no text are ok", "ahoy 1 $$\nahoy 0"],
+  ["relational operators", "ahoy 1<2 or 1<=2 or 1==2 and 1!=2 or 1>=2 and 1>2"],
+  ["numeric literals", "ahoy -8 * 89.123 * 1.3E5 * -1.3E+5 * 1.3E-5"],
+  //["get the properties of an object", "me.test()"],
 ]
 
 const syntaxErrors = [
@@ -26,7 +31,10 @@ const syntaxErrors = [
   ["a statement starting with expression", "x * 5", /Line 1, col 3/],
   ["an illegal statement on line 2", "ahoy 5 \nx * 5", /Line 2, col 3/],
   ["a statement starting with a )", "ahoy 5 \n) * 5", /Line 2, col 1/],
-  ["an expression starting with a *", "x = * 71;", /Line 1, col 5/],
+  ["an expression starting with a *", "x = * 71", /Line 1, col 5/],
+  ["type as a variable name", "ledger map = []", /Line 1, col 8/],
+  ["keyword as a variable name", "int yo = 5", /Line 1, col 5/],
+  ["keyword as a variable name", "int yo = 5", /Line 1, col 5/],
 ]
 
 describe("The grammar", () => {
