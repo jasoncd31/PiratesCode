@@ -3,7 +3,7 @@ vargh ageLimit = 18
 
 parrot age < ageLimit {
     ahoy "yer a little lad" 
-    age++
+    age = age + 1
 } 
 
 ahoy "yer a pirate!" 

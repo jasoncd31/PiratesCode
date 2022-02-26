@@ -8,9 +8,15 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
   Program(body) {
     return new core.Program(body.ast())
   },
-  Statement_print() {
-    return new core
-  }
+  Statement_print(_print, expression) {
+    return new core.PrintStatement(expression.ast())
+  },
+  Return_exp(_return, expression) {
+    return new core.ReturnStatement(expression.ast())
+  },
+  Return_short(_return) {
+    return new core.ShortReturnStatement()
+  },
   VarDec(_type, id, _eq, initializer) { 
     return new core.VariableDeclaration(id.ast(), initializer.ast())
   },
@@ -32,8 +38,8 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
   LoopStatement_For(_for, _type, id, _eq, expression, _until, exp, body) {
     return new core.WhileStatement(id.ast(), id.ast(), body.ast())
   },
-  IfStmt_long(_if, test, consequent, _else, alternate) {
-    return new core.IfStatement(test.ast(), consequent.ast(), alternate.ast())
+  IfStmt_long(_if, test, consequent, _elseif, _exp2, _consequent2, _else, _alternate) {
+    return new core.IfStatement(test.ast(), consequent.ast(), _exp2.ast(), _consequent2.ast(), _alternate.ast())
   },
   IfStmt_short(_if, test, consequent) {
     return new core.ShortIfStatement(test.ast(), consequent.ast())
@@ -69,7 +75,7 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
   //   return new core.Assignment(prop.ast(), expression.ast())
   // },
   Exp6_parens(_left, expression, _right) {
-    return new core.BinaryExpression(expression.ast())
+    return new expression.ast()
   },
   Exp6_assign(id, _eq, exp) {
     return new core.Assignment(id.ast(), exp.ast())
@@ -111,6 +117,8 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
 
 export default function ast(sourceCode) {
   const match = piratesGrammar.match(sourceCode)
-  if (!match.succeeded()) core.error(match.message)
+  if (!match.succeeded()) {
+    throw new Error(match.message)
+  }
   return astBuilder(match).ast()
 }

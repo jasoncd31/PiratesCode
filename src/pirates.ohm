@@ -24,14 +24,14 @@ PiratesCode {
   MapEntry    = Exp ":" Exp
 
   Return       = return Exp 		--exp
-               | return                 
+               | return                 --short             
 
   LoopStatement = while Exp Block 							   -- while
                | for (type|"vargh") id "through" id Block           -- ForEach
                | for ("vargh"|"int") id "=" Exp "until" Exp Block   -- For
 
-  IfStmt      = if Exp Block else (Block | IfStmt)            --long
-              | if Exp Block                                  --short
+  IfStmt      = if Exp Block (elseif Exp Block)* (else Block)?         --long
+              | if Exp Block                                           --short
   
   Params       = "(" ListOf<id, ","> ")"
 

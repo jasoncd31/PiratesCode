@@ -17,7 +17,7 @@ const syntaxChecks = [
   ["end of program inside comment", "ahoy 1 $$yay"],
   ["comments with no text are ok", "ahoy 1 $$\nahoy 0"],
   ["relational operators", "ahoy 1<2 or 1<=2 or 1==2 and 1!=2 or 1>=2 and 1>2"],
-  ["numeric literals", "ahoy -8 * 89.123 * 1.3E5 * -1.3E+5 * 1.3E-5"],
+  ["numeric literals", "ahoy -8 * 89.123 * 1.3E5 * (-1.3E+5) * 1.3E-5"],
   //["get the properties of an object", "me.test()"],
 ]
 
@@ -33,7 +33,6 @@ const syntaxErrors = [
   ["a statement starting with a )", "ahoy 5 \n) * 5", /Line 2, col 1/],
   ["an expression starting with a *", "x = * 71", /Line 1, col 5/],
   ["type as a variable name", "ledger map = []", /Line 1, col 8/],
-  ["keyword as a variable name", "int yo = 5", /Line 1, col 5/],
   ["keyword as a variable name", "int yo = 5", /Line 1, col 5/],
 ]
 
