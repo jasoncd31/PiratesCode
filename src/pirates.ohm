@@ -11,8 +11,10 @@ PiratesCode {
                | break          
                | comment
                | Call
+               | ClassStmt
+            
                
-  VarDec       = (type | var) id "=" Exp
+  VarDec       = (type | var | identifier) id "=" Exp
 
   FunDec       = function id "(" ListOf<id, ","> ")" Block 
 
@@ -32,13 +34,16 @@ PiratesCode {
 
   IfStmt      = if Exp Block (elseif Exp Block)* (else Block)?         --long
               | if Exp Block                                           --short
-
-
+              
   Block        = "{" Statement* "}"
+  
+  ClassStmt    = class id ClassBlock
 
-  /* ClassBlock   = "{" ConstructorDec MethodDec* "}" 
+  ClassBlock   = "{" ConstructorDec MethodDec* "}" 
 
-  ConstructorDec = construct "(" ListOf<id, ","> ")" "{" Exp* "}" */
+  ConstructorDec = construct "(" ListOf<id, ","> ")" "{" Exp* "}"
+
+  MethodDec    = function id "(" ListOf<id, ","> ")" Block
 
   Exp     = ("-" | "not") Exp                   -- unary
           | Exp0 "?" Exp0 ":" Exp               -- ternary
@@ -63,6 +68,7 @@ PiratesCode {
           | ArrayLit
           | MapLit
           | Call
+          | NewInstance
           | id "=" Exp                          -- assign
           | id
           | "(" Exp ")"                         -- parens
@@ -72,7 +78,7 @@ PiratesCode {
 
   relop   = "<=" | "<" | "!=" | "==" | ">=" | ">"
 
-  GetProperty = this ("." (id | Call))+
+  GetProperty = (this | identifier) ("." (Call | id))+
 
   Call    = id "(" ListOf<Exp, ","> ")"
           
@@ -95,6 +101,7 @@ PiratesCode {
   and         = "and" ~alnum
   or          = "or" ~alnum
   var         = "vargh" ~alnum
+  new         = "new" ~alnum
   
   comment     = "$$" (~"\n" any)* ("\n" | end)  --comment
 
@@ -103,12 +110,16 @@ PiratesCode {
   id          = ~keyword letter alnum*
  
   keyword     = let | print | function | else | elseif | if | while | repeat
-              | for | break | return | true | false | type | this          
+              | for | break | return | true | false | type | this | new          
               
-  /*strlit      = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")*/
-  strlit        = "\"" char* "\""
+  strlit      = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")
+  /*strlit        = "\"" char* "\""*/
               
   char        = ~"\\" ~"\"" ~"\n" ~"~" any
-  
+  NewInstance = new identifier "(" ListOf<Exp, ","> ")"
+
+  identifier = ~keyword identifierStart identifierCharacter*
+  identifierStart = letter | "_" | "@" |"~"
+  identifierCharacter = alnum | "~"
  
 } 
