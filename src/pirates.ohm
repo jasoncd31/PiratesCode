@@ -34,7 +34,7 @@ PiratesCode {
 
   IfStmt      = if Exp Block (elseif Exp Block)* (else Block)?         --long
               | if Exp Block                                           --short
-
+              
   Block        = "{" Statement* "}"
   
   ClassStmt    = class id ClassBlock
