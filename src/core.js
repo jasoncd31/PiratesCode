@@ -24,7 +24,6 @@ export class FunctionDeclaration {
 //     }
 // }
 
-
 export class Assignment {
     constructor(target, source) {
         Object.assign(this, { target, source })
@@ -33,13 +32,13 @@ export class Assignment {
 
 export class WhileLoop {
     constructor(test, body) {
-        Object.assign(this, {test, body})
+        Object.assign(this, { test, body })
     }
 }
 
 export class ForLoop {
-    constructor(variable, test, increment, body) {
-        Object.assign(this, { test, body })
+    constructor(variable, startingVal, endingVal, body) {
+        Object.assign(this, { variable, startingVal, endingVal, body })
     }
 }
 
@@ -63,75 +62,75 @@ export class Call {
 
 export class Conditional {
     constructor(test, consequent, alternate) {
-      Object.assign(this, { test, consequent, alternate })
+        Object.assign(this, { test, consequent, alternate })
     }
 }
 
 export class IfStatement {
     // Example: if x < 3 { print(100); } else { break; }
     constructor(test, consequent, alternate) {
-      Object.assign(this, { test, consequent, alternate })
+        Object.assign(this, { test, consequent, alternate })
     }
 }
-  
+
 export class ShortIfStatement {
     // Example: if x < 3 { print(100); }
     constructor(test, consequent) {
-      Object.assign(this, { test, consequent })
+        Object.assign(this, { test, consequent })
     }
 }
-  
+
 export class BinaryExpression {
     constructor(op, left, right) {
-      Object.assign(this, { op, left, right })
+        Object.assign(this, { op, left, right })
     }
 }
-  
+
 export class UnaryExpression {
     constructor(op, operand) {
-      Object.assign(this, { op, operand })
+        Object.assign(this, { op, operand })
     }
 }
 
 export class ArrayExpression {
     constructor(elements) {
-      this.elements = elements
+        this.elements = elements
     }
 }
 
 export class MapExpression {
     constructor(elements) {
-      this.elements = elements
+        this.elements = elements
     }
 }
 
 export class MapEntry {
     constructor(key, value) {
-      this.key = key
-      this.value = value
+        this.key = key
+        this.value = value
     }
 }
 
- // Token objects are wrappers around the Nodes produced by Ohm. We use
+// Token objects are wrappers around the Nodes produced by Ohm. We use
 // them here just for simple things like numbers and identifiers. The
 // Ohm node will go in the "source" property.
 export class Token {
     constructor(category, source) {
-      Object.assign(this, { category, source })
+        Object.assign(this, { category, source })
     }
     get lexeme() {
-      // Ohm holds this for us, nice
-      return this.source.contents
+        // Ohm holds this for us, nice
+        return this.source.contents
     }
     get description() {
-      return this.source.contents
+        return this.source.contents
     }
-  }
+}
 
 export class ReturnStatement {
     // Example: return c[5]
     constructor(expression) {
-      this.expression = expression
+        this.expression = expression
     }
 }
 
@@ -145,38 +144,42 @@ export class ShortReturnStatement {
 // the root class prototype so that it automatically runs on console.log.
 Program.prototype[util.inspect.custom] = function () {
     const tags = new Map()
-  
+
     // Attach a unique integer tag to every node
     function tag(node) {
-      if (tags.has(node) || typeof node !== "object" || node === null) return
-      if (node.constructor === Token) {
-        // Tokens are not tagged themselves, but their values might be
-        tag(node?.value)
-      } else {
-        // Non-tokens are tagged
-        tags.set(node, tags.size + 1)
-        for (const child of Object.values(node)) {
-          Array.isArray(child) ? child.forEach(tag) : tag(child)
+        if (tags.has(node) || typeof node !== "object" || node === null) return
+        if (node.constructor === Token) {
+            // Tokens are not tagged themselves, but their values might be
+            tag(node?.value)
+        } else {
+            // Non-tokens are tagged
+            tags.set(node, tags.size + 1)
+            for (const child of Object.values(node)) {
+                Array.isArray(child) ? child.forEach(tag) : tag(child)
+            }
         }
-      }
     }
-  
+
     function* lines() {
-      function view(e) {
-        if (tags.has(e)) return `#${tags.get(e)}`
-        if (e?.constructor === Token) {
-          return `(${e.category},"${e.lexeme}"${e.value ? "," + view(e.value) : ""})`
+        function view(e) {
+            if (tags.has(e)) return `#${tags.get(e)}`
+            if (e?.constructor === Token) {
+                return `(${e.category},"${e.lexeme}"${
+                    e.value ? "," + view(e.value) : ""
+                })`
+            }
+            if (Array.isArray(e)) return `[${e.map(view)}]`
+            return util.inspect(e)
         }
-        if (Array.isArray(e)) return `[${e.map(view)}]`
-        return util.inspect(e)
-      }
-      for (let [node, id] of [...tags.entries()].sort((a, b) => a[1] - b[1])) {
-        let type = node.constructor.name
-        let props = Object.entries(node).map(([k, v]) => `${k}=${view(v)}`)
-        yield `${String(id).padStart(4, " ")} | ${type} ${props.join(" ")}`
-      }
+        for (let [node, id] of [...tags.entries()].sort(
+            (a, b) => a[1] - b[1]
+        )) {
+            let type = node.constructor.name
+            let props = Object.entries(node).map(([k, v]) => `${k}=${view(v)}`)
+            yield `${String(id).padStart(4, " ")} | ${type} ${props.join(" ")}`
+        }
     }
-  
+
     tag(this)
     return [...lines()].join("\n")
-  }
+}

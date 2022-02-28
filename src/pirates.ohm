@@ -14,7 +14,7 @@ PiratesCode {
                
   VarDec       = (type | var) id "=" Exp
 
-  FunDec       = function id Params Block 
+  FunDec       = function id "(" ListOf<id, ","> ")" Block 
 
   Assignment   = id "=" Exp
   
@@ -32,16 +32,13 @@ PiratesCode {
 
   IfStmt      = if Exp Block (elseif Exp Block)* (else Block)?         --long
               | if Exp Block                                           --short
-  
-  Params       = "(" ListOf<id, ","> ")"
+
 
   Block        = "{" Statement* "}"
 
   /* ClassBlock   = "{" ConstructorDec MethodDec* "}" 
 
-  ConstructorDec = construct Params "{" Exp* "}"
-
-  MethodDec    = function id Params Block */
+  ConstructorDec = construct "(" ListOf<id, ","> ")" "{" Exp* "}" */
 
   Exp     = ("-" | "not") Exp                   -- unary
           | Exp0 "?" Exp0 ":" Exp               -- ternary
