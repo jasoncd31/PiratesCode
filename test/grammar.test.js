@@ -47,14 +47,8 @@ const syntaxErrors = [
   ["while as identifier", "vargh parrot = 3"],
   ["if as identifier", "vargh yo = 8"],
   ["unbalanced brackets", "captain f(){"],
-  // ["true is not assignable", "vargh yay = 1"],
+  ["true is not assignable", "vargh aye = 1"],
   ["false is not assignable", "vargh nay = 1"],
-
-
-
-
-
-  
 ]
 
 describe("The grammar", () => {

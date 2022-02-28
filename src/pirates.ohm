@@ -92,7 +92,7 @@ PiratesCode {
   repeat      = "repeat" ~alnum
   for         = "chase" ~alnum
   return      = "anchor" ~alnum
-  true        = "ay" ~alnum
+  true        = "aye" ~alnum
   false       = "nay" ~alnum
   class       = "ship" ~alnum
   break       = "maroon" ~alnum
@@ -112,8 +112,8 @@ PiratesCode {
   keyword     = let | print | function | else | elseif | if | while | repeat
               | for | break | return | true | false | type | this | new          
               
-  strlit      = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")
-  /*strlit        = "\"" char* "\""*/
+  /*strlit      = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")*/
+  strlit        = "\"" char* "\""
               
   char        = ~"\\" ~"\"" ~"\n" ~"~" any
   NewInstance = new identifier "(" ListOf<Exp, ","> ")"

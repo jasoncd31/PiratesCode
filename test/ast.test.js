@@ -41,10 +41,10 @@ const source4 = `
     }
 `
 const source5 = `
-    yo true {
+    yo aye {
         ahoy "true"
     }
-    yo false {
+    yo nay {
         ahoy "false"
     }
 `
@@ -62,7 +62,7 @@ const expected1 = `   1 | Program statements=[#2,#3,#4,#11]
    6 | PrintStatement argument=(Str,""yer a little lad"")
    7 | Assignment target=(Id,"age") source=#8
    8 | BinaryExpression op='+' left=(Id,"age") right=(Num,"1")
-   9 | IfStatement test=(Id,"aye") consequent=[#10] alternate=[]
+   9 | IfStatement test=(Bool,"aye") consequent=[#10] alternate=[]
   10 | PrintStatement argument=(Str,""aye"")
   11 | PrintStatement argument=(Str,""yer a pirate!"")`
 
@@ -92,9 +92,9 @@ const expected4 = `   1 | Program statements=[#2,#6]
    7 | PrintStatement argument=(Id,"location")`
 
 const expected5 = `   1 | Program statements=[#2,#4]
-   2 | IfStatement test=(Id,"true") consequent=[#3] alternate=[]
+   2 | IfStatement test=(Bool,"aye") consequent=[#3] alternate=[]
    3 | PrintStatement argument=(Str,""true"")
-   4 | IfStatement test=(Id,"false") consequent=[#5] alternate=[]
+   4 | IfStatement test=(Bool,"nay") consequent=[#5] alternate=[]
    5 | PrintStatement argument=(Str,""false"")`
 
 describe("The AST generator produces a correct AST for:", () => {
