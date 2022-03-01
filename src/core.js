@@ -18,12 +18,6 @@ export class FunctionDeclaration {
     }
 }
 
-// export class ClassDeclaration {
-//     constructor(name, body) {
-//         Object.assign(this, { name, body })
-//     }
-// }
-
 export class Assignment {
     constructor(target, source) {
         Object.assign(this, { target, source })
@@ -54,6 +48,12 @@ export class PrintStatement {
     }
 }
 
+export class ClassDeclaration {
+    constructor(name, constructor, method) {
+        Object.assign(this, { name, constructor, method})
+    }
+}
+
 export class Call {
     constructor(callee, args) {
         Object.assign(this, { callee, args })
@@ -65,20 +65,6 @@ export class Conditional {
         Object.assign(this, { test, consequent, alternate })
     }
 }
-
-// export class IfStatement {
-//     // Example: if x < 3 { print(100); } else { break; }
-//     constructor(tests, consequents, alternate) {
-//         Object.assign(this, { tests, consequents, alternate })
-//     }
-// }
-
-// export class ShortIfStatement {
-//     // Example: if x < 3 { print(100); }
-//     constructor(test, consequent) {
-//         Object.assign(this, { test, consequent })
-//     }
-// }
 
 export class BinaryExpression {
     constructor(op, left, right) {
@@ -110,6 +96,37 @@ export class MapEntry {
         this.value = value
     }
 }
+
+export class Identifier {
+    constructor(name) {
+      this.name = name
+    }
+  }
+  
+  export class GetProperty {
+    constructor(source, property) {
+      Object.assign(this, { source, property })
+    }
+  }
+
+  export class NewInstance {
+    constructor(identifier, args) {
+      Object.assign(this, { identifier, args })
+    }
+  }
+
+  export class Constructor {
+    constructor(parameters, body) {
+      Object.assign(this, { parameters, body })
+    }
+  }
+  
+  export class Method {
+    constructor(returnType, name, parameters, body) {
+      Object.assign(this, { returnType, name, parameters, body })
+    }
+  }
+
 
 // Token objects are wrappers around the Nodes produced by Ohm. We use
 // them here just for simple things like numbers and identifiers. The

@@ -15,6 +15,7 @@ const source1 = `
     }
     ahoy "yer a pirate!"
     `
+    
 const source2 = `
     chase vargh x = 0 until 10 {
         yo x == 5 {
@@ -54,6 +55,9 @@ const source5 = `
     yo ho aye {
         ahoy "else if"
     }
+    yo ho aye {
+        ahoy "else if 2"
+    }
     yo nay{
         ahoy "false"
     }
@@ -67,6 +71,15 @@ const source5 = `
 
 const source6 = `
     bigboolean = y == 7 and z < 10 or (y == 3 and z < x**2)
+`
+
+const source7 = `
+    ship Rectangle {
+        build (height, width) {
+            me.height = height
+            me.width = width
+        }
+    }
 `
 
 const naughty_pirate =`
@@ -123,22 +136,24 @@ const expected4 = `   1 | Program statements=[#2,#6]
    6 | ForEachLoop variable=(Id,"location") expression=(Id,"companyMap") body=[#7]
    7 | PrintStatement argument=(Id,"location")`
 
-const expected5 = `   1 | Program statements=[#2,#5,#10]
+const expected5 = `   1 | Program statements=[#2,#5,#12]
    2 | Conditional test=[(Bool,"aye")] consequent=[#3] alternate=[]
    3 | Array 0=#4
    4 | PrintStatement argument=(Str,""true"")
-   5 | Conditional test=[(Bool,"nay"),(Bool,"aye")] consequent=[#6,#8] alternate=[]
+   5 | Conditional test=[(Bool,"nay"),(Bool,"aye"),(Bool,"aye")] consequent=[#6,#8,#10] alternate=[]
    6 | Array 0=#7
    7 | PrintStatement argument=(Str,""false"")
    8 | Array 0=#9
    9 | PrintStatement argument=(Str,""else if"")
-  10 | Conditional test=[(Bool,"nay"),(Bool,"nay")] consequent=[#11,#13] alternate=[#15]
-  11 | Array 0=#12
-  12 | PrintStatement argument=(Str,""false"")
+  10 | Array 0=#11
+  11 | PrintStatement argument=(Str,""else if 2"")
+  12 | Conditional test=[(Bool,"nay"),(Bool,"nay")] consequent=[#13,#15] alternate=[#17]
   13 | Array 0=#14
   14 | PrintStatement argument=(Str,""false"")
   15 | Array 0=#16
-  16 | PrintStatement argument=(Str,""else"")`
+  16 | PrintStatement argument=(Str,""false"")
+  17 | Array 0=#18
+  18 | PrintStatement argument=(Str,""else"")`
 
 const expected6 = `   1 | Program statements=[#2]
    2 | Assignment target=(Id,"bigboolean") source=#3
@@ -149,30 +164,42 @@ const expected6 = `   1 | Program statements=[#2]
    7 | BinaryExpression op='and' left=#8 right=#9
    8 | BinaryExpression op='==' left=(Id,"y") right=(Num,"3")
    9 | BinaryExpression op='<' left=(Id,"z") right=#10
-  10 | BinaryExpression op='**' left=(Id,"x") right=(Num,"2")`
+  10 | BinaryExpression op='**' left=(Id,"x") right=(Num,"2")`  
+  
+const expected7 = ``
 
-describe("The AST generator produces a correct AST for:", () => {
-    it("variable assignments, while loops, if statements, print statements", () => {
-        assert.deepStrictEqual(util.format(ast(source1)), expected1)
+describe("The AST generator:", () => {
+    describe("Produces a correct AST for:", () => {
+        it(" variable assignments, while loops, if statements, print statements", () => {
+            assert.deepStrictEqual(util.format(ast(source1)), expected1)
+        })
+        it("for loops", () => {
+            assert.deepStrictEqual(util.format(ast(source2)), expected2)
+        })
+        it("function declarations, arrays, foreach, returns", () => {
+            assert.deepStrictEqual(util.format(ast(source3)), expected3)
+        })
+        it("dictionary", () => {
+            assert.deepStrictEqual(util.format(ast(source4)), expected4)
+        })
+        it("true and false boolean expression", () => {
+            assert.deepStrictEqual(util.format(ast(source5)), expected5)
+        })
+        it("parens and boolean expression assignment", () => {
+            assert.deepStrictEqual(util.format(ast(source6)), expected6)
+        })
+        it("parens and boolean expression assignment", () => {
+            assert.deepStrictEqual(util.format(ast(source6)), expected6)
+        })
+        // it("Class Declarations", () => {
+        //     assert.deepStrictEqual(util.format(ast(source7)), expected7)
+        // })
     })
-    it("for loops", () => {
-        assert.deepStrictEqual(util.format(ast(source2)), expected2)
-    })
-    it("function declarations, arrays, foreach, returns", () => {
-        assert.deepStrictEqual(util.format(ast(source3)), expected3)
-    })
-    it("dictionary", () => {
-        assert.deepStrictEqual(util.format(ast(source4)), expected4)
-    })
-    it("true and false boolean expression", () => {
-        assert.deepStrictEqual(util.format(ast(source5)), expected5)
-    })
-    it("parens and boolean expression assignment", () => {
-        assert.deepStrictEqual(util.format(ast(source6)), expected6)
-    })
-    it("rejects a bad program", () => {
-        assert.throws(() => ast(naughty_pirate))
+    describe("Rejects bad programs:", () => {
+        it("Assigning ids to other ids, incorrectly written conditionals", () => {
+            assert.throws(() => ast(naughty_pirate))
+        })
     })
 })
 
-// console.log(ast(naughty_pirate))
+console.log(ast(source5))

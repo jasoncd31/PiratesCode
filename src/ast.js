@@ -27,12 +27,33 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             body.ast()
         )
     },
-    // ClassDec(_class, id, classBlock) {
-    //   return new core.ClassDeclaration(id.ast(), classBlock.ast())
+    ClassStmt(_class, name, body) {
+        return new ast.ClassDeclaration(name.sourceString, body.ast())
+    },
+    ConstructorDec(_constructor, _left, parameters, _right, body) {
+    return new ast.Constructor(parameters.ast(), body.ast())
+    },
+    MethodDec(_method, name, _left, parameters, _right, body) {
+    return new ast.Method(returnType.ast(), name.sourceString, parameters.ast(), body.ast())
+    },
+    // Assignment_regular(id, _eq, expression) {
+    //     return new core.Assignment(id.ast(), expression.ast())
+    // },
+    // Assignment_property(id, _eq, expression) {
+    //     return new core.Assignment(id.ast(), expression.ast())
     // },
     Assignment(id, _eq, expression) {
         return new core.Assignment(id.ast(), expression.ast())
     },
+    identifier(_identifierStart, _identifierCharacter) {
+        return new ast.Identifier(this.sourceString)
+    },
+    GetProperty(source, _dot, property) {
+    return new ast.GetProperty(source.ast(), property.ast())
+    },
+    NewInstance(_new, name, _left, args, _right) {
+        return new ast.NewInstance(name.sourceString, args.ast())
+      },
     LoopStatement_while(_while, test, body) {
         return new core.WhileLoop(test.ast(), body.ast())
     },
@@ -63,9 +84,6 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             [..._alternate.ast()]
         )
     },
-    // IfStmt_short(_if, test, consequent) {
-    //     return new core.Conditional(test.ast(), consequent.ast())
-    // },
     Block(_open, body, _close) {
         return body.ast()
     },
@@ -121,9 +139,6 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             right.ast()
         )
     },
-    // Exp6_assignprop(me, _dot, , _eq, expression) {
-    //   return new core.Assignment(prop.ast(), expression.ast())
-    // },
     Exp6_parens(_open, expression, _close) {
         return expression.ast()
     },

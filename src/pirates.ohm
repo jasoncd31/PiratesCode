@@ -12,13 +12,15 @@ PiratesCode {
                | comment
                | Call
                | ClassStmt
+               
             
                
   VarDec       = (type | var | identifier) id "=" Exp
 
   FunDec       = function id "(" ListOf<id, ","> ")" Block 
 
-  Assignment   = Exp6 "=" Exp
+  Assignment   = Exp6 "=" Exp                   --regular
+                | (this|id) ("." id)+ "=" Exp   --property
   
   ArrayLit	= "[" ListOf<Exp, ","> "]"
 
@@ -37,11 +39,11 @@ PiratesCode {
               
   Block        = "{" Statement* "}"
   
-  ClassStmt    = class id ClassBlock
+  ClassStmt    = class id "{" ConstructorDec MethodDec* "}"
 
-  ClassBlock   = "{" ConstructorDec MethodDec* "}" 
+  /*ClassBlock   = "{" ConstructorDec MethodDec* "}"*/
 
-  ConstructorDec = construct "(" ListOf<id, ","> ")" "{" Exp* "}"
+  ConstructorDec = construct "(" ListOf<id, ","> ")" Block
 
   MethodDec    = function id "(" ListOf<id, ","> ")" Block
 
@@ -60,8 +62,7 @@ PiratesCode {
           | Exp5
   Exp5    = Exp6 "**" Exp5                      -- binary
           | Exp6
-  Exp6    = this ("." id)+ "=" Exp                 -- assignprop
-  	  | GetProperty
+  Exp6    = | GetProperty
           | num
           | true
           | false
