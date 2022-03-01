@@ -18,7 +18,7 @@ PiratesCode {
 
   FunDec       = function id "(" ListOf<id, ","> ")" Block 
 
-  Assignment   = id "=" Exp
+  Assignment   = Exp6 "=" Exp
   
   ArrayLit	= "[" ListOf<Exp, ","> "]"
 
@@ -61,7 +61,7 @@ PiratesCode {
   Exp5    = Exp6 "**" Exp5                      -- binary
           | Exp6
   Exp6    = this ("." id)+ "=" Exp                 -- assignprop
-  	     | GetProperty
+  	  | GetProperty
           | num
           | true
           | false
@@ -69,7 +69,6 @@ PiratesCode {
           | MapLit
           | Call
           | NewInstance
-          | id "=" Exp                          -- assign
           | id
           | "(" Exp ")"                         -- parens
           | strlit ~keyword           
@@ -87,7 +86,7 @@ PiratesCode {
   function    = "captain" ~alnum
   if          = "yo" ~alnum
   elseif      = "yo ho" ~alnum
-  else        = "yo ho ho" ~alnum
+  else        = "ho" ~alnum
   while       = "parrot" ~alnum
   repeat      = "repeat" ~alnum
   for         = "chase" ~alnum

@@ -37,8 +37,8 @@ export class WhileLoop {
 }
 
 export class ForLoop {
-    constructor(variable, startingVal, endingVal, body) {
-        Object.assign(this, { variable, startingVal, endingVal, body })
+    constructor(variable, start, end, body) {
+        Object.assign(this, { variable, start, end, body })
     }
 }
 
@@ -66,19 +66,19 @@ export class Conditional {
     }
 }
 
-export class IfStatement {
-    // Example: if x < 3 { print(100); } else { break; }
-    constructor(test, consequent, alternate) {
-        Object.assign(this, { test, consequent, alternate })
-    }
-}
+// export class IfStatement {
+//     // Example: if x < 3 { print(100); } else { break; }
+//     constructor(tests, consequents, alternate) {
+//         Object.assign(this, { tests, consequents, alternate })
+//     }
+// }
 
-export class ShortIfStatement {
-    // Example: if x < 3 { print(100); }
-    constructor(test, consequent) {
-        Object.assign(this, { test, consequent })
-    }
-}
+// export class ShortIfStatement {
+//     // Example: if x < 3 { print(100); }
+//     constructor(test, consequent) {
+//         Object.assign(this, { test, consequent })
+//     }
+// }
 
 export class BinaryExpression {
     constructor(op, left, right) {
