@@ -1,3 +1,4 @@
+import { Console } from "console"
 import fs from "fs"
 import ohm from "ohm-js"
 import * as core from "./core.js"
@@ -27,11 +28,34 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             body.ast()
         )
     },
-    // ClassDec(_class, id, classBlock) {
-    //   return new core.ClassDeclaration(id.ast(), classBlock.ast())
-    // },
-    Assignment(id, _eq, expression) {
+    ClassDec(_class, name, _open, constructorDec, methods, _close) {
+        return new core.ClassDeclaration(
+            name.sourceString,
+            constructorDec.ast(),
+            methods.ast()
+        )
+    },
+    ConstructorDec(_constructor, _left, parameters, _right, body) {
+        return new core.ConstructorDeclaration(parameters.asIteration().ast(), body.ast())
+    },
+    MethodDec(_method, name, _left, parameters, _right, body) {
+        return new core.Method(
+            name.sourceString,
+            parameters.asIteration().ast(),
+            body.ast()
+        )
+    },
+    Assignment_regular(id, _eq, expression) {
         return new core.Assignment(id.ast(), expression.ast())
+    },
+    Assignment_property(id, _dot, property, _eq, expression) {
+        return new core.Assignment(id.ast(), property.ast(), expression.ast())
+    },
+    // Assignment(id, _eq, expression) {
+    //     return new core.Assignment(id.ast(), expression.ast())
+    // },
+    NewInstance(_new, name, _left, args, _right) {
+        return new core.NewInstance(name.sourceString, args.asIteration().ast())
     },
     LoopStatement_while(_while, test, body) {
         return new core.WhileLoop(test.ast(), body.ast())
@@ -58,14 +82,11 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
         _alternate
     ) {
         return new core.Conditional(
-            [test.ast(),..._exp2.ast()],
-            [consequent.ast(),..._consequent2.ast()],
+            [test.ast(), ..._exp2.ast()],
+            [consequent.ast(), ..._consequent2.ast()],
             [..._alternate.ast()]
         )
     },
-    // IfStmt_short(_if, test, consequent) {
-    //     return new core.Conditional(test.ast(), consequent.ast())
-    // },
     Block(_open, body, _close) {
         return body.ast()
     },
@@ -121,9 +142,6 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             right.ast()
         )
     },
-    // Exp6_assignprop(me, _dot, , _eq, expression) {
-    //   return new core.Assignment(prop.ast(), expression.ast())
-    // },
     Exp6_parens(_open, expression, _close) {
         return expression.ast()
     },
@@ -136,8 +154,11 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     MapEntry(left, _colon, right) {
         return new core.MapEntry(left.ast(), right.ast())
     },
-    Call(callee, _left, args, _right) {
+    Call_regular(callee, _left, args, _right) {
         return new core.Call(callee.ast(), args.asIteration().ast())
+    },
+    Call_property(id, _dot, callee) {
+        return new core.Call(id.ast(), callee.ast())
     },
     id(_first, _rest) {
         return new core.Token("Id", this.source)

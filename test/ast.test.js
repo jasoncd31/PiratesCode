@@ -15,6 +15,7 @@ const source1 = `
     }
     ahoy "yer a pirate!"
     `
+
 const source2 = `
     chase vargh x = 0 until 10 {
         yo x == 5 {
@@ -54,6 +55,9 @@ const source5 = `
     yo ho aye {
         ahoy "else if"
     }
+    yo ho aye {
+        ahoy "else if 2"
+    }
     yo nay{
         ahoy "false"
     }
@@ -69,7 +73,21 @@ const source6 = `
     bigboolean = y == 7 and z < 10 or (y == 3 and z < x**2)
 `
 
-const naughty_pirate =`
+const source7 = `
+    ship Rectangle {
+        build (height, width) {
+            me.height = height
+            me.width = width
+        }
+        captain area() {
+            anchor me.height * me.width
+        }
+    }
+    Rectangle p = new Rectangle(3,4)
+    p.width = 15
+`
+
+const naughty_pirate = `
     shanty x = booty
     yo ho 3 {
         ahoy "a pirates life for me"
@@ -77,7 +95,7 @@ const naughty_pirate =`
     booty me = nay
     jesus = st. ignatius
 `
-  
+
 const expected1 = `   1 | Program statements=[#2,#3,#4,#14]
    2 | VariableDeclaration variable=(Id,"age") initializer=(Num,"10")
    3 | VariableDeclaration variable=(Id,"ageLimit") initializer=(Num,"18")
@@ -123,22 +141,24 @@ const expected4 = `   1 | Program statements=[#2,#6]
    6 | ForEachLoop variable=(Id,"location") expression=(Id,"companyMap") body=[#7]
    7 | PrintStatement argument=(Id,"location")`
 
-const expected5 = `   1 | Program statements=[#2,#5,#10]
+const expected5 = `   1 | Program statements=[#2,#5,#12]
    2 | Conditional test=[(Bool,"aye")] consequent=[#3] alternate=[]
    3 | Array 0=#4
    4 | PrintStatement argument=(Str,""true"")
-   5 | Conditional test=[(Bool,"nay"),(Bool,"aye")] consequent=[#6,#8] alternate=[]
+   5 | Conditional test=[(Bool,"nay"),(Bool,"aye"),(Bool,"aye")] consequent=[#6,#8,#10] alternate=[]
    6 | Array 0=#7
    7 | PrintStatement argument=(Str,""false"")
    8 | Array 0=#9
    9 | PrintStatement argument=(Str,""else if"")
-  10 | Conditional test=[(Bool,"nay"),(Bool,"nay")] consequent=[#11,#13] alternate=[#15]
-  11 | Array 0=#12
-  12 | PrintStatement argument=(Str,""false"")
+  10 | Array 0=#11
+  11 | PrintStatement argument=(Str,""else if 2"")
+  12 | Conditional test=[(Bool,"nay"),(Bool,"nay")] consequent=[#13,#15] alternate=[#17]
   13 | Array 0=#14
   14 | PrintStatement argument=(Str,""false"")
   15 | Array 0=#16
-  16 | PrintStatement argument=(Str,""else"")`
+  16 | PrintStatement argument=(Str,""false"")
+  17 | Array 0=#18
+  18 | PrintStatement argument=(Str,""else"")`
 
 const expected6 = `   1 | Program statements=[#2]
    2 | Assignment target=(Id,"bigboolean") source=#3
@@ -151,28 +171,50 @@ const expected6 = `   1 | Program statements=[#2]
    9 | BinaryExpression op='<' left=(Id,"z") right=#10
   10 | BinaryExpression op='**' left=(Id,"x") right=(Num,"2")`
 
-describe("The AST generator produces a correct AST for:", () => {
-    it("variable assignments, while loops, if statements, print statements", () => {
-        assert.deepStrictEqual(util.format(ast(source1)), expected1)
+const expected7 = `   1 | Program statements=[#2,#11,#13]
+   2 | ClassDeclaration id='Rectangle' constructorDec=#3 methods=[#6]
+   3 | ConstructorDeclaration parameters=[(Id,"height"),(Id,"width")] body=[#4,#5]
+   4 | Assignment target=(Sym,"me") source=[(Id,"height")]
+   5 | Assignment target=(Sym,"me") source=[(Id,"width")]
+   6 | Method name='area' parameters=[] body=[#7]
+   7 | ReturnStatement expression=#8
+   8 | BinaryExpression op='*' left=#9 right=#10
+   9 | Call callee=(Sym,"me") args=[(Id,"height")]
+  10 | Call callee=(Sym,"me") args=[(Id,"width")]
+  11 | VariableDeclaration variable=(Id,"p") initializer=#12
+  12 | NewInstance identifier='Rectangle' args=[(Num,"3"),(Num,"4")]
+  13 | Assignment target=(Id,"p") source=[(Id,"width")]`
+
+describe("The AST generator:", () => {
+    describe("Produces a correct AST for:", () => {
+        it(" variable assignments, while loops, if statements, print statements", () => {
+            assert.deepStrictEqual(util.format(ast(source1)), expected1)
+        })
+        it("for loops", () => {
+            assert.deepStrictEqual(util.format(ast(source2)), expected2)
+        })
+        it("function declarations, arrays, foreach, returns", () => {
+            assert.deepStrictEqual(util.format(ast(source3)), expected3)
+        })
+        it("dictionary", () => {
+            assert.deepStrictEqual(util.format(ast(source4)), expected4)
+        })
+        it("true and false boolean expression", () => {
+            assert.deepStrictEqual(util.format(ast(source5)), expected5)
+        })
+        it("parens and boolean expression assignment", () => {
+            assert.deepStrictEqual(util.format(ast(source6)), expected6)
+        })
+        it("parens and boolean expression assignment", () => {
+            assert.deepStrictEqual(util.format(ast(source6)), expected6)
+        })
+        it("Class Declarations", () => {
+            assert.deepStrictEqual(util.format(ast(source7)), expected7)
+        })
     })
-    it("for loops", () => {
-        assert.deepStrictEqual(util.format(ast(source2)), expected2)
-    })
-    it("function declarations, arrays, foreach, returns", () => {
-        assert.deepStrictEqual(util.format(ast(source3)), expected3)
-    })
-    it("dictionary", () => {
-        assert.deepStrictEqual(util.format(ast(source4)), expected4)
-    })
-    it("true and false boolean expression", () => {
-        assert.deepStrictEqual(util.format(ast(source5)), expected5)
-    })
-    it("parens and boolean expression assignment", () => {
-        assert.deepStrictEqual(util.format(ast(source6)), expected6)
-    })
-    it("rejects a bad program", () => {
-        assert.throws(() => ast(naughty_pirate))
+    describe("Rejects bad programs:", () => {
+        it("Assigning ids to other ids, incorrectly written conditionals", () => {
+            assert.throws(() => ast(naughty_pirate))
+        })
     })
 })
-
-// console.log(ast(naughty_pirate))

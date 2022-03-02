@@ -18,12 +18,6 @@ export class FunctionDeclaration {
     }
 }
 
-// export class ClassDeclaration {
-//     constructor(name, body) {
-//         Object.assign(this, { name, body })
-//     }
-// }
-
 export class Assignment {
     constructor(target, source) {
         Object.assign(this, { target, source })
@@ -54,6 +48,12 @@ export class PrintStatement {
     }
 }
 
+export class ClassDeclaration {
+    constructor(id, constructorDec, methods) {
+        Object.assign(this, { id, constructorDec, methods })
+    }
+}
+
 export class Call {
     constructor(callee, args) {
         Object.assign(this, { callee, args })
@@ -65,20 +65,6 @@ export class Conditional {
         Object.assign(this, { test, consequent, alternate })
     }
 }
-
-// export class IfStatement {
-//     // Example: if x < 3 { print(100); } else { break; }
-//     constructor(tests, consequents, alternate) {
-//         Object.assign(this, { tests, consequents, alternate })
-//     }
-// }
-
-// export class ShortIfStatement {
-//     // Example: if x < 3 { print(100); }
-//     constructor(test, consequent) {
-//         Object.assign(this, { test, consequent })
-//     }
-// }
 
 export class BinaryExpression {
     constructor(op, left, right) {
@@ -108,6 +94,24 @@ export class MapEntry {
     constructor(key, value) {
         this.key = key
         this.value = value
+    }
+}
+
+export class NewInstance {
+    constructor(identifier, args) {
+        Object.assign(this, { identifier, args })
+    }
+}
+
+export class ConstructorDeclaration {
+    constructor(parameters, body) {
+        Object.assign(this, { parameters, body })
+    }
+}
+
+export class Method {
+    constructor(name, parameters, body) {
+        Object.assign(this, { name, parameters, body })
     }
 }
 

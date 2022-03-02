@@ -17,8 +17,6 @@ ship Rectangle {
     }
 }
 
-$$ creates a new rectangle called sign
 vargh sign = new Rectangle(5,5)
 
-$$ prints the area
 ahoy sign.area()
