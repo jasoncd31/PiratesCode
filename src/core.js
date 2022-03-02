@@ -126,13 +126,9 @@ export class Token {
         // Ohm holds this for us, nice
         return this.source.contents
     }
-    get description() {
-        return this.source.contents
-    }
 }
 
 export class ReturnStatement {
-    // Example: return c[5]
     constructor(expression) {
         this.expression = expression
     }
