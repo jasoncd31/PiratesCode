@@ -6,8 +6,6 @@ Syntax: piratesCode.js <filename> <outputType>
 Prints to stdout according to <outputType>, which must be one of:
 `
 
-console.log("Hello world!")
-
 export function add(x, y) {
     return x + y
 }

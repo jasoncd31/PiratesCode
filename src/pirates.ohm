@@ -40,8 +40,6 @@ PiratesCode {
   
   ClassDec    = class id "{" ConstructorDec MethodDec* "}"
 
-  /*ClassBlock   = "{" ConstructorDec MethodDec* "}"*/
-
   ConstructorDec = construct "(" ListOf<id, ","> ")" Block
 
   MethodDec    = function id "(" ListOf<id, ","> ")" Block
