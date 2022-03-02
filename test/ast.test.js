@@ -15,7 +15,7 @@ const source1 = `
     }
     ahoy "yer a pirate!"
     `
-    
+
 const source2 = `
     chase vargh x = 0 until 10 {
         yo x == 5 {
@@ -79,10 +79,15 @@ const source7 = `
             me.height = height
             me.width = width
         }
+        captain area() {
+            anchor me.height * me.width
+        }
     }
+    Rectangle p = new Rectangle(3,4)
+    p.width = 15
 `
 
-const naughty_pirate =`
+const naughty_pirate = `
     shanty x = booty
     yo ho 3 {
         ahoy "a pirates life for me"
@@ -90,7 +95,7 @@ const naughty_pirate =`
     booty me = nay
     jesus = st. ignatius
 `
-  
+
 const expected1 = `   1 | Program statements=[#2,#3,#4,#14]
    2 | VariableDeclaration variable=(Id,"age") initializer=(Num,"10")
    3 | VariableDeclaration variable=(Id,"ageLimit") initializer=(Num,"18")
@@ -164,9 +169,21 @@ const expected6 = `   1 | Program statements=[#2]
    7 | BinaryExpression op='and' left=#8 right=#9
    8 | BinaryExpression op='==' left=(Id,"y") right=(Num,"3")
    9 | BinaryExpression op='<' left=(Id,"z") right=#10
-  10 | BinaryExpression op='**' left=(Id,"x") right=(Num,"2")`  
-  
-const expected7 = ``
+  10 | BinaryExpression op='**' left=(Id,"x") right=(Num,"2")`
+
+const expected7 = `   1 | Program statements=[#2,#11,#13]
+   2 | ClassDeclaration id='Rectangle' constructorDec=#3 methods=[#6]
+   3 | ConstructorDeclaration parameters=[(Id,"height"),(Id,"width")] body=[#4,#5]
+   4 | Assignment target=(Sym,"me") source=[(Id,"height")]
+   5 | Assignment target=(Sym,"me") source=[(Id,"width")]
+   6 | Method name='area' parameters=[] body=[#7]
+   7 | ReturnStatement expression=#8
+   8 | BinaryExpression op='*' left=#9 right=#10
+   9 | Call callee=(Sym,"me") args=[(Id,"height")]
+  10 | Call callee=(Sym,"me") args=[(Id,"width")]
+  11 | VariableDeclaration variable=(Id,"p") initializer=#12
+  12 | NewInstance identifier='Rectangle' args=[(Num,"3"),(Num,"4")]
+  13 | Assignment target=(Id,"p") source=[(Id,"width")]`
 
 describe("The AST generator:", () => {
     describe("Produces a correct AST for:", () => {
@@ -191,9 +208,9 @@ describe("The AST generator:", () => {
         it("parens and boolean expression assignment", () => {
             assert.deepStrictEqual(util.format(ast(source6)), expected6)
         })
-        // it("Class Declarations", () => {
-        //     assert.deepStrictEqual(util.format(ast(source7)), expected7)
-        // })
+        it("Class Declarations", () => {
+            assert.deepStrictEqual(util.format(ast(source7)), expected7)
+        })
     })
     describe("Rejects bad programs:", () => {
         it("Assigning ids to other ids, incorrectly written conditionals", () => {
@@ -201,5 +218,3 @@ describe("The AST generator:", () => {
         })
     })
 })
-
-console.log(ast(source5))

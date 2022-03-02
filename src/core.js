@@ -49,8 +49,8 @@ export class PrintStatement {
 }
 
 export class ClassDeclaration {
-    constructor(name, constructor, method) {
-        Object.assign(this, { name, constructor, method})
+    constructor(id, constructorDec, methods) {
+        Object.assign(this, { id, constructorDec, methods })
     }
 }
 
@@ -97,36 +97,23 @@ export class MapEntry {
     }
 }
 
-export class Identifier {
-    constructor(name) {
-      this.name = name
-    }
-  }
-  
-  export class GetProperty {
-    constructor(source, property) {
-      Object.assign(this, { source, property })
-    }
-  }
-
-  export class NewInstance {
+export class NewInstance {
     constructor(identifier, args) {
-      Object.assign(this, { identifier, args })
+        Object.assign(this, { identifier, args })
     }
-  }
+}
 
-  export class Constructor {
+export class ConstructorDeclaration {
     constructor(parameters, body) {
-      Object.assign(this, { parameters, body })
+        Object.assign(this, { parameters, body })
     }
-  }
-  
-  export class Method {
-    constructor(returnType, name, parameters, body) {
-      Object.assign(this, { returnType, name, parameters, body })
-    }
-  }
+}
 
+export class Method {
+    constructor(name, parameters, body) {
+        Object.assign(this, { name, parameters, body })
+    }
+}
 
 // Token objects are wrappers around the Nodes produced by Ohm. We use
 // them here just for simple things like numbers and identifiers. The

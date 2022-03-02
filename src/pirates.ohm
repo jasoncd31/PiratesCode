@@ -1,7 +1,7 @@
 PiratesCode {
   Program      = Statement+
 
-  Statement    = print Exp              --print
+  Statement    = print Exp              -- print
                | VarDec
                | FunDec
                | Assignment
@@ -11,35 +11,34 @@ PiratesCode {
                | break          
                | comment
                | Call
-               | ClassStmt
+               | ClassDec
                
-            
-               
-  VarDec       = (type | var | identifier) id "=" Exp
+         
+  VarDec       = (type | var | id) id "=" Exp
 
   FunDec       = function id "(" ListOf<id, ","> ")" Block 
 
-  Assignment   = Exp6 "=" Exp                   --regular
-                | (this|id) ("." id)+ "=" Exp   --property
+  Assignment   = id "=" Exp                  -- regular
+               | (this|id) ("." id)+ "=" Exp    -- property
   
-  ArrayLit	= "[" ListOf<Exp, ","> "]"
+  ArrayLit    = "[" ListOf<Exp, ","> "]"
 
   MapLit      = "{" ListOf<MapEntry, ","> "}"
   MapEntry    = Exp ":" Exp
 
-  Return       = return Exp 		--exp
-               | return                 --short             
+  Return      = return Exp 		--exp
+              | return          --short             
 
   LoopStatement = while Exp Block 							   -- while
                | for (type|"vargh") id "through" id Block           -- ForEach
                | for ("vargh"|"int") id "=" Exp "until" Exp Block   -- For
 
-  IfStmt      = if Exp Block (elseif Exp Block)* (else Block)?         --long
-              | if Exp Block                                           --short
+  IfStmt      = if Exp Block (elseif Exp Block)* (else Block)?         -- long
+              | if Exp Block                                           -- short
               
   Block        = "{" Statement* "}"
   
-  ClassStmt    = class id "{" ConstructorDec MethodDec* "}"
+  ClassDec    = class id "{" ConstructorDec MethodDec* "}"
 
   /*ClassBlock   = "{" ConstructorDec MethodDec* "}"*/
 
@@ -52,7 +51,7 @@ PiratesCode {
           | Exp0
   Exp0    = Exp0 or Exp1                        -- binary
   	      | Exp1
-  Exp1    = Exp1 and Exp2                       --binary               
+  Exp1    = Exp1 and Exp2                       -- binary               
           | Exp2
   Exp2    = Exp3 relop Exp3                     -- binary
           | Exp3
@@ -62,7 +61,7 @@ PiratesCode {
           | Exp5
   Exp5    = Exp6 "**" Exp5                      -- binary
           | Exp6
-  Exp6    = | GetProperty
+  Exp6    = 
           | num
           | true
           | false
@@ -78,9 +77,8 @@ PiratesCode {
 
   relop   = "<=" | "<" | "!=" | "==" | ">=" | ">"
 
-  GetProperty = (this | identifier) ("." (Call | id))+
-
-  Call    = id "(" ListOf<Exp, ","> ")"
+  Call    = id "(" ListOf<Exp, ","> ")"  -- regular
+            | (this | id) ("." (Call | id))+  -- property
           
   let         = "vargh" ~alnum
   print       = "ahoy" ~alnum
@@ -103,23 +101,20 @@ PiratesCode {
   var         = "vargh" ~alnum
   new         = "new" ~alnum
   
-  comment     = "$$" (~"\n" any)* ("\n" | end)  --comment
+  comment     = "$$" (~"\n" any)* ("\n" | end)  -- comment
 
   type        = ("booty"|"shanty"|"int"|"doubloon"|"loot"|"map"|"chest"|"ledger") ~alnum
 
   id          = ~keyword letter alnum*
  
   keyword     = let | print | function | else | elseif | if | while | repeat
-              | for | break | return | true | false | type | this | new          
+              | for | break | return | true | false | type | this | new | construct | class          
               
   /*strlit      = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")*/
   strlit        = "\"" char* "\""
               
   char        = ~"\\" ~"\"" ~"\n" ~"~" any
-  NewInstance = new identifier "(" ListOf<Exp, ","> ")"
+  NewInstance = new id "(" ListOf<Exp, ","> ")"
 
-  identifier = ~keyword identifierStart identifierCharacter*
-  identifierStart = letter | "_" | "@" |"~"
-  identifierCharacter = alnum | "~"
  
 } 
