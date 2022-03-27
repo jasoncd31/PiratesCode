@@ -6,6 +6,31 @@ export class Program {
     }
 }
 
+export class Type {
+    // Type of all basic type int, float, string, etc. and superclass of others
+    static BOOLEAN = new Type("booty")
+    static INT = new Type("int")
+    static DOUBLE = new Type("doubloon")
+    static STRING = new Type("shanty")
+    static NONE = new Type("none")
+
+    constructor(description) {
+      Object.assign(this, { description })
+    }
+}
+
+export class Function {
+    constructor(name, parameters, returnType) {
+      Object.assign(this, { name, parameters, returnType })
+    }
+}
+
+export class Variable {
+    constructor(name) {
+      this.name = name
+    }
+  }
+
 export class VariableDeclaration {
     constructor(variable, initializer) {
         Object.assign(this, { variable, initializer })
@@ -137,6 +162,15 @@ export class ReturnStatement {
 export class ShortReturnStatement {
     // Intentionally empty
 }
+
+// Throw an error message that takes advantage of Ohm's messaging
+export function error(message, token) {
+    if (token?.source) {
+      throw new Error(`${token.source.getLineAndColumnMessage()}${message}`)
+    }
+    throw new Error(message)
+  }
+  
 
 // Return a compact and pretty string representation of the node graph,
 // taking care of cycles. Written here from scratch because the built-in
