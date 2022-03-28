@@ -17,4 +17,3 @@ export const functions = {
 function makeFunction(name, type) {
     return Object.assign(new Function(name), { type })
 }
-

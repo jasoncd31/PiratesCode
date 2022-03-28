@@ -9,6 +9,10 @@ import {
 } from "./core.js"
 import * as stdlib from "./stdlib.js"
 
+/**********************************************
+ *  TYPE EQUIVALENCE AND COMPATIBILITY RULES  *
+ *********************************************/
+
 Object.assign(Type.prototype, {
   // Equivalence: when are two types the same
   isEquivalentTo(target) {
@@ -41,6 +45,7 @@ function checkNumeric(e) {
 }
 
 function checkBoolean(e) {
+  console.log(e)
   checkType(e, [Type.BOOLEAN], "a boolean")
 }
 
@@ -51,10 +56,6 @@ function checkInteger(e) {
 function checkIsAType(e) {
   check(e instanceof Type, "Type expected", e)
 }
-
-// function checkArray(e) {
-//   check(e.type.constructor === ArrayType, "Array expected", e)
-// }
 
 function checkHaveSameType(e1, e2) {
   check(e1.type.isEquivalentTo(e2.type), `${e2.type} BE DIFFERENT FROM ${e2.type}, YE BLIND LANDLUBBER.`)
@@ -78,7 +79,7 @@ function checkReturnsSomething(f) {
 function checkAssignable(e, { toType: type }) {
   check(
     type === Type.ANY || e.type.isAssignableTo(type),
-    `Cannot assign a ${e.type.description} to a ${type.description}`
+    `Scrub the deck. Cannot assign a ${e.type.description} to a ${type.description}`
   )
 }
 
@@ -107,13 +108,13 @@ function checkAssignable(e, { toType: type }) {
       } else if (this.parent) {
         return this.parent.lookup(name)
       }
-      error(`EY! You didn't declare identifier ${name} before you tried to use it. Declare it first, you scurvy dog!`)
+      error(`HEY! You didn't declare identifier ${name} before you tried to use it. Declare it first, ye scurvy dog!`)
     }
     newChildContext(props) {
       return new Context({ ...this, parent: this, locals: new Map(), ...props })
     }
     analyze(node) {
-      // console.log(node)
+      console.log(node.constructor.name)
       return this[node.constructor.name](node)
     }
     Program(p) {
@@ -126,29 +127,34 @@ function checkAssignable(e, { toType: type }) {
       this.add(d.variable.lexeme, d.variable.value)
     }
     Token(t) {
-      console.log(t)
       // For ids being used, not defined
-      if (t.category === "Id") {
+      if (t.category === "Id" || t.category === "Sym") {
         t.value = this.lookup(t.lexeme)
         t.type = t.value.type
       }
-      if (t.category === "Num")  {
-        if (Number.isInteger(t.lexeme)) {
-          [t.value, t.type] = [t.lexeme, Type.INT]
-        } else {
-          [t.value, t.type] = [t.lexeme, Type.DOUBLE]
-        }
-      }
+      // if (t.category === "Num")  {
+      //   if (Number.isInteger(t.lexeme)) {
+      //     [t.value, t.type] = [t.lexeme, Type.INT]
+      //   } else {
+      //     [t.value, t.type] = [t.lexeme, Type.DOUBLE]
+      //   }
+      // }
+      if (t.category === "Int") [t.value, t.type] = [t.lexeme, Type.INT]
+      if (t.category === "Double") [t.value, t.type] = [t.lexeme, Type.DOUBLE]
       if (t.category === "Str") [t.value, t.type] = [t.lexeme, Type.STRING]
       if (t.category === "Bool") [t.value, t.type] = [t.lexeme === "aye", Type.BOOLEAN]
     }
     Array(a) {
       a.forEach(item => this.analyze(item))
     }
-    IfStatement(s) {
+    Conditional(s) {
       this.analyze(s.test)
-      checkBoolean(s.test)
-      this.newChildContext().analyze(s.consequent)
+      console.log("aboout to check boolean")
+      // We have funky if-statements
+      for (let i = 0; i < s.test.length; i++) {
+        checkBoolean(s.test[i])
+        this.newChildContext().analyze(s.consequent[i])
+      }
       if (s.alternate.constructor === Array) {
         // It's a block of statements, make a new context
         this.newChildContext().analyze(s.alternate)
@@ -156,11 +162,6 @@ function checkAssignable(e, { toType: type }) {
         // It's a trailing if-statement, so same context
         this.analyze(s.alternate)
       }
-    }
-    ShortIfStatement(s) {
-      this.analyze(s.test)
-      checkBoolean(s.test)
-      this.newChildContext().analyze(s.consequent)
     }
     WhileStatement(s) {
       this.analyze(s.test)
@@ -184,12 +185,15 @@ function checkAssignable(e, { toType: type }) {
         d.parameters,
         d.returnType?.value ?? d.returnType ?? Type.NONE
       )
-      console.log()
       checkIsAType(d.fun.value.returnType)
       // When entering a function body, we must reset the inLoop setting,
       // because it is possible to declare a function inside a loop!
       const childContext = this.newChildContext({ inLoop: false, function: d.fun.value })
-      childContext.analyze(d.fun.value.parameters)
+      if (d.fun.value.parameters) { 
+        childContext.analyze(d.fun.value.parameters) 
+      } else {
+        d.fun.value.parameters = []
+      }
       d.fun.value.type = new FunctionType(
         d.fun.value.parameters.map(p => p.type),
         d.fun.value.returnType
@@ -197,6 +201,42 @@ function checkAssignable(e, { toType: type }) {
       // Add before analyzing the body to allow recursion
       this.add(d.fun.lexeme, d.fun.value)
       childContext.analyze(d.body)
+    }
+    PrintStatment(s) {
+      s.argument = this.analyze(s.argument)
+      return s
+    }
+    BinaryExpression(e) {
+      this.analyze(e.left)
+      this.analyze(e.right)
+      if (["&", "|", "^", "<<", ">>"].includes(e.op.lexeme)) {
+        checkInteger(e.left)
+        checkInteger(e.right)
+        e.type = Type.INT
+      } else if (["+"].includes(e.op.lexeme)) {
+        checkNumericOrString(e.left)
+        checkHaveSameType(e.left, e.right)
+        e.type = e.left.type
+      } else if (["-", "*", "/", "%", "**"].includes(e.op.lexeme)) {
+        checkNumeric(e.left)
+        checkHaveSameType(e.left, e.right)
+        e.type = e.left.type
+      } else if (["<", "<=", ">", ">="].includes(e.op.lexeme)) {
+        checkNumericOrString(e.left)
+        checkHaveSameType(e.left, e.right)
+        e.type = Type.BOOLEAN
+      } else if (["==", "!="].includes(e.op.lexeme)) {
+        checkHaveSameType(e.left, e.right)
+        e.type = Type.BOOLEAN
+      } else if (["&&", "||"].includes(e.op.lexeme)) {
+        checkBoolean(e.left)
+        checkBoolean(e.right)
+        e.type = Type.BOOLEAN
+      } else if (["??"].includes(e.op.lexeme)) {
+        checkIsAnOptional(e.left)
+        checkAssignable(e.right, { toType: e.left.type.baseType })
+        e.type = e.left.type
+      }
     }
     // TypeDeclaration(d) {
     //   console.log

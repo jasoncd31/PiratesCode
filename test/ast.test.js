@@ -3,7 +3,7 @@ import util from "util"
 import ast from "../src/ast.js"
 
 const source1 = `
-    vargh age = 10 
+    vargh age = 10.5 
     vargh ageLimit = 18
 
     parrot age < ageLimit {
@@ -97,13 +97,13 @@ const naughty_pirate = `
 `
 
 const expected1 = `   1 | Program statements=[#2,#3,#4,#14]
-   2 | VariableDeclaration variable=(Id,"age") initializer=(Num,"10")
-   3 | VariableDeclaration variable=(Id,"ageLimit") initializer=(Num,"18")
+   2 | VariableDeclaration variable=(Id,"age") initializer=(Double,"10.5")
+   3 | VariableDeclaration variable=(Id,"ageLimit") initializer=(Int,"18")
    4 | WhileLoop test=#5 body=[#6,#7,#9]
    5 | BinaryExpression op='<' left=(Id,"age") right=(Id,"ageLimit")
    6 | PrintStatement argument=(Str,""yer a little lad"")
    7 | Assignment target=(Id,"age") source=#8
-   8 | BinaryExpression op='+' left=(Id,"age") right=(Num,"1")
+   8 | BinaryExpression op='+' left=(Id,"age") right=(Int,"1")
    9 | Conditional test=[(Bool,"aye")] consequent=[#10] alternate=[]
   10 | Array 0=#11
   11 | PrintStatement argument=#12
@@ -112,9 +112,9 @@ const expected1 = `   1 | Program statements=[#2,#3,#4,#14]
   14 | PrintStatement argument=(Str,""yer a pirate!"")`
 
 const expected2 = `   1 | Program statements=[#2]
-   2 | ForLoop variable=(Id,"x") start=(Num,"0") end=(Num,"10") body=[#3,#6]
+   2 | ForLoop variable=(Id,"x") start=(Int,"0") end=(Int,"10") body=[#3,#6]
    3 | Conditional test=[#4] consequent=[#5] alternate=[]
-   4 | BinaryExpression op='==' left=(Id,"x") right=(Num,"5")
+   4 | BinaryExpression op='==' left=(Id,"x") right=(Int,"5")
    5 | Array 0=(Sym,"maroon")
    6 | PrintStatement argument=(Id,"x")`
 
@@ -122,12 +122,12 @@ const expected3 = `   1 | Program statements=[#2,#9,#11,#14]
    2 | FunctionDeclaration fun=(Id,"evenOrOdd") params=[#3] body=[#4,#6] returnType=(Sym,"int")
    3 | Parameter type=(Sym,"int") id=(Id,"x")
    4 | Assignment target=(Id,"x") source=#5
-   5 | UnaryExpression op='-' operand=(Num,"14")
+   5 | UnaryExpression op='-' operand=(Int,"14")
    6 | ReturnStatement expression=#7
-   7 | BinaryExpression op='==' left=#8 right=(Num,"0")
-   8 | BinaryExpression op='%' left=(Id,"x") right=(Num,"2")
+   7 | BinaryExpression op='==' left=#8 right=(Int,"0")
+   8 | BinaryExpression op='%' left=(Id,"x") right=(Int,"2")
    9 | VariableDeclaration variable=(Id,"numbers") initializer=#10
-  10 | ArrayExpression elements=[(Num,"1"),(Num,"2"),(Num,"3")]
+  10 | ArrayExpression elements=[(Int,"1"),(Int,"2"),(Int,"3")]
   11 | ForEachLoop variable=(Id,"x") expression=(Id,"numbers") body=[#12]
   12 | PrintStatement argument=#13
   13 | Call callee=(Id,"evenOrOdd") args=[(Id,"x")]
@@ -165,12 +165,12 @@ const expected6 = `   1 | Program statements=[#2]
    2 | Assignment target=(Id,"bigboolean") source=#3
    3 | BinaryExpression op='or' left=#4 right=#7
    4 | BinaryExpression op='and' left=#5 right=#6
-   5 | BinaryExpression op='==' left=(Id,"y") right=(Num,"7")
-   6 | BinaryExpression op='<' left=(Id,"z") right=(Num,"10")
+   5 | BinaryExpression op='==' left=(Id,"y") right=(Int,"7")
+   6 | BinaryExpression op='<' left=(Id,"z") right=(Int,"10")
    7 | BinaryExpression op='and' left=#8 right=#9
-   8 | BinaryExpression op='==' left=(Id,"y") right=(Num,"3")
+   8 | BinaryExpression op='==' left=(Id,"y") right=(Int,"3")
    9 | BinaryExpression op='<' left=(Id,"z") right=#10
-  10 | BinaryExpression op='**' left=(Id,"x") right=(Num,"2")`
+  10 | BinaryExpression op='**' left=(Id,"x") right=(Int,"2")`
 
 const expected7 = `   1 | Program statements=[#2,#13,#15]
    2 | ClassDeclaration id='Rectangle' constructorDec=#3 methods=[#8]
@@ -185,7 +185,7 @@ const expected7 = `   1 | Program statements=[#2,#13,#15]
   11 | Call callee=(Sym,"me") args=[(Id,"height")]
   12 | Call callee=(Sym,"me") args=[(Id,"width")]
   13 | VariableDeclaration variable=(Id,"p") initializer=#14
-  14 | NewInstance identifier='Rectangle' args=[(Num,"3"),(Num,"4")]
+  14 | NewInstance identifier='Rectangle' args=[(Int,"3"),(Int,"4")]
   15 | Assignment target=(Id,"p") source=[(Id,"width")]`
 
 describe("The AST generator:", () => {

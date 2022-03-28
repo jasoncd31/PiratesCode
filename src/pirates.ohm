@@ -61,7 +61,8 @@ PiratesCode {
   Exp5    = Exp6 "**" Exp5                      -- binary
           | Exp6
   Exp6    = 
-          | num
+          | doublelit
+          | intlit
           | true
           | false
           | ArrayLit
@@ -71,8 +72,9 @@ PiratesCode {
           | id
           | "(" Exp ")"                         -- parens
           | strlit ~keyword           
-       
-  num     = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
+
+  intlit        = digit+
+  doublelit     = digit+ "." digit+ (("E" | "e") ("+" | "-")? digit+)?
 
   relop   = "<=" | "<" | "!=" | "==" | ">=" | ">"
 

@@ -176,10 +176,13 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     false(_) {
         return new core.Token("Bool", this.source)
     },
-    num(_whole, _point, _fraction, _e, _sign, _exponent) {
-        return new core.Token("Num", this.source)
+    intlit(_digits) {
+        return new core.Token("Int", this.source)
     },
-    strlit(_openQuote, chars, _closeQuote) {
+    doublelit(_whole, _point, _fraction, _e, _sign, _exponent) {
+        return new core.Token("Double", this.source)
+    },
+    strlit(_openQuote, _chars, _closeQuote) {
         return new core.Token("Str", this.source)
     },
     _terminal() {
