@@ -184,6 +184,7 @@ function checkAssignable(e, { toType: type }) {
         d.parameters,
         d.returnType?.value ?? d.returnType ?? Type.NONE
       )
+      console.log()
       checkIsAType(d.fun.value.returnType)
       // When entering a function body, we must reset the inLoop setting,
       // because it is possible to declare a function inside a loop!
