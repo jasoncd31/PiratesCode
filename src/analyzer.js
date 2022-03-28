@@ -45,7 +45,6 @@ function checkNumeric(e) {
 }
 
 function checkBoolean(e) {
-  console.log(e)
   checkType(e, [Type.BOOLEAN], "a boolean")
 }
 
@@ -114,7 +113,6 @@ function checkAssignable(e, { toType: type }) {
       return new Context({ ...this, parent: this, locals: new Map(), ...props })
     }
     analyze(node) {
-      console.log(node.constructor.name)
       return this[node.constructor.name](node)
     }
     Program(p) {
@@ -149,7 +147,6 @@ function checkAssignable(e, { toType: type }) {
     }
     Conditional(s) {
       this.analyze(s.test)
-      console.log("aboout to check boolean")
       // We have funky if-statements
       for (let i = 0; i < s.test.length; i++) {
         checkBoolean(s.test[i])
@@ -238,56 +235,6 @@ function checkAssignable(e, { toType: type }) {
         e.type = e.left.type
       }
     }
-    // TypeDeclaration(d) {
-    //   console.log
-    //   // Add early to allow recursion
-    //   this.add(d.type.description, d.type)
-    //   this.analyze(d.type.fields)
-    //   checkFieldsAllDistinct(d.type.fields)
-    //   checkNotRecursive(d.type)
-    // }
-    // Field(f) {
-    //   this.analyze(f.type)
-    //   if (f.type instanceof Token) f.type = f.type.value
-    //   checkIsAType(f.type)
-    // }
-    // Parameter(p) {
-    //   this.analyze(p.type)
-    //   if (p.type instanceof Token) p.type = p.type.value
-    //   checkIsAType(p.type)
-    //   this.add(p.name.lexeme, p)
-    // }
-    // ArrayType(t) {
-    //   this.analyze(t.baseType)
-    //   if (t.baseType instanceof Token) t.baseType = t.baseType.value
-    // }
-    // FunctionType(t) {
-    //   this.analyze(t.paramTypes)
-    //   t.paramTypes = t.paramTypes.map(p => (p instanceof Token ? p.value : p))
-    //   this.analyze(t.returnType)
-    //   if (t.returnType instanceof Token) t.returnType = t.returnType.value
-    // }
-    // OptionalType(t) {
-    //   this.analyze(t.baseType)
-    //   if (t.baseType instanceof Token) t.baseType = t.baseType.value
-    // }
-    // Increment(s) {
-    //   this.analyze(s.variable)
-    //   checkInteger(s.variable)
-    // }
-    // Decrement(s) {
-    //   this.analyze(s.variable)
-    //   checkInteger(s.variable)
-    // }
-    // Assignment(s) {
-    //   this.analyze(s.source)
-    //   this.analyze(s.target)
-    //   checkAssignable(s.source, { toType: s.target.type })
-    //   checkNotReadOnly(s.target)
-    // }
-    // BreakStatement(s) {
-    //   checkInLoop(this)
-    // }
 }
 
 export default function analyze(node) {
