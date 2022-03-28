@@ -5,16 +5,16 @@ import * as core from "../src/core.js"
 
 // Programs that are semantically correct
 const semanticChecks = [
-    ["variable declaration int", 'vargh x = 1\n'],
-    ["variable declaration double", 'vargh x = 1.2\n'],
-    ["variable declaration bool", 'vargh x = nay\n'],
-    ["variable declaration string", 'vargh x = "please work"\n'],
+    // ["variable declaration int", 'vargh x = 1\n'],
+    // ["variable declaration double", 'vargh x = 1.2\n'],
+    // ["variable declaration bool", 'vargh x = nay\n'],
+    // ["variable declaration string", 'vargh x = "please work"\n'],
   //   ["array types", "vargh fruits = [\"Apple\", \"Banana\"]"],
   //   ["initialize with empty array", "vargh fruits = []"],
-    ["type declaration", 'shanty s = "hello please work!"'],
+    // ["type declaration", 'shanty s = "hello please work!"'],
   //   ["assign to array element", "ledger a = [1,2,3]\n a[1]=100\n"], //Kinda unsure if this even exists syntactially
-  //   ["short return", "captain f() { anchor }"],
-  //   ["long return", "captain f() { anchor nay }"],
+    ["short return", "captain f() -> none { anchor }"],
+    ["long return", "captain f() -> booty { anchor aye }"],
   //   ["return in nested if", "captain f() {yo yay {anchor}}"],
   //   ["break in nested if", "parrot nay {yo yay {maroon}}"],
   //   ["long if", "yo yay {ahoy 1} ho {ahoy 3}"],

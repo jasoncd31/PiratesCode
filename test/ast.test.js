@@ -26,7 +26,7 @@ const source2 = `
 `
 
 const source3 = `
-    captain evenOrOdd(x) {
+    captain evenOrOdd(int x) -> int {
         x = -14
         anchor x % 2 == 0
     }
@@ -34,7 +34,7 @@ const source3 = `
     chase vargh x through numbers {
         ahoy evenOrOdd(x)
     }
-    captain letsAnchor() {
+    captain letsAnchor() -> none {
         anchor
     }
 `
@@ -75,11 +75,11 @@ const source6 = `
 
 const source7 = `
     ship Rectangle {
-        build (height, width) {
+        build (doubloon height, int width) {
             me.height = height
             me.width = width
         }
-        captain area() {
+        captain area() -> doubloon {
             anchor me.height * me.width
         }
     }
@@ -118,20 +118,21 @@ const expected2 = `   1 | Program statements=[#2]
    5 | Array 0=(Sym,"maroon")
    6 | PrintStatement argument=(Id,"x")`
 
-const expected3 = `   1 | Program statements=[#2,#8,#10,#13]
-   2 | FunctionDeclaration fun=(Id,"evenOrOdd") params=[(Id,"x")] body=[#3,#5]
-   3 | Assignment target=(Id,"x") source=#4
-   4 | UnaryExpression op='-' operand=(Num,"14")
-   5 | ReturnStatement expression=#6
-   6 | BinaryExpression op='==' left=#7 right=(Num,"0")
-   7 | BinaryExpression op='%' left=(Id,"x") right=(Num,"2")
-   8 | VariableDeclaration variable=(Id,"numbers") initializer=#9
-   9 | ArrayExpression elements=[(Num,"1"),(Num,"2"),(Num,"3")]
-  10 | ForEachLoop variable=(Id,"x") expression=(Id,"numbers") body=[#11]
-  11 | PrintStatement argument=#12
-  12 | Call callee=(Id,"evenOrOdd") args=[(Id,"x")]
-  13 | FunctionDeclaration fun=(Id,"letsAnchor") params=[] body=[#14]
-  14 | ShortReturnStatement `
+const expected3 = `   1 | Program statements=[#2,#9,#11,#14]
+   2 | FunctionDeclaration fun=(Id,"evenOrOdd") params=[#3] body=[#4,#6] returnType=(Sym,"int")
+   3 | Parameter type=(Sym,"int") id=(Id,"x")
+   4 | Assignment target=(Id,"x") source=#5
+   5 | UnaryExpression op='-' operand=(Num,"14")
+   6 | ReturnStatement expression=#7
+   7 | BinaryExpression op='==' left=#8 right=(Num,"0")
+   8 | BinaryExpression op='%' left=(Id,"x") right=(Num,"2")
+   9 | VariableDeclaration variable=(Id,"numbers") initializer=#10
+  10 | ArrayExpression elements=[(Num,"1"),(Num,"2"),(Num,"3")]
+  11 | ForEachLoop variable=(Id,"x") expression=(Id,"numbers") body=[#12]
+  12 | PrintStatement argument=#13
+  13 | Call callee=(Id,"evenOrOdd") args=[(Id,"x")]
+  14 | FunctionDeclaration fun=(Id,"letsAnchor") params=[] body=[#15] returnType=(Sym,"none")
+  15 | ShortReturnStatement `
 
 const expected4 = `   1 | Program statements=[#2,#6]
    2 | VariableDeclaration variable=(Id,"companyMap") initializer=#3
@@ -171,19 +172,21 @@ const expected6 = `   1 | Program statements=[#2]
    9 | BinaryExpression op='<' left=(Id,"z") right=#10
   10 | BinaryExpression op='**' left=(Id,"x") right=(Num,"2")`
 
-const expected7 = `   1 | Program statements=[#2,#11,#13]
-   2 | ClassDeclaration id='Rectangle' constructorDec=#3 methods=[#6]
-   3 | ConstructorDeclaration parameters=[(Id,"height"),(Id,"width")] body=[#4,#5]
-   4 | Assignment target=(Sym,"me") source=[(Id,"height")]
-   5 | Assignment target=(Sym,"me") source=[(Id,"width")]
-   6 | Method name='area' parameters=[] body=[#7]
-   7 | ReturnStatement expression=#8
-   8 | BinaryExpression op='*' left=#9 right=#10
-   9 | Call callee=(Sym,"me") args=[(Id,"height")]
-  10 | Call callee=(Sym,"me") args=[(Id,"width")]
-  11 | VariableDeclaration variable=(Id,"p") initializer=#12
-  12 | NewInstance identifier='Rectangle' args=[(Num,"3"),(Num,"4")]
-  13 | Assignment target=(Id,"p") source=[(Id,"width")]`
+const expected7 = `   1 | Program statements=[#2,#13,#15]
+   2 | ClassDeclaration id='Rectangle' constructorDec=#3 methods=[#8]
+   3 | ConstructorDeclaration parameters=[#4,#5] body=[#6,#7]
+   4 | Parameter type=(Sym,"doubloon") id=(Id,"height")
+   5 | Parameter type=(Sym,"int") id=(Id,"width")
+   6 | Assignment target=(Sym,"me") source=[(Id,"height")]
+   7 | Assignment target=(Sym,"me") source=[(Id,"width")]
+   8 | Method name='area' parameters=[] body=[#9] returnType=(Sym,"doubloon")
+   9 | ReturnStatement expression=#10
+  10 | BinaryExpression op='*' left=#11 right=#12
+  11 | Call callee=(Sym,"me") args=[(Id,"height")]
+  12 | Call callee=(Sym,"me") args=[(Id,"width")]
+  13 | VariableDeclaration variable=(Id,"p") initializer=#14
+  14 | NewInstance identifier='Rectangle' args=[(Num,"3"),(Num,"4")]
+  15 | Assignment target=(Id,"p") source=[(Id,"width")]`
 
 describe("The AST generator:", () => {
     describe("Produces a correct AST for:", () => {

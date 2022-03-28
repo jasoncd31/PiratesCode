@@ -8,10 +8,10 @@ const syntaxChecks = [
     ["simple break statement", "maroon"],
     ["multiple statements", "ahoy 1\nmaroon\nint x=5 anchor anchor"],
     ["declarations",'vargh x = 5\nint x = 5\nvargh bigMap = {"hi jason":"hola jason", "hi maya":"hola maya"}',],
-    ["function declarations", "captain isEven(x){\nanchor x % 2 == 0\n}"],
-    ["function with no params, no return type", "captain f() {}"],
-    ["function with one params", "captain f(x) {anchor x}"],
-    ["function with two params", "captain f(x, y) {anchor x + y}"],
+    ["function declarations", "captain isEven(int x) -> booty {\nanchor x % 2 == 0\n}"],
+    ["function with no params", "captain f() -> none {}"],
+    ["function with one params", "captain f(shanty x) -> shanty {anchor x}"],
+    ["function with two params", "captain f(int x, int y) -> int {anchor x + y}"],
     ["if statements", "yo x < 10 { \nanchor 1 \n} yo ho (x < 20) { \n anchor -1} ho {\nanchor 0\n} ",],
     ["while loops", "parrot aye {\nmaroon\n}"],
     ["for loops", "chase vargh x = 0 until 10 {\nmaroon\n}"],
@@ -21,10 +21,10 @@ const syntaxChecks = [
     ["relational operators","ahoy 1<2 or 1<=2 or 1==2 and 1!=2 or 1>=2 and 1>2",],
     ["numeric literals", "ahoy -8 * 89.123 * 1.3E5 * (-1.3E+5) * 1.3E-5"],
     ["arithmetic", "anchor 2 * x + 3 / 5 - (-1) % 7 ** 3 ** 3"],
-    ["class and constructor declarations","ship Rectangle {\nbuild (height, width) {\nme.height = height\nme.width = width\n}\n}",],
-    ["function declartion inside of a class","ship Rectangle {\nbuild (height, width) {\nme.height = height\nme.width = width\n}\ncaptain getHeight(){\nanchor me.height\n}\n}\n",],
-    ["instantiating an object using a class","ship Rectangle {\nbuild (height, width) {\nme.height = height\nme.width = width\n}\ncaptain getHeight(){\nanchor me.height\n}\n}\n Rectangle rec1 = new Rectangle(5,4)",],
-    ["assigning a class function with a return to a new variable","ship Rectangle {\nbuild (height, width) {\nme.height = height\nme.width = width\n}\ncaptain getHeight(){\nanchor me.height\n}\n}\nRectangle rec1 = new Rectangle(5,4)\nvargh height = rec1.getHeight()",],
+    ["class and constructor declarations","ship Rectangle {\nbuild (doubloon height, int width) {\nme.height = height\nme.width = width\n}\n}",],
+    ["function declartion inside of a class","ship Rectangle {\nbuild (int height, doubloon width) {\nme.height = height\nme.width = width\n}\ncaptain getHeight() -> int {\nanchor me.height\n}\n}\n",],
+    ["instantiating an object using a class","ship Rectangle {\nbuild (doubloon height, shanty width) {\nme.height = height\nme.width = width\n}\ncaptain getHeight() -> int{\nanchor me.height\n}\n}\n Rectangle rec1 = new Rectangle(5,4)",],
+    ["assigning a class function with a return to a new variable","ship Rectangle {\nbuild (shanty height, doubloon width) {\nme.height = height\nme.width = width\n}\ncaptain getHeight() -> int {\nanchor me.height\n}\n}\nRectangle rec1 = new Rectangle(5,4)\nvargh height = rec1.getHeight()",],
     ["booleans as expressions","bigboolean = y == 7 and z < 10 or (y == 3 and z < x**2)",],
 ]
 
@@ -49,6 +49,7 @@ const syntaxErrors = [
     ["unbalanced brackets", "captain f(){"],
     ["true is not assignable", "vargh aye = 1"],
     ["false is not assignable", "vargh nay = 1"],
+    ["function with no return type", "captain f(x) {anchor x}"],
 ]
 
 describe("The grammar", () => {

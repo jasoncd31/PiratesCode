@@ -7,7 +7,7 @@ export class Program {
 }
 
 export class Type {
-    // Type of all basic type int, float, string, etc. and superclass of others
+    // Type of all basic type int, double, string, etc. and superclass of others
     static BOOLEAN = new Type("booty")
     static INT = new Type("int")
     static DOUBLE = new Type("doubloon")
@@ -25,11 +25,37 @@ export class Function {
     }
 }
 
+export class FunctionType extends Type {
+    // Example: (boolean,[string]?)->float
+    constructor(paramTypes, returnType) {
+      super(`(${paramTypes.map(t => t.description).join(",")})->${returnType.description}`)
+      Object.assign(this, { paramTypes, returnType })
+    }
+  }
+
+export class ArrayType extends Type {
+    constructor(baseType) {
+      super(`[${baseType.description}]`)
+    }
+}
+
+// export class MapType extends Type {
+//     constructor(baseType) {
+//       super(`{${baseType.description}}`)
+//     }
+// }
+
+// export class SetType extends Type {
+//     constructor(baseType) {
+//       super(`Set(${baseType.description})`)
+//     }
+// }
+
 export class Variable {
     constructor(name) {
       this.name = name
     }
-  }
+}
 
 export class VariableDeclaration {
     constructor(variable, initializer) {
@@ -38,8 +64,8 @@ export class VariableDeclaration {
 }
 
 export class FunctionDeclaration {
-    constructor(fun, params, body) {
-        Object.assign(this, { fun, params, body })
+    constructor(fun, params, body, returnType) {
+        Object.assign(this, { fun, params, body, returnType })
     }
 }
 
@@ -134,9 +160,15 @@ export class ConstructorDeclaration {
     }
 }
 
+export class Parameter {
+    constructor(type, id) {
+        Object.assign(this, { type, id })
+    }
+}
+
 export class Method {
-    constructor(name, parameters, body) {
-        Object.assign(this, { name, parameters, body })
+    constructor(name, parameters, body, returnType) {
+        Object.assign(this, { name, parameters, body, returnType })
     }
 }
 
@@ -149,6 +181,10 @@ export class Token {
     }
     get lexeme() {
         // Ohm holds this for us, nice
+        return this.source.contents
+    }
+
+    get description() {
         return this.source.contents
     }
 }

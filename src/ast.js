@@ -21,11 +21,13 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     VarDec(_type, id, _eq, initializer) {
         return new core.VariableDeclaration(id.ast(), initializer.ast())
     },
-    FunDec(_fun, id, _left, params, _right, body) {
+    FunDec(_fun, id, _left, params, _right, _arrow, returnType, body) {
         return new core.FunctionDeclaration(
             id.ast(),
             params.asIteration().ast(),
-            body.ast()
+            body.ast(),
+            // returnType.sourceString,
+            returnType.ast()
         )
     },
     ClassDec(_class, name, _open, constructorDec, methods, _close) {
@@ -38,11 +40,13 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     ConstructorDec(_constructor, _left, parameters, _right, body) {
         return new core.ConstructorDeclaration(parameters.asIteration().ast(), body.ast())
     },
-    MethodDec(_method, name, _left, parameters, _right, body) {
+    MethodDec(_method, name, _left, parameters, _right, _arrow, returnType, body) {
         return new core.Method(
             name.sourceString,
             parameters.asIteration().ast(),
-            body.ast()
+            body.ast(),
+            returnType.ast()
+            // returnType.sourceString,
         )
     },
     Assignment_regular(id, _eq, expression) {
@@ -86,6 +90,9 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             [consequent.ast(), ..._consequent2.ast()],
             [..._alternate.ast()]
         )
+    },
+    Param(type, id) {
+        return new core.Parameter(type.ast(), id.ast())
     },
     Block(_open, body, _close) {
         return body.ast()

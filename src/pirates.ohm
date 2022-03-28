@@ -16,7 +16,8 @@ PiratesCode {
          
   VarDec       = (type | var | id) id "=" Exp
 
-  FunDec       = function id "(" ListOf<id, ","> ")" Block 
+  FunDec       = function id "(" ListOf<Param, ","> ")" "->" (type | "none") Block 
+  Param        = type id
 
   Assignment   = id "=" Exp                  -- regular
                | (this|id) ("." id)+ "=" Exp    -- property
@@ -40,9 +41,9 @@ PiratesCode {
   
   ClassDec    = class id "{" ConstructorDec MethodDec* "}"
 
-  ConstructorDec = construct "(" ListOf<id, ","> ")" Block
+  ConstructorDec = construct "(" ListOf<Param, ","> ")" Block
 
-  MethodDec    = function id "(" ListOf<id, ","> ")" Block
+  MethodDec    = function id "(" ListOf<Param, ","> ")" "->" (type | "none") Block
 
   Exp     = ("-" | not) Exp                   -- unary
           | Exp0 "?" Exp0 ":" Exp               -- ternary
@@ -102,7 +103,7 @@ PiratesCode {
   
   comment     = "$$" (~"\n" any)* ("\n" | end)  -- comment
 
-  type        = ("booty"|"shanty"|"int"|"doubloon"|"loot"|"map"|"chest"|"ledger"|"none") ~alnum
+  type        = ("booty"|"shanty"|"int"|"doubloon"|"loot"|"map"|"chest"|"ledger") ~alnum
 
   id          = ~keyword letter alnum*
  
