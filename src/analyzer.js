@@ -175,6 +175,7 @@ function checkAssignable(e, { toType: type }) {
     }
     IfStatement(s) {
       this.analyze(s.test)
+      console.log("WE'VE REACHED HE IF MENT ANALYSIS")
       for (let i = 0; i < s.test.length; i++) {
         checkBoolean(s.test[i])
         this.newChildContext().analyze(s.consequent[i])
