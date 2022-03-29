@@ -12,8 +12,7 @@ PiratesCode {
                | comment
                | Call
                | ClassDec
-               
-         
+                   
   VarDec       = (type | var | id) id "=" Exp
 
   FunDec       = function id "(" ListOf<Param, ","> ")" "->" (type | "none") Block 

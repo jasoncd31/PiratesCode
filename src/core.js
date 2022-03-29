@@ -13,6 +13,8 @@ export class Type {
     static DOUBLE = new Type("doubloon")
     static STRING = new Type("shanty")
     static NONE = new Type("none")
+    static ANY = new Type("any")
+
 
     constructor(description) {
       Object.assign(this, { description })
@@ -36,6 +38,7 @@ export class FunctionType extends Type {
 export class ArrayType extends Type {
     constructor(baseType) {
       super(`[${baseType.description}]`)
+      this.baseType = baseType
     }
 }
 
@@ -116,6 +119,16 @@ export class Conditional {
         Object.assign(this, { test, consequent, alternate })
     }
 }
+
+export class IfStatement {
+    constructor(test, consequent, alternate) {
+        Object.assign(this, { test, consequent, alternate })
+    }
+}
+
+export class BreakStatement {
+    // Intentionally empty
+  }
 
 export class BinaryExpression {
     constructor(op, left, right) {

@@ -75,6 +75,14 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             body.ast()
         )
     },
+    IfStmt_short(_if,
+        test,
+        consequent) {
+        return new core.IfStatement(
+            test.ast(),
+            consequent.ast(),
+        )
+    },
     IfStmt_long(
         _if,
         test,
@@ -85,7 +93,7 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
         _else,
         _alternate
     ) {
-        return new core.Conditional(
+        return new core.IfStatement(
             [test.ast(), ..._exp2.ast()],
             [consequent.ast(), ..._consequent2.ast()],
             [..._alternate.ast()]
@@ -104,7 +112,8 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
         return new core.Conditional(
             test.ast(),
             consequent.ast(),
-            alternate.ast()
+            alternate.ast(),
+            true
         )
     },
     Exp0_binary(left, op, right) {
@@ -152,6 +161,9 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Exp6_parens(_open, expression, _close) {
         return expression.ast()
     },
+    break(_break) {
+        return new core.BreakStatement()
+      },
     ArrayLit(_left, args, _right) {
         return new core.ArrayExpression(args.asIteration().ast())
     },

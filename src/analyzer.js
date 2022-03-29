@@ -28,6 +28,19 @@ Object.assign(Type.prototype, {
   },
 })
 
+Object.assign(ArrayType.prototype, {
+  isEquivalentTo(target) {
+    // [T] equivalent to [U] only when T is equivalent to U.
+    return (
+      target.constructor === ArrayType && this.baseType.isEquivalentTo(target.baseType)
+    )
+  },
+  isAssignableTo(target) {
+    // Arrays are INVARIANT in Carlos!
+    return this.isEquivalentTo(target)
+  },
+})
+
 /***************************************
  *  CHECK YE SCURVY TYPES  *
  **************************************/
@@ -55,7 +68,18 @@ function checkInteger(e) {
 function checkIsAType(e) {
   check(e instanceof Type, "Type expected", e)
 }
-
+function checkArray(e) {
+  check(e.type.constructor === ArrayType, "Array expected", e)
+}
+function checkAllHaveSameType(expressions) {
+  check(
+    expressions.slice(1).every(e => e.type.isEquivalentTo(expressions[0].type)),
+    "Not all elements have the same type"
+  )
+}
+function checkInLoop(context) {
+  check(context.inLoop, "Break can only appear in a loop")
+}
 function checkHaveSameType(e1, e2) {
   check(e1.type.isEquivalentTo(e2.type), `${e2.type} BE DIFFERENT FROM ${e2.type}, YE BLIND LANDLUBBER.`)
 }
@@ -113,6 +137,7 @@ function checkAssignable(e, { toType: type }) {
       return new Context({ ...this, parent: this, locals: new Map(), ...props })
     }
     analyze(node) {
+      console.log(node.constructor.name)
       return this[node.constructor.name](node)
     }
     Program(p) {
@@ -130,24 +155,26 @@ function checkAssignable(e, { toType: type }) {
         t.value = this.lookup(t.lexeme)
         t.type = t.value.type
       }
-      // if (t.category === "Num")  {
-      //   if (Number.isInteger(t.lexeme)) {
-      //     [t.value, t.type] = [t.lexeme, Type.INT]
-      //   } else {
-      //     [t.value, t.type] = [t.lexeme, Type.DOUBLE]
-      //   }
-      // }
       if (t.category === "Int") [t.value, t.type] = [t.lexeme, Type.INT]
       if (t.category === "Double") [t.value, t.type] = [t.lexeme, Type.DOUBLE]
       if (t.category === "Str") [t.value, t.type] = [t.lexeme, Type.STRING]
       if (t.category === "Bool") [t.value, t.type] = [t.lexeme === "aye", Type.BOOLEAN]
     }
     Array(a) {
-      a.forEach(item => this.analyze(item))
+      // check for empty array
+      if (a.lenght > 1) a.forEach(item => this.analyze(item))
     }
-    Conditional(s) {
+    ArrayExpression(a) {
+      this.analyze(a.elements)
+      checkAllHaveSameType(a.elements)
+      a.type = new ArrayType(a.elements[0].type)
+    }
+    ArrayType(t) {
+      this.analyze(t.baseType)
+      if (t.baseType instanceof Token) t.baseType = t.baseType.value
+    }
+    IfStatement(s) {
       this.analyze(s.test)
-      // We have funky if-statements
       for (let i = 0; i < s.test.length; i++) {
         checkBoolean(s.test[i])
         this.newChildContext().analyze(s.consequent[i])
@@ -160,7 +187,15 @@ function checkAssignable(e, { toType: type }) {
         this.analyze(s.alternate)
       }
     }
-    WhileStatement(s) {
+    Conditional(e) {
+      this.analyze(e.test)
+      checkBoolean(e.test)
+      this.analyze(e.consequent)
+      this.analyze(e.alternate)
+      checkHaveSameType(e.consequent, e.alternate)
+      e.type = e.consequent.type
+    }
+    WhileLoop(s) {
       this.analyze(s.test)
       checkBoolean(s.test)
       this.newChildContext({ inLoop: true }).analyze(s.body)
@@ -174,6 +209,9 @@ function checkAssignable(e, { toType: type }) {
     ShortReturnStatement(s) {
       checkInFunction(this)
       checkReturnsNothing(this.function)
+    }
+    BreakStatement(s) {
+      checkInLoop(this)
     }
     FunctionDeclaration(d) {
       if (d.returnType) this.analyze(d.returnType)
@@ -195,44 +233,36 @@ function checkAssignable(e, { toType: type }) {
         d.fun.value.parameters.map(p => p.type),
         d.fun.value.returnType
       )
+ 
       // Add before analyzing the body to allow recursion
       this.add(d.fun.lexeme, d.fun.value)
       childContext.analyze(d.body)
     }
-    PrintStatment(s) {
+    PrintStatement(s) {
       s.argument = this.analyze(s.argument)
-      return s
     }
     BinaryExpression(e) {
       this.analyze(e.left)
       this.analyze(e.right)
-      if (["&", "|", "^", "<<", ">>"].includes(e.op.lexeme)) {
-        checkInteger(e.left)
-        checkInteger(e.right)
-        e.type = Type.INT
-      } else if (["+"].includes(e.op.lexeme)) {
+      if (["+"].includes(e.op)) {
         checkNumericOrString(e.left)
         checkHaveSameType(e.left, e.right)
         e.type = e.left.type
-      } else if (["-", "*", "/", "%", "**"].includes(e.op.lexeme)) {
+      } else if (["-", "*", "/", "**"].includes(e.op)) {
         checkNumeric(e.left)
         checkHaveSameType(e.left, e.right)
         e.type = e.left.type
-      } else if (["<", "<=", ">", ">="].includes(e.op.lexeme)) {
-        checkNumericOrString(e.left)
+      } else if (["<", "<=", ">", ">="].includes(e.op)) {
+        checkNumeric(e.left)
         checkHaveSameType(e.left, e.right)
         e.type = Type.BOOLEAN
-      } else if (["==", "!="].includes(e.op.lexeme)) {
+      } else if (["==", "!="].includes(e.op)) {
         checkHaveSameType(e.left, e.right)
         e.type = Type.BOOLEAN
-      } else if (["&&", "||"].includes(e.op.lexeme)) {
+      } else if (["and", "or"].includes(e.op)) {
         checkBoolean(e.left)
         checkBoolean(e.right)
         e.type = Type.BOOLEAN
-      } else if (["??"].includes(e.op.lexeme)) {
-        checkIsAnOptional(e.left)
-        checkAssignable(e.right, { toType: e.left.type.baseType })
-        e.type = e.left.type
       }
     }
 }

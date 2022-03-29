@@ -89,11 +89,7 @@ const source7 = `
 
 const naughty_pirate = `
     shanty x = booty
-    yo ho 3 {
-        ahoy "a pirates life for me"
-    }
-    booty me = nay
-    jesus = st. ignatius
+    
 `
 
 const expected1 = `   1 | Program statements=[#2,#3,#4,#14]
@@ -104,7 +100,7 @@ const expected1 = `   1 | Program statements=[#2,#3,#4,#14]
    6 | PrintStatement argument=(Str,""yer a little lad"")
    7 | Assignment target=(Id,"age") source=#8
    8 | BinaryExpression op='+' left=(Id,"age") right=(Int,"1")
-   9 | Conditional test=[(Bool,"aye")] consequent=[#10] alternate=[]
+   9 | IfStatement test=[(Bool,"aye")] consequent=[#10] alternate=[]
   10 | Array 0=#11
   11 | PrintStatement argument=#12
   12 | Conditional test=#13 consequent=(Str,""aye"") alternate=(Str,""nay"")
@@ -112,11 +108,12 @@ const expected1 = `   1 | Program statements=[#2,#3,#4,#14]
   14 | PrintStatement argument=(Str,""yer a pirate!"")`
 
 const expected2 = `   1 | Program statements=[#2]
-   2 | ForLoop variable=(Id,"x") start=(Int,"0") end=(Int,"10") body=[#3,#6]
-   3 | Conditional test=[#4] consequent=[#5] alternate=[]
+   2 | ForLoop variable=(Id,"x") start=(Int,"0") end=(Int,"10") body=[#3,#7]
+   3 | IfStatement test=[#4] consequent=[#5] alternate=[]
    4 | BinaryExpression op='==' left=(Id,"x") right=(Int,"5")
-   5 | Array 0=(Sym,"maroon")
-   6 | PrintStatement argument=(Id,"x")`
+   5 | Array 0=#6
+   6 | BreakStatement 
+   7 | PrintStatement argument=(Id,"x")`
 
 const expected3 = `   1 | Program statements=[#2,#9,#11,#14]
    2 | FunctionDeclaration fun=(Id,"evenOrOdd") params=[#3] body=[#4,#6] returnType=(Sym,"int")
@@ -143,17 +140,17 @@ const expected4 = `   1 | Program statements=[#2,#6]
    7 | PrintStatement argument=(Id,"location")`
 
 const expected5 = `   1 | Program statements=[#2,#5,#12]
-   2 | Conditional test=[(Bool,"aye")] consequent=[#3] alternate=[]
+   2 | IfStatement test=[(Bool,"aye")] consequent=[#3] alternate=[]
    3 | Array 0=#4
    4 | PrintStatement argument=(Str,""true"")
-   5 | Conditional test=[(Bool,"nay"),(Bool,"aye"),(Bool,"aye")] consequent=[#6,#8,#10] alternate=[]
+   5 | IfStatement test=[(Bool,"nay"),(Bool,"aye"),(Bool,"aye")] consequent=[#6,#8,#10] alternate=[]
    6 | Array 0=#7
    7 | PrintStatement argument=(Str,""false"")
    8 | Array 0=#9
    9 | PrintStatement argument=(Str,""else if"")
   10 | Array 0=#11
   11 | PrintStatement argument=(Str,""else if 2"")
-  12 | Conditional test=[(Bool,"nay"),(Bool,"nay")] consequent=[#13,#15] alternate=[#17]
+  12 | IfStatement test=[(Bool,"nay"),(Bool,"nay")] consequent=[#13,#15] alternate=[#17]
   13 | Array 0=#14
   14 | PrintStatement argument=(Str,""false"")
   15 | Array 0=#16
