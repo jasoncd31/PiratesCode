@@ -15,7 +15,7 @@ PiratesCode {
                    
   VarDec       = (type | var | id) id "=" Exp
 
-  FunDec       = function id "(" ListOf<Param, ","> ")" "->" (type | "none") Block 
+  FunDec       = function id "(" ListOf<Param, ","> ")" "->" (type | "none") Block
   Param        = type id
 
   Assignment   = id "=" Exp                  -- regular
@@ -43,7 +43,6 @@ PiratesCode {
   ConstructorDec = construct "(" ListOf<Param, ","> ")" Block
 
   MethodDec    = function id "(" ListOf<Param, ","> ")" "->" (type | "none") Block
-
   Exp     = ("-" | not) Exp                   -- unary
           | Exp0 "?" Exp0 ":" Exp               -- ternary
           | Exp0
