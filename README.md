@@ -52,7 +52,7 @@ Written by [Maya Epps](https://github.com/mayaepps), [Jennifer Siao](https://git
 </table>
 
 
-#### Data Skeletons
+### Data Skeletons
 <table>
   <tr>
     <th>Data Structure</th>
