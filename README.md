@@ -20,14 +20,36 @@ Written by [Maya Epps](https://github.com/mayaepps), [Jennifer Siao](https://git
 - String interpolation
 
 ### Scurvy Types
-| Javascript Type     | Scurvy Types   |
-| --------------      | -------------- |
-| boolean (true/false)| booty (aye/nay)|      
-| string              | shanty         |
-| int                 | int            |
-| double              | doubloon       |
-| object              | loot           |
-| tuple ()            | tuple ()       |
+<table>
+  <tr>
+    <th>Javascript Type</th>
+    <th>Scurvy Types</th>
+  </tr>
+  <tr>
+    <td>boolean (true/false)</td>
+    <td>booty (aye/nay)</td>
+  </tr>
+  <tr>
+    <td>string</td>
+    <td>shanty</td>
+  </tr>
+  <tr>
+    <td>int</td>
+    <td>int</td>
+  </tr>
+  <tr>
+    <td>double</td>
+    <td>doubloon</td>
+  </tr>
+  <tr>
+    <td>object</td>
+    <td>loot</td>
+  </tr>
+  <tr>
+    <td>tuple ()</td>
+    <td>tuple ()</td>
+  </tr>
+</table>
 
 
 #### Data Skeletons
