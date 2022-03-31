@@ -53,11 +53,24 @@ Written by [Maya Epps](https://github.com/mayaepps), [Jennifer Siao](https://git
 
 
 #### Data Skeletons
-| Data Structure | Data Skeleton |
-| -------------- | --------------|
-| Array/List     | ledger        |
-| Set            | chest         |
-| Dictionary     | map           |
+<table>
+  <tr>
+    <th>Data Structure</th>
+    <th>Data Skeleton</th>
+  </tr>
+  <tr>
+    <td>Array/List</td>
+    <td>ledger</td>
+  </tr>
+  <tr>
+    <td>Set</td>
+    <td>chest</td>
+  </tr>
+  <tr>
+    <td>Dictionary</td>
+    <td>map</td>
+  </tr>
+</table>
 
 ## Pirate Voyages
 
