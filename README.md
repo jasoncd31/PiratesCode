@@ -1,6 +1,6 @@
 <img src=./docs/piratescodelogo.jpg width="500" height="500"> 
 
-# PiratesCode
+# [PiratesCode](https://jasoncd31.github.io/PiratesCode/) 
 
 Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wide web! Inspired by the swashbuckling buccaneers of legend, PiratesCode be designed to make programming easy and fun for scurvy new programming recruits. PiratesCode be a language for those fixing to get an education and have fun while doing it! Since we’re all swashbuckling corsairs here, PiratesCode specifically helps ye write secure code so ye can protect your loot. All hop on the Flyin’ Dutchman and set your sails for the sea (of code) with PiratesCode!
 
