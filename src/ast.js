@@ -105,7 +105,10 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Block(_open, body, _close) {
         return body.ast()
     },
-    Exp_unary(op, operand) {
+    Type_list(_left, baseType, _right) {
+        return new core.ArrayType(baseType.ast())
+      },
+    Exp5_unary(op, operand) {
         return new core.UnaryExpression(op.sourceString, operand.ast())
     },
     Exp_ternary(test, _questionMark, consequent, _colon, alternate) {

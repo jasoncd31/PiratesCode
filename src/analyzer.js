@@ -5,7 +5,8 @@ import {
   Token,
   error,
   ArrayType,
-  FunctionType
+  FunctionType,
+  MapType
 } from "./core.js"
 import * as stdlib from "./stdlib.js"
 
@@ -41,6 +42,27 @@ Object.assign(ArrayType.prototype, {
   },
 })
 
+// Object.assign(FunctionType.prototype, {
+//   isEquivalentTo(target) {
+//     return (
+//       target.constructor === FunctionType &&
+//       this.returnType.isEquivalentTo(target.returnType) &&
+//       this.paramTypes.length === target.paramTypes.length &&
+//       this.paramTypes.every((t, i) => target.paramTypes[i].isEquivalentTo(t))
+//     )
+//   },
+//   isAssignableTo(target) {
+//     // Functions are covariant on return types, contravariant on parameters.
+//     return (
+//       target.constructor === FunctionType &&
+//       this.returnType.isAssignableTo(target.returnType) &&
+//       this.paramTypes.length === target.paramTypes.length &&
+//       this.paramTypes.every((t, i) => target.paramTypes[i].isAssignableTo(t))
+//     )
+//   },
+// })
+
+
 /***************************************
  *  CHECK YE SCURVY TYPES  *
  **************************************/
@@ -72,10 +94,25 @@ function checkArray(e) {
   check(e.type.constructor === ArrayType, "Array expected", e)
 }
 function checkAllHaveSameType(expressions) {
-  check(
-    expressions.slice(1).every(e => e.type.isEquivalentTo(expressions[0].type)),
-    "Not all elements have the same type"
-  )
+  console.log("heyy")
+  console.log(expressions)
+  console.log("expressions at index 0")
+  console.log(expressions[0])
+  if (expressions[0].constructor.name === "MapEntry") {
+    check(
+      expressions.slice(1).every(e => e.keyType.isEquivalentTo(expressions[0].key.type)),
+      "Not all the keys of the map elements have the same type"
+    )
+    check(
+      expressions.slice(1).every(e => e.valueType.isEquivalentTo(expressions[0].value.type)),
+      "Not all the keys of the map elements have the same type"
+    )
+  } else {
+    check(
+      expressions.slice(1).every(e => e.type.isEquivalentTo(expressions[0].type)),
+      "Not all elements have the same type"
+    )
+  }
 }
 function checkInLoop(context) {
   check(context.inLoop, "Break can only appear in a loop")
@@ -126,6 +163,7 @@ function checkAssignable(e, { toType: type }) {
     }
     lookup(name) {
       const entity = this.locals.get(name)
+      
       if (entity) {
         return entity
       } else if (this.parent) {
@@ -142,6 +180,12 @@ function checkAssignable(e, { toType: type }) {
     }
     Program(p) {
       this.analyze(p.statements)
+    }
+    Assignment(s) {
+      this.analyze(s.source)
+      this.analyze(s.target)
+      checkAssignable(s.source, { toType: s.target.type })
+      // checkNotReadOnly(s.target)
     }
     VariableDeclaration(d) {
       this.analyze(d.initializer)
@@ -160,9 +204,25 @@ function checkAssignable(e, { toType: type }) {
       if (t.category === "Str") [t.value, t.type] = [t.lexeme, Type.STRING]
       if (t.category === "Bool") [t.value, t.type] = [t.lexeme === "aye", Type.BOOLEAN]
     }
+    MapExpression(m) {
+      this.analyze(m.elements)
+      checkAllHaveSameType(m.elements)
+      console.log("BYEE ")
+      m.type = new MapType(m.elements[0].type)
+    }
+    MapEntry(e) { 
+      this.analyze(e.key)
+      this.analyze(e.value)
+      e.keyType = e.key.type
+      e.valueType = e.value.type
+      if (e.key.name !== undefined) {
+        let x = this.lookup(e.key.name)
+        e.key.type = x.type
+      }
+    }
     Array(a) {
       // check for empty array
-      if (a.lenght > 1) a.forEach(item => this.analyze(item))
+      a.forEach(item => this.analyze(item))
     }
     ArrayExpression(a) {
       this.analyze(a.elements)
@@ -199,6 +259,15 @@ function checkAssignable(e, { toType: type }) {
       this.analyze(s.test)
       checkBoolean(s.test)
       this.newChildContext({ inLoop: true }).analyze(s.body)
+    }
+    ForEachLoop(s) {
+      this.analyze(s.collection)
+      checkArray(s.collection)
+      s.iterator = new Variable(s.iterator.lexeme, true)
+      s.iterator.type = s.collection.type.baseType
+      const bodyContext = this.newChildContext({ inLoop: true })
+      bodyContext.add(s.iterator.name, s.iterator)
+      bodyContext.analyze(s.body)
     }
     ReturnStatement(s) {
       checkInFunction(this)
@@ -265,12 +334,12 @@ function checkAssignable(e, { toType: type }) {
         e.type = Type.BOOLEAN
       }
     }
-    // SubscriptExpression(e) {
-    //   this.analyze(e.array)
-    //   e.type = e.array.type.baseType
-    //   this.analyze(e.index)
-    //   checkInteger(e.index)
-    // }
+    SubscriptExpression(e) {
+      this.analyze(e.array)
+      e.type = e.array.type.baseType
+      this.analyze(e.index)
+      checkInteger(e.index)
+    }
 }
 
 export default function analyze(node) {

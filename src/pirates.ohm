@@ -42,11 +42,10 @@ PiratesCode {
   ConstructorDec = construct "(" ListOf<Param, ","> ")" Block
 
   MethodDec    = function id "(" ListOf<Param, ","> ")" "->" Type Block
-  Exp     = ("-" | not) Exp                   -- unary
-          | Exp0 "?" Exp0 ":" Exp               -- ternary
+  Exp     = Exp0 "?" Exp0 ":" Exp               -- ternary
           | Exp0
   Exp0    = Exp0 or Exp1                        -- binary
-  	  	  | Exp1
+  	  | Exp1
   Exp1    = Exp1 and Exp2                       -- binary               
           | Exp2
   Exp2    = Exp3 relop Exp3                     -- binary
@@ -56,6 +55,7 @@ PiratesCode {
   Exp4    = Exp4 ("*"|"/"|"%") Exp5             -- binary
           | Exp5
   Exp5    = Exp6 "**" Exp5                      -- binary
+          | ("-" | not) Exp6                    -- unary
           | Exp6
   Exp6    = 
           | doublelit
@@ -66,7 +66,7 @@ PiratesCode {
           | MapLit
           | Call
           | NewInstance
-          | Exp6 "[" Exp "]"					--subscript
+          | Exp6 "[" Exp "]"			-- subscript
           | id
           | "(" Exp ")"                         -- parens
           | strlit  
@@ -106,9 +106,9 @@ PiratesCode {
   
   comment     = "$$" (~"\n" any)* ("\n" | end)  -- comment
 
-  Type 		  = "[" Type "]"					--list
-  				| "{" Type "," Type "}" 		--dictionary
-  				| id							--id
+  Type 		  = "[" Type "]"		-- list
+  		  | "{" Type "," Type "}" 	-- dictionary
+  		  | id				-- id
 
   id          = ~keyword letter alnum*
  
