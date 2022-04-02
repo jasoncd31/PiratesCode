@@ -19,7 +19,7 @@ tr:nth-child(even) {
 </style>
 </head>
 <body>
-    [piratescodelogo.jpg] 
+    ![pirate](/piratescodelogo.jpg) 
 
     <b>PiratesCode</b>
     
