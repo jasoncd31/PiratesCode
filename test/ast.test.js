@@ -82,9 +82,18 @@ const source7 = `
         captain area() -> doubloon {
             anchor me.height * me.width
         }
+
+        captain getWidth() -> int {
+            anchor me.width
+        }
+        
+        captain setWidth(int newWidth) -> none {
+            me.width = newWidth
+        }
     }
     Rectangle p = new Rectangle(3,4)
-    p.width = 15
+    ahoy p.getWidth()
+    p.setWidth(15)
 `;
 
 const source8 = `
@@ -95,7 +104,7 @@ const source8 = `
         anchor S(x-1, y) }`;
 
 const naughty_pirate = `
-    shanty x = booty
+    shanty x = []
     
 `;
 
@@ -123,8 +132,8 @@ const expected2 = `   1 | Program statements=[#2]
    7 | PrintStatement argument=(Id,"x")`;
 
 const expected3 = `   1 | Program statements=[#2,#9,#11,#14]
-   2 | FunctionDeclaration fun=(Id,"evenOrOdd") params=[#3] body=[#4,#6] returnType=(Sym,"int")
-   3 | Parameter type=(Sym,"int") id=(Id,"x")
+   2 | FunctionDeclaration fun=(Id,"evenOrOdd") params=[#3] body=[#4,#6] returnType=(Id,"int")
+   3 | Parameter type=(Id,"int") id=(Id,"x")
    4 | Assignment target=(Id,"x") source=#5
    5 | UnaryExpression op='-' operand=(Int,"14")
    6 | ReturnStatement expression=#7
@@ -135,7 +144,7 @@ const expected3 = `   1 | Program statements=[#2,#9,#11,#14]
   11 | ForEachLoop variable=(Id,"x") expression=(Id,"numbers") body=[#12]
   12 | PrintStatement argument=#13
   13 | Call callee=(Id,"evenOrOdd") args=[(Id,"x")]
-  14 | FunctionDeclaration fun=(Id,"letsAnchor") params=[] body=[#15] returnType=(Sym,"none")
+  14 | FunctionDeclaration fun=(Id,"letsAnchor") params=[] body=[#15] returnType=(Id,"none")
   15 | ShortReturnStatement `;
 
 const expected4 = `   1 | Program statements=[#2,#6]
@@ -176,26 +185,40 @@ const expected6 = `   1 | Program statements=[#2]
    9 | BinaryExpression op='<' left=(Id,"z") right=#10
   10 | BinaryExpression op='**' left=(Id,"x") right=(Int,"2")`;
 
-const expected7 = `   1 | Program statements=[#2,#13,#15]
-   2 | ClassDeclaration id='Rectangle' constructorDec=#3 methods=[#8]
-   3 | ConstructorDeclaration parameters=[#4,#5] body=[#6,#7]
-   4 | Parameter type=(Sym,"doubloon") id=(Id,"height")
-   5 | Parameter type=(Sym,"int") id=(Id,"width")
-   6 | Assignment target=(Sym,"me") source=[(Id,"height")]
-   7 | Assignment target=(Sym,"me") source=[(Id,"width")]
-   8 | Method name='area' parameters=[] body=[#9] returnType=(Sym,"doubloon")
-   9 | ReturnStatement expression=#10
-  10 | BinaryExpression op='*' left=#11 right=#12
-  11 | Call callee=(Sym,"me") args=[(Id,"height")]
-  12 | Call callee=(Sym,"me") args=[(Id,"width")]
-  13 | VariableDeclaration variable=(Id,"p") initializer=#14
-  14 | NewInstance identifier='Rectangle' args=[(Int,"3"),(Int,"4")]
-  15 | Assignment target=(Id,"p") source=[(Id,"width")]`;
+
+const expected7 = `   1 | Program statements=[#2,#22,#24,#27]
+   2 | ClassDeclaration id='Rectangle' constructorDec=#3 methods=[#10,#15,#18]
+   3 | ConstructorDeclaration parameters=[#4,#5] body=[#6,#8]
+   4 | Parameter type=(Id,"doubloon") id=(Id,"height")
+   5 | Parameter type=(Id,"int") id=(Id,"width")
+   6 | Assignment target=#7 source=(Id,"height")
+   7 | Call callee=(Sym,"me") args=[(Id,"height")]
+   8 | Assignment target=#9 source=(Id,"width")
+   9 | Call callee=(Sym,"me") args=[(Id,"width")]
+  10 | Method name='area' parameters=[] body=[#11] returnType=(Id,"doubloon")
+  11 | ReturnStatement expression=#12
+  12 | BinaryExpression op='*' left=#13 right=#14
+  13 | Call callee=(Sym,"me") args=[(Id,"height")]
+  14 | Call callee=(Sym,"me") args=[(Id,"width")]
+  15 | Method name='getWidth' parameters=[] body=[#16] returnType=(Id,"int")
+  16 | ReturnStatement expression=#17
+  17 | Call callee=(Sym,"me") args=[(Id,"width")]
+  18 | Method name='setWidth' parameters=[#19] body=[#20] returnType=(Id,"none")
+  19 | Parameter type=(Id,"int") id=(Id,"newWidth")
+  20 | Assignment target=#21 source=(Id,"newWidth")
+  21 | Call callee=(Sym,"me") args=[(Id,"width")]
+  22 | VariableDeclaration variable=(Id,"p") initializer=#23
+  23 | NewInstance identifier='Rectangle' args=[(Int,"3"),(Int,"4")]
+  24 | PrintStatement argument=#25
+  25 | Call callee=(Id,"p") args=[#26]
+  26 | Call callee=(Id,"getWidth") args=[]
+  27 | Call callee=(Id,"p") args=[#28]
+  28 | Call callee=(Id,"setWidth") args=[(Int,"15")]`;
 
 const expected8 = `   1 | Program statements=[#2]
-   2 | FunctionDeclaration fun=(Id,"S") params=[#3,#4] body=[#5,#9] returnType=(Sym,"int")
-   3 | Parameter type=(Sym,"int") id=(Id,"x")
-   4 | Parameter type=(Sym,"int") id=(Id,"y")
+   2 | FunctionDeclaration fun=(Id,"S") params=[#3,#4] body=[#5,#9] returnType=(Id,"int")
+   3 | Parameter type=(Id,"int") id=(Id,"x")
+   4 | Parameter type=(Id,"int") id=(Id,"y")
    5 | IfStatement test=[#6] consequent=[#7] alternate=[]
    6 | BinaryExpression op='==' left=(Id,"x") right=(Int,"0")
    7 | Array 0=#8

@@ -14,8 +14,6 @@ export class Type {
     static STRING = new Type("shanty")
     static NONE = new Type("none")
     static ANY = new Type("any")
-
-
     constructor(description) {
       Object.assign(this, { description })
     }
@@ -42,11 +40,11 @@ export class ArrayType extends Type {
     }
 }
 
-// export class MapType extends Type {
-//     constructor(baseType) {
-//       super(`{${baseType.description}}`)
-//     }
-// }
+export class MapType extends Type {
+    constructor(baseType) {
+      super(`{${baseType.description}}`)
+    }
+}
 
 // export class SetType extends Type {
 //     constructor(baseType) {
@@ -201,6 +199,13 @@ export class Token {
         return this.source.contents
     }
 }
+
+export class SubscriptExpression {
+    // Example: a[20]
+    constructor(array, index) {
+      Object.assign(this, { array, index })
+    }
+  }
 
 export class ReturnStatement {
     constructor(expression) {

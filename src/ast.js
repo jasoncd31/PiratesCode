@@ -161,6 +161,9 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Exp6_parens(_open, expression, _close) {
         return expression.ast()
     },
+    Exp6_subscript(expression, _bracket, index, _bracket1) {
+        return new core.SubscriptExpression(expression.ast(), index.ast())
+    },
     break(_break) {
         return new core.BreakStatement()
       },

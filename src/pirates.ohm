@@ -13,24 +13,23 @@ PiratesCode {
                | Call
                | ClassDec
                    
-  VarDec       = (type | var | id) id "=" Exp
+  VarDec       = (Type | var) id "=" Exp
 
-  FunDec       = function id "(" ListOf<Param, ","> ")" "->" (type | "none") Block
-  Param        = type id
+  FunDec       = function id "(" ListOf<Param, ","> ")" "->" Type Block
+  Param        = Type id
 
-  Assignment   = id "=" Exp                  -- regular
+  Assignment   = Exp6 "=" Exp                  -- regular
                | (this|id) ("." id)+ "=" Exp    -- property
   
-  ArrayLit    = "[" ListOf<Exp, ","> "]"
 
   MapLit      = "{" ListOf<MapEntry, ","> "}"
-  MapEntry    = Exp ":" Exp
+  MapEntry    = Exp6 ":" Exp
 
   Return      = return Exp 		--exp
               | return          --short             
 
   LoopStatement = while Exp Block 							   -- while
-               | for (type|"vargh") id "through" id Block           -- ForEach
+               | for (Type|"vargh") id "through" id Block           -- ForEach
                | for ("vargh"|"int") id "=" Exp "until" Exp Block   -- For
 
   IfStmt      = if Exp Block (elseif Exp Block)* (else Block)?         -- long
@@ -42,12 +41,12 @@ PiratesCode {
 
   ConstructorDec = construct "(" ListOf<Param, ","> ")" Block
 
-  MethodDec    = function id "(" ListOf<Param, ","> ")" "->" (type | "none") Block
+  MethodDec    = function id "(" ListOf<Param, ","> ")" "->" Type Block
   Exp     = ("-" | not) Exp                   -- unary
           | Exp0 "?" Exp0 ":" Exp               -- ternary
           | Exp0
   Exp0    = Exp0 or Exp1                        -- binary
-  	  | Exp1
+  	  	  | Exp1
   Exp1    = Exp1 and Exp2                       -- binary               
           | Exp2
   Exp2    = Exp3 relop Exp3                     -- binary
@@ -67,9 +66,13 @@ PiratesCode {
           | MapLit
           | Call
           | NewInstance
+          | Exp6 "[" Exp "]"					--subscript
           | id
           | "(" Exp ")"                         -- parens
-          | strlit ~keyword           
+          | strlit  
+
+
+  ArrayLit    = "[" NonemptyListOf<Exp, ","> "]"
 
   intlit        = digit+
   doublelit     = digit+ "." digit+ (("E" | "e") ("+" | "-")? digit+)?
@@ -77,7 +80,7 @@ PiratesCode {
   relop   = "<=" | "<" | "!=" | "==" | ">=" | ">"
 
   Call    = id "(" ListOf<Exp, ","> ")"  -- regular
-            | (this | id) ("." (Call | id))+  -- property
+            | (id | this) ("." (Call | id))+  -- property
           
   let         = "vargh" ~alnum
   print       = "ahoy" ~alnum
@@ -103,12 +106,14 @@ PiratesCode {
   
   comment     = "$$" (~"\n" any)* ("\n" | end)  -- comment
 
-  type        = ("booty"|"shanty"|"int"|"doubloon"|"loot"|"map"|"chest"|"ledger") ~alnum
+  Type 		  = "[" Type "]"					--list
+  				| "{" Type "," Type "}" 		--dictionary
+  				| id							--id
 
   id          = ~keyword letter alnum*
  
   keyword     = let | print | function | else | elseif | if | while | repeat
-              | for | break | return | true | false | type | this | new | construct | class          
+              | for | break | return | true | false | this | new | construct | class          
               
   /*strlit      = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")*/
   strlit        = "\"" char* "\""

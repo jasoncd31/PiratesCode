@@ -175,7 +175,6 @@ function checkAssignable(e, { toType: type }) {
     }
     IfStatement(s) {
       this.analyze(s.test)
-      console.log("WE'VE REACHED HE IF MENT ANALYSIS")
       for (let i = 0; i < s.test.length; i++) {
         checkBoolean(s.test[i])
         this.newChildContext().analyze(s.consequent[i])
@@ -266,6 +265,12 @@ function checkAssignable(e, { toType: type }) {
         e.type = Type.BOOLEAN
       }
     }
+    // SubscriptExpression(e) {
+    //   this.analyze(e.array)
+    //   e.type = e.array.type.baseType
+    //   this.analyze(e.index)
+    //   checkInteger(e.index)
+    // }
 }
 
 export default function analyze(node) {

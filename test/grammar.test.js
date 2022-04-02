@@ -26,6 +26,10 @@ const syntaxChecks = [
     ["instantiating an object using a class","ship Rectangle {\nbuild (doubloon height, shanty width) {\nme.height = height\nme.width = width\n}\ncaptain getHeight() -> int{\nanchor me.height\n}\n}\n Rectangle rec1 = new Rectangle(5,4)",],
     ["assigning a class function with a return to a new variable","ship Rectangle {\nbuild (shanty height, doubloon width) {\nme.height = height\nme.width = width\n}\ncaptain getHeight() -> int {\nanchor me.height\n}\n}\nRectangle rec1 = new Rectangle(5,4)\nvargh height = rec1.getHeight()",],
     ["booleans as expressions","bigboolean = y == 7 and z < 10 or (y == 3 and z < x**2)",],
+    ["lists can be indexed and assigned","a[x] = 9"],
+    ["lists can be declared","[shanty] list = [shanty]"],
+    ["lists can be declared with vargh","vargh list = [shanty]"],
+    ["dictionaries can be declared", "{shanty, shanty} myDict = {x: aye, y:nay}"]
 ]
 
 const syntaxErrors = [
@@ -40,7 +44,7 @@ const syntaxErrors = [
     ["an illegal statement on line 2", "ahoy 5 \nx * 5", /Line 2, col 3/],
     ["a statement starting with a )", "ahoy 5 \n) * 5", /Line 2, col 1/],
     ["an expression starting with a *", "x = * 71", /Line 1, col 5/],
-    ["type as a variable name", "ledger map = []", /Line 1, col 8/],
+    ["type as a variable name", "ledger map = []"],
     ["keyword as a variable name", "int yo = 5", /Line 1, col 5/],
     ["while without braces", "parrot true\nahoy 1", /Line 2, col 1/],
     ["if without braces", "yo x < 3\nahoy 1", /Line 2, col 1/],
@@ -50,6 +54,9 @@ const syntaxErrors = [
     ["true is not assignable", "vargh aye = 1"],
     ["false is not assignable", "vargh nay = 1"],
     ["function with no return type", "captain f(x) {anchor x}"],
+    ["incorrect dictionary declaration", "{shanty, shanty} myMap = {true, false}"],
+    ["incorrect dictionary assignment", "myMap = {true, false}"],
+    ["incorrect array declaration", "vargh list = []"],
 ]
 
 describe("The grammar", () => {

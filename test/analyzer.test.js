@@ -10,13 +10,10 @@ const semanticChecks = [
 	[ 'variable declaration bool', 'vargh x = nay\n' ],
 	[ 'variable declaration string', 'vargh x = "please work"\n' ],
 	[ 'array types', 'vargh fruits = ["Apple", "Banana"]' ],
-	[ 'initialize with empty array', 'vargh fruits = []' ],
+	[ 'initialize with empty array', 'vargh fruits = [int]' ],
 	[ 'type declaration', 'shanty s = "hello please work!"' ],
-	[
-		// // ["assign to array element", "ledger a = [1,2,3]\n a[1]=100\n"], // need to edit the grammar
-		'short return',
-		'captain f() -> none { anchor }'
-	],
+  // ["assign to array element", "ledger a = [1,2,3]\n a[1]=100\n"], // need to edit the grammar
+	['short return','captain f() -> none { anchor }'],
 	[ 'long return', 'captain f() -> booty { anchor aye }' ],
 	[ 'return in nested if', 'captain f() -> none {yo aye {anchor}}' ],
 	[ 'long if statement', 'captain f() -> none {yo aye {anchor} yo ho 3 == 4 {anchor} ho {anchor}}' ],
@@ -27,37 +24,24 @@ const semanticChecks = [
 	[ 'for over collection', 'ledger y = [2,3,4]\nchase vargh x through y {ahoy 1}' ],
 	[ 'for in range', 'chase vargh i = 0 until 10 {ahoy 0}' ],
 	[ 'or', 'yo aye or 1<2 {ahoy 0}' ],
-	[
-		// // [ 'and', 'ahoy aye and 1<2 and nay and not aye' ], // need to edit the grammar
-		'relations',
-		'ahoy 1<=2 and "x">"y" and 3.5<1.2'
-	],
+	['relations','ahoy 1<=2 and "x">"y" and 3.5<1.2'],
+  // [ 'and', 'ahoy aye and 1<2 and nay and not aye' ], // need to edit the grammar
 	[ 'ok to == arrays', 'ahoy [1]==[5,8]' ],
 	[ 'ok to != arrays', 'ahoy [1]!=[5,8]' ],
 	[ 'arithmetic', 'vargh x = 1\n ahoy 2*3+5**(-3)/2-5%8' ],
-	[
-		//   ["array length", "print(#[1,2,3]);"], // length function + implment in grammar
-		// [ ('variables', 'vargh x=[[[[1]]]]; ahoy x[0][0][0][0]+2') ], // implement in our grammar
-		'recursive functions',
-		'captain S(int x, int y) -> int {yo x == 0 {anchor 0 } anchor S(x-1, y) }'
-	],
+	['recursive functions','captain S(int x, int y) -> int {yo x == 0 {anchor 0 } anchor S(x-1, y) }'],
+  //   ["array length", "print(#[1,2,3]);"], // length function + implment in grammar
+	// [ ('variables', 'vargh x=[[[[1]]]]; ahoy x[0][0][0][0]+2') ], // implement in our grammar
 	[ 'nested functions', 'captain T(int x) -> none {vargh y = 1\n vargh x = x\n captain S(int z) -> none {ahoy z}}' ],
-	[
-		'member exp with function',
-		'ship S { build(int x) {vargh x = x \n captain T() -> none {ahoy me.x}}} \n  S y = S(1) \n y.T() \n ahoy y.x'
-	],
+	['member exp with function','ship S { build(int x) {vargh x = x \n captain T() -> none {ahoy me.x}}} \n  S y = S(1) \n y.T() \n ahoy y.x'],
 	[ 'member exp', 'ship S { build(int x) {vargh x = x }} \n  S y = S(1) \n ahoy y.x' ],
-	[
-		//   ["subscript exp", "let a=[1,2];print(a[0]);"], // need to implement in grammar
-		'array of class objects',
-		'ship S{ build(){vargh x = 1}} vargh x=[S(), S()]'
-	],
+	['array of class objects', 'ship S{ build(){vargh x = 1}} vargh x=[S(), S()]'],
+  //   ["subscript exp", "let a=[1,2];print(a[0]);"], // need to implement in grammar
 	[ 'assigned functions', 'captain f() -> none {}\n vargh g = f(1) \n s = g' ], // should this work with our current grammar?
 	[ 'call of assigned functions', 'captain f(int x) -> none {}\n vargh g = f \n g(1)' ],
-	[
-		// ['type equivalence of nested arrays', 'captain f( [[int]] x) -> none {} ahoy f([[1],[2]]))'], // array implementation in grammar
-		'call of assigned function in expression',
-		`captain f(int x, booty y) -> int {}
+	// ['type equivalence of nested arrays', 'captain f( [[int]] x) -> none {} ahoy f([[1],[2]]))'], // array implementation in grammar
+  ['call of assigned function in expression', 
+  `captain f(int x, booty y) -> int {}
 	    vargh g = f
 	    ahoy g(1, true)
 	    f = g` //type check here
@@ -68,27 +52,39 @@ const semanticChecks = [
 	//      captain g(booty g) -> none{}
 	//      f(2, g)`
 	// ]
-	[
-		'function return types',
+	['function return types',
 		`captain square(int x) -> int { anchor x * x }
-	     captain compose() -> int { anchor square }`
-	],
-	[
-		// [ 'function assign', 'captain f() -> none {} vargh g = f\n let h = [g, f]\n ahoy h[0]() ' ] // indexing in grammar
-		// [ 'pass in class as a parameter', 'ship S { build(){}} captain f(S x) -> none {}' ] // put in grammar but it's not pretty - should make it nicer
-		//   ["array parameters", "function f(x: [int?]) {}"], // implement in grammar
-		//   ["types in function type", "function f(g: (int?, float)->string) {}"], // translate to PC
-		'none in fn type',
-		'captain f() -> none {}'
-	],
-	[ 'outer variable', 'vargh x = 1 \n parrot nay { ahoy x }' ]
+	     captain compose() -> int { anchor square }`],
+  // [ 'function assign', 'captain f() -> none {} vargh g = f\n let h = [g, f]\n ahoy h[0]() ' ] // indexing in grammar
+	// [ 'pass in class as a parameter', 'ship S { build(){}} captain f(S x) -> none {}' ] // put in grammar but it's not pretty - should make it nicer
+	//   ["array parameters", "function f(x: [int?]) {}"], // implement in grammar
+  //   ["types in function type", "function f(g: (int?, float)->string) {}"], // translate to PC
+	['none in fn type','captain f() -> none {}'],
+	[ 'outer variable', 'vargh x = 1 \n parrot nay { ahoy x }' ],
 	//   ["built-in constants", "print(25.0 * π);"], // do we want built in constants? maybe something pirate themed?
+	['map initialization and looping',
+		`map companyMap = {"Gold": "(15,17)", "Dragons": "(101, 666)"}
+		{shanty, shanty} a = {shanty : shanty}
+		{shanty, shanty} b = {}
+		chase vargh location through companyMap {
+			ahoy location
+		}`
+	],
 ];
 
 // // Programs that are syntactically correct but have semantic errors
-// const semanticErrors = [
 const semanticErrors = [
-	// [ 'non-distinct fields', 'captain S (booty x, int x) -> none{}', /Fields must be distinct/ ]
+	// [ 'incorrect initialize with empty array', 'vargh fruits = []' ],
+	// ['assigning undeclared variable', `x + 5`, /HEY! You didn't declare identifier x before you tried to use it. Declare it first, ye scurvy dog!/],
+	// ['no return type in function declaration',`captain evenOrOdd(int x) -> shanty {\n x = -14 \n anchor x % 2 == 0\n}`,/OI KNAVE! Ye anchored the wrong type!/],
+	// ['breaking outside of a loop', `yo aye {\n maroon\n }`,/Break can only appear in a loop/],
+	// ['breaking outside of a loop', `yo aye {\n anchor\n }`,/YE BILGERAT! A RETURN CAN ONLY BE IN A FUNCTION./],
+	// ['typechecking in operations',`1 + "1"`, /`int BE DIFFERENT FROM shanty, YE BLIND LANDLUBBER./],
+	// ['function has no return', `captain evenOrOdd(int x) -> shanty {\n x = -14 \n ahoy x % 2 == 0\n}`,/MATEY ARE YE THREE SHEETS TO THE WIND OR DID YOU FORGET TO RETURN SOMETHING?/],
+	// ['void function has return',`captain evenOrOdd(int x) -> none {\n x = -14 \n anchor x % 2 == 0\n}`,/OI, RAPSCALLION. YE PROMISED NOT TO RETURN ANYTHING FROM YER FUNCTION./],
+	// ['assigning the wrong type to a variable', `int x = 5 \n x = "five"`,/Scrub the deck. Cannot assign a shanty to a int/],
+	// ['redeclaring a variable', `shanty x = "five"\n shanty x = "four"`, /OI! Identifier x be already declared. Scrub the deck!/]
+	// //  [ 'non-distinct fields', 'captain S (booty x, int x) -> none{}', /Fields must be distinct/ ]
 	// 	[ 'non-int increment', 'booty x=false \n x = x +1', /an integer/ ],
 	// 	[ 'non-int decrement', 'let x=some[""];x++;', /an integer/ ],
 	//   ["undeclared id", "print(x);", /Identifier x not declared/],
