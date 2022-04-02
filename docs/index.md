@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
 <style>
@@ -31,7 +30,6 @@ tr:nth-child(even) {
     <br>
     Written by <a href="https://github.com/mayaepps">Maya Epps</a>, <a href="https://github.com/jennifer-s19">Jennifer Siao</a>, <a href="https://github.com/jasoncd31">Jason Douglas</a>, <a href="https://github.com/tnobal">Tanya Nobal</a>, and <a href="https://github.com/thesaadsalman">Saad Salman</a>
     <br>
-    <pre>
     <b>Swashbuckling Features:</b>
     - Mix of Python & Javascript: No parenthesis in if/while/for statements, but does have brackets
     - Pirate-themed language and syntax
@@ -43,7 +41,7 @@ tr:nth-child(even) {
     - Objects are natively passed by copy for security
     - vargh (equivalent to Java's var) can be used for type inference
     - String interpolation
-    </pre>
+    <br>
 
 <table>
   <tr>
@@ -74,7 +72,6 @@ tr:nth-child(even) {
     <td>tuple ()</td>
     <td>tuple ()</td>
   </tr>
-</table>
 
 <table>
   <tr>
@@ -95,7 +92,7 @@ tr:nth-child(even) {
   </tr>
 </table>
 
-### Hello World
+<h1>Hello World</h1>
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
@@ -117,7 +114,7 @@ ahoy “world!”
 </td>
 </table>
 
-### Variable Assignment
+<h2>Variable Assignment</h2>
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
@@ -131,7 +128,7 @@ ahoy “world!”
 int x = 5</code></pre></td>
 </table>
 
-### Function Declarations
+<h3>Function Declarations</h3>
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
@@ -170,7 +167,7 @@ int x = 5</code></pre></td>
 </td>
 </table>
 
-### if-statements
+<h4>if-statements</h4>
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
@@ -194,7 +191,7 @@ int x = 5</code></pre></td>
 </td>
 </table>
 
-### Loops
+<h5>Loops</h5>
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
@@ -248,7 +245,7 @@ int x = 5</code></pre></td>
 </td>
 </table>
 
-### Classes
+<h6>Classes</h6>
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
