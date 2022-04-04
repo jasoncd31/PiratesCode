@@ -94,11 +94,7 @@ function checkArray(e) {
   check(e.type.constructor === ArrayType, "Array expected", e)
 }
 function checkAllHaveSameType(expressions) {
-  console.log("heyy")
-  console.log(expressions)
-  console.log("expressions at index 0")
-  console.log(expressions[0])
-  if (expressions[0].constructor.name === "MapEntry") {
+  if (expressions.length > 0 && expressions[0].constructor.name === "MapEntry") {
     check(
       expressions.slice(1).every(e => e.keyType.isEquivalentTo(expressions[0].key.type)),
       "Not all the keys of the map elements have the same type"
@@ -114,6 +110,16 @@ function checkAllHaveSameType(expressions) {
     )
   }
 }
+function checkArgumentsMatch(args, targetTypes) {
+  check(
+    targetTypes.length === args.length,
+    `${targetTypes.length} argument(s) required but ${args.length} passed`
+  )
+  targetTypes.forEach((type, i) => checkAssignable(args[i], { toType: type }))
+}
+function checkFunctionCallArguments(args, calleeType) {
+  checkArgumentsMatch(args, calleeType.paramTypes)
+}
 function checkInLoop(context) {
   check(context.inLoop, "Break can only appear in a loop")
 }
@@ -126,6 +132,12 @@ function checkInFunction(context) {
 }
 function checkReturnable({ expression: e, from: f }) {
   checkAssignable(e, { toType: f.type.returnType })
+}
+function checkCallable(e) {
+  check(
+    e.type.constructor == FunctionType,
+    "Call of non-function"
+  )
 }
 
 function checkReturnsNothing(f) {
@@ -141,6 +153,16 @@ function checkAssignable(e, { toType: type }) {
     type === Type.ANY || e.type.isAssignableTo(type),
     `Scrub the deck. Cannot assign a ${e.type.description} to a ${type.description}`
   )
+}
+
+function checkForVargh(isVargh, m) {
+  console.log(isVargh)
+  if (m.initializer.constructor.name === 'MapExpression' || m.initializer.constructor.name === 'ArrayExpression') {
+    check(
+      !isVargh || m.initializer.elements.length !== 0,
+      `Hey? What's the type of that?? Using vargh with an empty map or array confuses me.`
+    )
+  }
 }
 
 /*******************************************
@@ -188,6 +210,7 @@ function checkAssignable(e, { toType: type }) {
       // checkNotReadOnly(s.target)
     }
     VariableDeclaration(d) {
+      checkForVargh(d.modifier === 'vargh', d)
       this.analyze(d.initializer)
       d.variable.value = new Variable(d.variable.lexeme)
       d.variable.value.type = d.initializer.type
@@ -208,7 +231,11 @@ function checkAssignable(e, { toType: type }) {
       this.analyze(m.elements)
       checkAllHaveSameType(m.elements)
       console.log("BYEE ")
-      m.type = new MapType(m.elements[0].type)
+      if (m.elements.length > 0) { 
+        m.type = new MapType(m.elements[0].keyType, m.elements[0].valueType)
+      } else {
+        m.type = new MapType(Type.ANY, Type.ANY)
+      }
     }
     MapEntry(e) { 
       this.analyze(e.key)
@@ -227,7 +254,12 @@ function checkAssignable(e, { toType: type }) {
     ArrayExpression(a) {
       this.analyze(a.elements)
       checkAllHaveSameType(a.elements)
-      a.type = new ArrayType(a.elements[0].type)
+      console.log(a.elements)
+      if (a.elements.length === 0) {
+        a.type = new ArrayType(Type.ANY)
+      } else {
+        a.type = new ArrayType(a.elements[0].type)
+      }
     }
     ArrayType(t) {
       this.analyze(t.baseType)
@@ -282,6 +314,15 @@ function checkAssignable(e, { toType: type }) {
     BreakStatement(s) {
       checkInLoop(this)
     }
+    Call(c) {
+      this.analyze(c.callee)
+      const callee = c.callee?.value ?? c.callee
+      checkCallable(callee)
+      this.analyze(c.args)
+      checkFunctionCallArguments(c.args, callee.type)
+      c.type = callee.type.returnType
+      // TODO: Class methodss and constructors
+    }
     FunctionDeclaration(d) {
       if (d.returnType) this.analyze(d.returnType)
       d.fun.value = new Function(
@@ -314,7 +355,7 @@ function checkAssignable(e, { toType: type }) {
       this.analyze(e.left)
       this.analyze(e.right)
       if (["+"].includes(e.op)) {
-        checkNumericOrString(e.left)
+        checkNumeric(e.left)
         checkHaveSameType(e.left, e.right)
         e.type = e.left.type
       } else if (["-", "*", "/", "**"].includes(e.op)) {
@@ -331,6 +372,17 @@ function checkAssignable(e, { toType: type }) {
       } else if (["and", "or"].includes(e.op)) {
         checkBoolean(e.left)
         checkBoolean(e.right)
+        e.type = Type.BOOLEAN
+      }
+    }
+    UnaryExpression(e) {
+      console.log(e)
+      this.analyze(e.operand)
+      if (e.op.lexeme === "-") {
+        checkNumeric(e.operand)
+        e.type = e.operand.type
+      } else if (e.op.lexeme === "not") {
+        checkBoolean(e.operand)
         e.type = Type.BOOLEAN
       }
     }

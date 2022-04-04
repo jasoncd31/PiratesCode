@@ -18,8 +18,8 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Return_short(_return) {
         return new core.ShortReturnStatement()
     },
-    VarDec(_type, id, _eq, initializer) {
-        return new core.VariableDeclaration(id.ast(), initializer.ast())
+    VarDec(type, id, _eq, initializer) {
+        return new core.VariableDeclaration(type.sourceString, id.ast(), initializer.ast())
     },
     FunDec(_fun, id, _left, params, _right, _arrow, returnType, body) {
         return new core.FunctionDeclaration(

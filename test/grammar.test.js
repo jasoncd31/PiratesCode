@@ -29,7 +29,8 @@ const syntaxChecks = [
     ["lists can be indexed and assigned","a[x] = 9"],
     ["lists can be declared","[shanty] list = [shanty]"],
     ["lists can be declared with vargh","vargh list = [shanty]"],
-    ["dictionaries can be declared", "{shanty, shanty} myDict = {x: aye, y:nay}"]
+    ["dictionaries can be declared", "{shanty, shanty} myDict = {x: aye, y:nay}"],
+    ["array declaration", "[int] list = []"],
 ]
 
 const syntaxErrors = [
@@ -44,7 +45,7 @@ const syntaxErrors = [
     ["an illegal statement on line 2", "ahoy 5 \nx * 5", /Line 2, col 3/],
     ["a statement starting with a )", "ahoy 5 \n) * 5", /Line 2, col 1/],
     ["an expression starting with a *", "x = * 71", /Line 1, col 5/],
-    ["type as a variable name", "ledger map = []"],
+    // ["type as a variable name", "ledger map = []"],
     ["keyword as a variable name", "int yo = 5", /Line 1, col 5/],
     ["while without braces", "parrot true\nahoy 1", /Line 2, col 1/],
     ["if without braces", "yo x < 3\nahoy 1", /Line 2, col 1/],
@@ -56,7 +57,6 @@ const syntaxErrors = [
     ["function with no return type", "captain f(x) {anchor x}"],
     ["incorrect dictionary declaration", "{shanty, shanty} myMap = {true, false}"],
     ["incorrect dictionary assignment", "myMap = {true, false}"],
-    ["incorrect array declaration", "vargh list = []"],
 ]
 
 describe("The grammar", () => {

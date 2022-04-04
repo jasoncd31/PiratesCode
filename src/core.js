@@ -41,8 +41,10 @@ export class ArrayType extends Type {
 }
 
 export class MapType extends Type {
-    constructor(baseType) {
-      super(`{${baseType.description}}`)
+    constructor(baseKeyType, baseValueType) {
+      super(`{${baseKeyType.description} : ${baseValueType.description}}`)
+      this.baseKeyType = baseKeyType
+      this.baseValueType = baseValueType
     }
 }
 
@@ -59,8 +61,8 @@ export class Variable {
 }
 
 export class VariableDeclaration {
-    constructor(variable, initializer) {
-        Object.assign(this, { variable, initializer })
+    constructor(modifier, variable, initializer) {
+        Object.assign(this, { modifier, variable, initializer })
     }
 }
 

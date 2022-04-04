@@ -20,10 +20,6 @@ PiratesCode {
 
   Assignment   = Exp6 "=" Exp                  -- regular
                | (this|id) ("." id)+ "=" Exp    -- property
-  
-
-  MapLit      = "{" ListOf<MapEntry, ","> "}"
-  MapEntry    = Exp6 ":" Exp
 
   Return      = return Exp 		--exp
               | return          --short             
@@ -45,7 +41,7 @@ PiratesCode {
   Exp     = Exp0 "?" Exp0 ":" Exp               -- ternary
           | Exp0
   Exp0    = Exp0 or Exp1                        -- binary
-  	  | Exp1
+  	      | Exp1
   Exp1    = Exp1 and Exp2                       -- binary               
           | Exp2
   Exp2    = Exp3 relop Exp3                     -- binary
@@ -72,7 +68,14 @@ PiratesCode {
           | strlit  
 
 
-  ArrayLit    = "[" NonemptyListOf<Exp, ","> "]"
+  Type 	  = "[" Type "]"		-- list
+  		  | "{" Type "," Type "}" 	-- dictionary
+  		  | id				-- id
+
+  ArrayLit    = "[" ListOf<Exp, ","> "]"
+  
+  MapLit      = "{" ListOf<MapEntry, ","> "}"
+  MapEntry    = Exp6 ":" Exp
 
   intlit        = digit+
   doublelit     = digit+ "." digit+ (("E" | "e") ("+" | "-")? digit+)?
@@ -105,10 +108,6 @@ PiratesCode {
   new         = "new" ~alnum
   
   comment     = "$$" (~"\n" any)* ("\n" | end)  -- comment
-
-  Type 		  = "[" Type "]"		-- list
-  		  | "{" Type "," Type "}" 	-- dictionary
-  		  | id				-- id
 
   id          = ~keyword letter alnum*
  
