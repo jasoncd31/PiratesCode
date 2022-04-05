@@ -227,6 +227,7 @@ const expected8 = `   1 | Program statements=[#2]
   10 | Call callee=(Id,"S") args=[#11,(Id,"y")]
   11 | BinaryExpression op='-' left=(Id,"x") right=(Int,"1")`;
 
+// console.log(ast('vargh x = 1\n ahoy 2*3+5**(-3)/2-5%8'))
 describe('The AST generator:', () => {
 	describe('Produces a correct AST for:', () => {
 		it(' variable assignments, while loops, if statements, print statements', () => {
@@ -263,3 +264,4 @@ describe('The AST generator:', () => {
 		});
 	});
 });
+

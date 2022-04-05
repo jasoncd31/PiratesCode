@@ -124,7 +124,11 @@ function checkInLoop(context) {
   check(context.inLoop, "Break can only appear in a loop")
 }
 function checkHaveSameType(e1, e2) {
+  // console.log(e1)
+  // console.log(e2)
+  //So for some reaosn this becomes Ohm objects instead of tokens, idk how to fix that but we need to
   check(e1.type.isEquivalentTo(e2.type), `${e2.type} BE DIFFERENT FROM ${e2.type}, YE BLIND LANDLUBBER.`)
+  // check(e1.category === e2.category, `${e2.category} BE DIFFERENT FROM ${e2.category}, YE BLIND LANDLUBBER.`)
 }
 
 function checkInFunction(context) {
@@ -160,7 +164,7 @@ function checkForVargh(isVargh, m) {
   if (m.initializer.constructor.name === 'MapExpression' || m.initializer.constructor.name === 'ArrayExpression') {
     check(
       !isVargh || m.initializer.elements.length !== 0,
-      `Hey? What's the type of that?? Using vargh with an empty map or array confuses me.`
+      `Hey! What's the type of that - Using vargh with an empty map or array confuses me.`
     )
   }
 }
@@ -249,6 +253,7 @@ function checkForVargh(isVargh, m) {
     }
     Array(a) {
       // check for empty array
+      console.log(a)
       a.forEach(item => this.analyze(item))
     }
     ArrayExpression(a) {
@@ -286,6 +291,17 @@ function checkForVargh(isVargh, m) {
       this.analyze(e.alternate)
       checkHaveSameType(e.consequent, e.alternate)
       e.type = e.consequent.type
+    }
+    ForLoop(s) {
+      this.analyze(s.start)
+      checkInteger(s.start)
+      this.analyze(s.end)
+      checkInteger(s.end)
+      s.variable = new Variable(s.variable.lexeme, true)
+      s.variable.type = Type.INT
+      const bodyContext = this.newChildContext({ inLoop: true })
+      bodyContext.add(s.variable.name, s.variable)
+      bodyContext.analyze(s.body)
     }
     WhileLoop(s) {
       this.analyze(s.test)
@@ -352,6 +368,9 @@ function checkForVargh(isVargh, m) {
       s.argument = this.analyze(s.argument)
     }
     BinaryExpression(e) {
+      console.log("OP " + e.op)
+      console.log("LEFT " + e.left)
+      console.log("RIGHT " + e.right)
       this.analyze(e.left)
       this.analyze(e.right)
       if (["+"].includes(e.op)) {
