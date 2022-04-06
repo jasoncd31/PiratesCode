@@ -21,28 +21,28 @@ const semanticChecks = [
 	[ 'break in nested if', 'parrot nay {yo aye {maroon}}' ],
 	[ 'long if', 'yo aye {ahoy 1} ho {ahoy 3}' ],
 	[ 'else if', 'yo aye {ahoy 1} yo ho aye {ahoy 0} ho {ahoy 3}' ],
-	// //', 'ledger y = [2,3,4]\nchase vargh x through y {ahoy 1}' ], \\not in analyzer yet
+	['loop through array','[int] y = [2,3,4] \nchase vargh x through y {ahoy 1}' ], //not in analyzer yet
 	[ 'for in range', 'chase vargh i = 0 until 10 {ahoy 0}' ],
 	[ 'or', 'yo aye or 1<2 {ahoy 0}' ],
   	['relations','int x = 3\n vargh y = 2\n ahoy 1<=2 and x>y and 3.5<1.2'],
-	// [ 'and', 'ahoy aye and 1<2 and nay and not aye'], 			// NOT IS STILL BROKEN
-	// [ 'and 2 ', 'ahoy not aye and 1<2 and nay and not aye'],
+	[ 'and', 'ahoy aye and 1<2 and nay and not aye'], 
+	[ 'and 2 ', 'ahoy not aye and 1<2 and nay and not aye'],
 	[ 'ok to == arrays', 'ahoy [1]==[5,8]' ],
 	[ 'ok to != arrays', 'ahoy [1]!=[5,8]' ],
 	['simple arithmetic', `int x = 2*4`],
 	[ 'arithmetic', 'vargh x = 1\n ahoy 2*3+5**(-3)/2-5%8' ], //Something with this is fucked
 	['recursive functions','captain S(int x, int y) -> int {yo x == 0 {anchor 0 } anchor S(x-1, y) }'],
   	// // ["array length", "print(#[1,2,3]);"], // length function + implment in grammar + how to do this?
-	// [ 'variables', 'vargh x=[[[[1]]]]\n ahoy x[0][0][0][0]+2' ],
-	// [ 'nested functions', 'captain T(int x) -> none {vargh y = 1\n vargh x = x\n captain S(int z) -> none {ahoy z}}' ],
-	// //[ 'member exp with function','ship S { build(int x) {vargh x = x \n captain T() -> none {ahoy me.x}}} \n  S y = S(1) \n y.T() \n ahoy y.x'],
+	[ 'variables', 'vargh x=[[[[1]]]]\n ahoy x[0][0][0][0]+2' ],
+	[ 'nested functions', 'captain T(int x) -> none {vargh y = 1\n vargh n = x\n captain S(int z) -> none {ahoy z}}' ],
+	[ 'member exp with function','ship S { build(int x) {vargh x = x \n captain T() -> none {ahoy me.x}}} \n  S y = S(1) \n y.T() \n ahoy y.x'],
 	// //[ 'member exp', 'ship S { build(int x) {vargh x = x }} \n  S y = S(1) \n ahoy y.x' ],
 	// //[ 'array of class objects', 'ship S{ build(){vargh x = 1}} vargh x=[S(), S()]'], // not in analyzer yet
-  	// [ "subscript exp", "vargh a=[1,2]\n ahoy a[0]\n"], 
-	// [ 'assigned functions', 'captain f() -> none {}\n vargh g = f(1) \n s = g' ],
-	// [ 'call of assigned functions', 'captain f(int x) -> none {}\n vargh g = f \n g(1)' ],
-	// ['type equivalence of nested arrays', 'captain f([[int]] x) -> none {} ahoy f([[1,2]])'], 
-  	// ['call of assigned function in expression', `captain f(int x, booty y) -> int {}\n vargh g = f\n ahoy g(1, aye)\n f = g`],
+  	[ "subscript exp", "vargh a=[1,2]\n ahoy a[0]\n"], 
+	[ 'assigned functions', 'captain f() -> none {}\n vargh g = f() \n vargh s = g' ],
+	[ 'call of assigned functions', 'captain f(int x) -> none {}\n vargh g = f \n g(1)' ],
+	['type equivalence of nested arrays', 'captain f([[int]] x) -> none {} ahoy f([[1,2]])'], 
+  	['call of assigned function in expression', `captain f(int x, booty y) -> int {}\n vargh g = f\n ahoy g(1, aye)\n f = g`],
 
 	// // [ // not currently implemented in grammar: need to figure out how to identify passing functions as valid types
 	// // 	'pass a function to a function',
@@ -52,18 +52,18 @@ const semanticChecks = [
 	// // ], // check type in carlos.ohm for the fix
 	
 	// //['function return types',`int x = 1\n captain square(int x) -> int { anchor x * x }\n captain compose() -> int { anchor square }`], //functions as return types?
-  	// [ 'function assign', 'captain f() -> none {} vargh g = f\n vargh h = [g, f]\n ahoy h[0] ' ], 
+  	[ 'function assign', 'captain f() -> none {} vargh g = f\n vargh h = [g, f]\n ahoy h[0] ' ], 
 	// //[ 'pass in class as a parameter', 'ship S { build(){}} captain f(S x) -> none {}' ], 
-	// ["array parameters", "captain f([int] x) -> none {}"], 
+	["array parameters", "captain f([int] x) -> none {}"], 
     // //   ["types in function type", "function f(g: (int?, float)->string) {}"], // translate to PC
-	// ['none in fn type','captain f() -> none {}'],
-	// [ 'outer variable', 'vargh x = 1 \n parrot nay { ahoy x }' ],
+	['none in fn type','captain f() -> none {}'],
+	[ 'outer variable', 'vargh x = 1 \n parrot nay { ahoy x }' ],
 	// //   ["built-in constants", "print(25.0 * π);"], // do we want built in constants? maybe something pirate themed?
-	// ['map initialization and looping',
-	// 	`{shanty, shanty} a = {"Gold": "(15,17)", "Dragons": "(101, 666)}"}
-	// 	{shanty, shanty} b = {}`
-	// ],
-  // ['looping through a map', '{shanty, shanty} a = {"Gold": "(15,17)", "Dragons": "(101, 666)"}\nchase vargh location through a {ahoy location}']
+	['map initialization and looping',
+		`{shanty, shanty} a = {"Gold": "(15,17)", "Dragons": "(101, 666)}"}
+		{shanty, shanty} b = {}`
+	],
+//   ['looping through a map', '{shanty, shanty} a = {"Gold": "(15,17)", "Dragons": "(101, 666)"}\nchase vargh location through a {ahoy location}']
 ];
 
 // // Programs that are syntactically correct but have semantic errors
@@ -71,7 +71,8 @@ const semanticErrors = [
 	[ 'incorrect initialize with empty array', 'vargh fruits = []' ],
 	[ 'assigning undeclared variable', `z = z + 5`, /HEY! You didn't declare identifier z before you tried to use it. Declare it first, ye scurvy dog!/],
 	[ 'initialize with empty array', 'vargh fruits = []',/Hey! What's the type of that - Using vargh with an empty map or array confuses me./],
-	['relations','ahoy 1<=2 and "x">"y" and 3.5<1.2',/Expected a number/]
+	['relations','ahoy 1<=2 and "x">"y" and 3.5<1.2',/Expected a number/],
+	// [ 'assigned functions', 'captain f() -> none {}\n vargh g = f(1) \n s = g',/0 argument(s) required but 1 passed/],
 	// ['no return type in function declaration',`captain evenOrOdd(int x) -> shanty {\n x = -14 \n anchor x % 2 == 0\n}`,/OI KNAVE! Ye anchored the wrong type!/],
 	// ['breaking outside of a loop', `yo aye {\n maroon\n }`,/Break can only appear in a loop/],
 	// ['breaking outside of a loop', `yo aye {\n anchor\n }`,/YE BILGERAT! A RETURN CAN ONLY BE IN A FUNCTION./],

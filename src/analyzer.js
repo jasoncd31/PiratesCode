@@ -306,12 +306,12 @@ function checkForVargh(isVargh, m) {
       this.newChildContext({ inLoop: true }).analyze(s.body)
     }
     ForEachLoop(s) {
-      this.analyze(s.collection)
-      checkArray(s.collection)
-      s.iterator = new Variable(s.iterator.lexeme, true)
-      s.iterator.type = s.collection.type.baseType
+      this.analyze(s.expression)
+      checkArray(s.expression)
+      s.variable = new Variable(s.variable.lexeme, true)
+      s.variable.type = s.expression.type.baseType
       const bodyContext = this.newChildContext({ inLoop: true })
-      bodyContext.add(s.iterator.name, s.iterator)
+      bodyContext.add(s.variable.name, s.variable)
       bodyContext.analyze(s.body)
     }
     ReturnStatement(s) {
@@ -410,6 +410,18 @@ function checkForVargh(isVargh, m) {
       e.type = e.array.type.baseType
       this.analyze(e.index)
       checkInteger(e.index)
+    }
+    ClassDeclaration(c) {
+      console.log("HEYY")
+      // if (this.inLoop) {
+      //   throw new Error(`Foolish Spirit! You cannot create a class within a Loop!`)
+      // }
+      // i dont think this is right
+      const childContext = this.newChildContext({ inClass: true })
+      console.log(c)
+      c.constructorDec = childContext.analyze(c.constructorDec)
+      console.log("HEYYYYYYYw")
+      this.add(c.name, c)
     }
 }
 
