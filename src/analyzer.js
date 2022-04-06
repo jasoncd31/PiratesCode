@@ -79,6 +79,10 @@ function checkNumeric(e) {
   checkType(e, [Type.INT, Type.DOUBLE], "a number")
 }
 
+function checkNumericOrString(e) {
+  checkType(e, [Type.INT, Type.FLOAT, Type.STRING], "a number or string")
+}
+
 function checkBoolean(e) {
   checkType(e, [Type.BOOLEAN], "a boolean")
 }
@@ -124,9 +128,6 @@ function checkInLoop(context) {
   check(context.inLoop, "Break can only appear in a loop")
 }
 function checkHaveSameType(e1, e2) {
-  // console.log(e1)
-  // console.log(e2)
-  //So for some reaosn this becomes Ohm objects instead of tokens, idk how to fix that but we need to
   check(e1.type.isEquivalentTo(e2.type), `${e2.type} BE DIFFERENT FROM ${e2.type}, YE BLIND LANDLUBBER.`)
   // check(e1.category === e2.category, `${e2.category} BE DIFFERENT FROM ${e2.category}, YE BLIND LANDLUBBER.`)
 }
@@ -160,7 +161,6 @@ function checkAssignable(e, { toType: type }) {
 }
 
 function checkForVargh(isVargh, m) {
-  console.log(isVargh)
   if (m.initializer.constructor.name === 'MapExpression' || m.initializer.constructor.name === 'ArrayExpression') {
     check(
       !isVargh || m.initializer.elements.length !== 0,
@@ -234,7 +234,6 @@ function checkForVargh(isVargh, m) {
     MapExpression(m) {
       this.analyze(m.elements)
       checkAllHaveSameType(m.elements)
-      console.log("BYEE ")
       if (m.elements.length > 0) { 
         m.type = new MapType(m.elements[0].keyType, m.elements[0].valueType)
       } else {
@@ -253,13 +252,11 @@ function checkForVargh(isVargh, m) {
     }
     Array(a) {
       // check for empty array
-      console.log(a)
       a.forEach(item => this.analyze(item))
     }
     ArrayExpression(a) {
       this.analyze(a.elements)
       checkAllHaveSameType(a.elements)
-      console.log(a.elements)
       if (a.elements.length === 0) {
         a.type = new ArrayType(Type.ANY)
       } else {
@@ -368,16 +365,13 @@ function checkForVargh(isVargh, m) {
       s.argument = this.analyze(s.argument)
     }
     BinaryExpression(e) {
-      console.log("OP " + e.op)
-      console.log("LEFT " + e.left)
-      console.log("RIGHT " + e.right)
       this.analyze(e.left)
       this.analyze(e.right)
       if (["+"].includes(e.op)) {
-        checkNumeric(e.left)
+        checkNumericOrString(e.left)
         checkHaveSameType(e.left, e.right)
         e.type = e.left.type
-      } else if (["-", "*", "/", "**"].includes(e.op)) {
+      } else if (["-", "*", "/", "**", "%"].includes(e.op)) {
         checkNumeric(e.left)
         checkHaveSameType(e.left, e.right)
         e.type = e.left.type
@@ -395,12 +389,11 @@ function checkForVargh(isVargh, m) {
       }
     }
     UnaryExpression(e) {
-      console.log(e)
       this.analyze(e.operand)
-      if (e.op.lexeme === "-") {
+      if (e.op === "-") {
         checkNumeric(e.operand)
         e.type = e.operand.type
-      } else if (e.op.lexeme === "not") {
+      } else if (e.op === "not") {
         checkBoolean(e.operand)
         e.type = Type.BOOLEAN
       }
