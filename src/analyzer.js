@@ -366,7 +366,7 @@ function checkForVargh(isVargh, m) {
       console.log(p)
       if (p.type instanceof Token) p.type = p.type.value
       checkIsAType(p.type)
-      this.add(p.name.lexeme, p)
+      this.add(p.id.lexeme, p)
     }
     PrintStatement(s) {
       s.argument = this.analyze(s.argument)
