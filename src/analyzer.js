@@ -334,13 +334,13 @@ function checkForVargh(isVargh, m) {
       this.analyze(c.args)
       checkFunctionCallArguments(c.args, callee.type)
       c.type = callee.type.returnType
-      // TODO: Class methodss and constructors
+      // TODO: Class methods and constructors
     }
     FunctionDeclaration(d) {
       if (d.returnType) this.analyze(d.returnType)
       d.fun.value = new Function(
         d.fun.lexeme,
-        d.parameters,
+        d.params,
         d.returnType?.value ?? d.returnType ?? Type.NONE
       )
       checkIsAType(d.fun.value.returnType)
@@ -353,13 +353,20 @@ function checkForVargh(isVargh, m) {
         d.fun.value.parameters = []
       }
       d.fun.value.type = new FunctionType(
-        d.fun.value.parameters.map(p => p.type),
+        d.fun.value.parameters.map(p => p.type,),
         d.fun.value.returnType
       )
- 
+      //d.fun.value.parameters.map(p => this.add(p.))
       // Add before analyzing the body to allow recursion
       this.add(d.fun.lexeme, d.fun.value)
       childContext.analyze(d.body)
+    }
+    Parameter(p) {
+      this.analyze(p.type)
+      console.log(p)
+      if (p.type instanceof Token) p.type = p.type.value
+      checkIsAType(p.type)
+      this.add(p.name.lexeme, p)
     }
     PrintStatement(s) {
       s.argument = this.analyze(s.argument)

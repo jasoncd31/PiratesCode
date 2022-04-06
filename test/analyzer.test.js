@@ -31,10 +31,10 @@ const semanticChecks = [
 	[ 'ok to != arrays', 'ahoy [1]!=[5,8]' ],
 	['simple arithmetic', `int x = 2*4`],
 	[ 'arithmetic', 'vargh x = 1\n ahoy 2*3+5**(-3)/2-5%8' ], //Something with this is fucked
-	['recursive functions','int x = 3\n int y = 2\ncaptain S(int x, int y) -> int {yo x == 0 {anchor 0 } anchor S(x-1, y) }'],
+	['recursive functions','captain S(int x, int y) -> int {yo x == 0 {anchor 0 } anchor S(x-1, y) }'],
   	// // ["array length", "print(#[1,2,3]);"], // length function + implment in grammar + how to do this?
 	// [ 'variables', 'vargh x=[[[[1]]]]\n ahoy x[0][0][0][0]+2' ],
-	// [ 'nested functions', ' int x = 42\n vargh z = 2\ncaptain T(int x) -> none {vargh y = 1\n vargh x = x\n captain S(int z) -> none {ahoy z}}' ],
+	// [ 'nested functions', 'captain T(int x) -> none {vargh y = 1\n vargh x = x\n captain S(int z) -> none {ahoy z}}' ],
 	// //[ 'member exp with function','ship S { build(int x) {vargh x = x \n captain T() -> none {ahoy me.x}}} \n  S y = S(1) \n y.T() \n ahoy y.x'],
 	// //[ 'member exp', 'ship S { build(int x) {vargh x = x }} \n  S y = S(1) \n ahoy y.x' ],
 	// //[ 'array of class objects', 'ship S{ build(){vargh x = 1}} vargh x=[S(), S()]'], // not in analyzer yet
