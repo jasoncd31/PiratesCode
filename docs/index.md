@@ -20,8 +20,6 @@ tr:nth-child(even) {
 </head>
 <body>
     <img src=piratescodelogo.jpg width="500" height="500"> 
-
-    <b>PiratesCode</b>
     
     Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wide web! Inspired by the swashbuckling buccaneers of legend, PiratesCode be designed to make programming easy and fun for scurvy new programming recruits. 
     PiratesCode be a language for those fixing to get an education and have fun while doing it! Since we’re all swashbuckling corsairs here, PiratesCode specifically helps ye write secure code so ye can protect your loot. 
@@ -30,7 +28,7 @@ tr:nth-child(even) {
     <br>
     Written by <a href="https://github.com/mayaepps">Maya Epps</a>, <a href="https://github.com/jennifer-s19">Jennifer Siao</a>, <a href="https://github.com/jasoncd31">Jason Douglas</a>, <a href="https://github.com/tnobal">Tanya Nobal</a>, and <a href="https://github.com/thesaadsalman">Saad Salman</a>
     <br>
-    <b>Swashbuckling Features:</b>
+    <h2>Swashbuckling Features:</h2>
     <ul>
         <li>Mix of Python & Javascript: No parenthesis in if/while/for statements, but does have brackets</li>
         <li>Pirate-themed language and syntax</li>
@@ -142,9 +140,9 @@ int x = 5</code></pre></td>
 </td>
 <td>
 
-<pre><code>captain evenOrOdd(x){
+<code>captain evenOrOdd(x){
     anchor x % 2 == 0
-}</code></pre>
+}</code>
 </td>
 
 
@@ -319,7 +317,7 @@ ahoy "The number is ~x~!"</pre></code>
 
 </td>
 
-<h3>Comments</h3>
+<h3>Comments</h3f>
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
@@ -334,5 +332,3 @@ ahoy "The number is ~x~!"</pre></code>
 
 </td>
 
-</body>
-</html>
