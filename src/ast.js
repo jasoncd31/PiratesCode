@@ -19,7 +19,11 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
         return new core.ShortReturnStatement()
     },
     VarDec(type, id, _eq, initializer) {
-        return new core.VariableDeclaration(type.sourceString, id.ast(), initializer.ast())
+        return new core.VariableDeclaration(
+            type.sourceString,
+            id.ast(),
+            initializer.ast()
+        )
     },
     FunDec(_fun, id, _left, params, _right, _arrow, returnType, body) {
         return new core.FunctionDeclaration(
@@ -30,17 +34,31 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             returnType.ast()
         )
     },
-    ClassDec(_class, name, _open, constructorDec, methods, _close) {
+
+    // this isn't quite working
+    ClassDec(_class, name, _open, constructorDec, methodDec, _close) {
         return new core.ClassDeclaration(
             name.sourceString,
             constructorDec.ast(),
-            methods.ast()
+            methodDec.ast()
         )
     },
     ConstructorDec(_constructor, _left, parameters, _right, body) {
-        return new core.ConstructorDeclaration(parameters.asIteration().ast(), body.ast())
+        return new core.ConstructorDeclaration(
+            parameters.asIteration().ast(),
+            body.ast()
+        )
     },
-    MethodDec(_method, name, _left, parameters, _right, _arrow, returnType, body) {
+    MethodDec(
+        _method,
+        name,
+        _left,
+        parameters,
+        _right,
+        _arrow,
+        returnType,
+        body
+    ) {
         return new core.Method(
             name.sourceString,
             parameters.asIteration().ast(),
@@ -75,13 +93,8 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             body.ast()
         )
     },
-    IfStmt_short(_if,
-        test,
-        consequent) {
-        return new core.IfStatement(
-            test.ast(),
-            consequent.ast(),
-        )
+    IfStmt_short(_if, test, consequent) {
+        return new core.IfStatement(test.ast(), consequent.ast())
     },
     IfStmt_long(
         _if,
@@ -107,7 +120,7 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     },
     Type_list(_left, baseType, _right) {
         return new core.ArrayType(baseType.ast())
-      },
+    },
     Exp5_unary(op, operand) {
         return new core.UnaryExpression(op.sourceString, operand.ast())
     },
@@ -169,7 +182,7 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     },
     break(_break) {
         return new core.BreakStatement()
-      },
+    },
     ArrayLit(_left, args, _right) {
         return new core.ArrayExpression(args.asIteration().ast())
     },
