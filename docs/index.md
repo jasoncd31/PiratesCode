@@ -19,7 +19,13 @@ tr:nth-child(even) {
 </style>
 </head>
 <body>
+<<<<<<< HEAD
     <img src=piratescodelogo.jpg width="500" height="500"> 
+=======
+    ![pirate](/PiratesCode/docs/piratescodelogo.jpg) 
+
+    <b>PiratesCode</b>
+>>>>>>> 2236f754f5834d5f6c15500ae0a5b70d93810c6a
     
     Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wide web! Inspired by the swashbuckling buccaneers of legend, PiratesCode be designed to make programming easy and fun for scurvy new programming recruits. 
     PiratesCode be a language for those fixing to get an education and have fun while doing it! Since we’re all swashbuckling corsairs here, PiratesCode specifically helps ye write secure code so ye can protect your loot. 
