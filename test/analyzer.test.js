@@ -35,7 +35,7 @@ const semanticChecks = [
   	// // ["array length", "print(#[1,2,3]);"], // length function + implment in grammar + how to do this?
 	[ 'variables', 'vargh x=[[[[1]]]]\n ahoy x[0][0][0][0]+2' ],
 	[ 'nested functions', 'captain T(int x) -> none {vargh y = 1\n vargh n = x\n captain S(int z) -> none {ahoy z}}' ],
-	[ 'member exp with function','ship S { build(int x) {vargh x = x \n captain T() -> none {ahoy me.x}}} \n  S y = S(1) \n y.T() \n ahoy y.x'],
+	[ 'member exp with function','ship S { build(int x) {vargh y = x \n captain T() -> none {ahoy me.x}}} \n  S y = S(1) \n y.T() \n ahoy y.x'],
 	// //[ 'member exp', 'ship S { build(int x) {vargh x = x }} \n  S y = S(1) \n ahoy y.x' ],
 	// //[ 'array of class objects', 'ship S{ build(){vargh x = 1}} vargh x=[S(), S()]'], // not in analyzer yet
   	[ "subscript exp", "vargh a=[1,2]\n ahoy a[0]\n"], 

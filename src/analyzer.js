@@ -363,7 +363,6 @@ function checkForVargh(isVargh, m) {
     }
     Parameter(p) {
       this.analyze(p.type)
-      console.log(p)
       if (p.type instanceof Token) p.type = p.type.value
       checkIsAType(p.type)
       this.add(p.id.lexeme, p)
@@ -412,16 +411,38 @@ function checkForVargh(isVargh, m) {
       checkInteger(e.index)
     }
     ClassDeclaration(c) {
-      console.log("HEYY")
       // if (this.inLoop) {
       //   throw new Error(`Foolish Spirit! You cannot create a class within a Loop!`)
       // }
       // i dont think this is right
       const childContext = this.newChildContext({ inClass: true })
-      console.log(c)
       c.constructorDec = childContext.analyze(c.constructorDec)
-      console.log("HEYYYYYYYw")
       this.add(c.name, c)
+    }
+    ConstructorDeclaration(d) {
+      d.returnType = Type.NONE
+      d.lexeme = 'build'
+      console.log(d)
+      d.value = new Function(
+        d.lexeme,
+        d.parameters,
+        d.returnType
+      )
+      // When entering a function body, we must reset the inLoop setting,
+      // because it is possible to declare a function inside a loop!
+      const childContext = this.newChildContext({ inLoop: false, function: d.value })
+      if (d.value.parameters) { 
+        childContext.analyze(d.value.parameters) 
+      } else {
+        d.value.parameters = []
+      }
+      d.value.type = new FunctionType(
+        d.value.parameters.map(p => p.type),
+        Type.NONE
+      )
+      // Add before analyzing the body to allow recursion
+      this.add(d.lexeme, d.value)
+      childContext.analyze(d.body)
     }
 }
 
