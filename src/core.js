@@ -15,36 +15,48 @@ export class Type {
     static NONE = new Type("none")
     static ANY = new Type("any")
     constructor(description) {
-      Object.assign(this, { description })
+        Object.assign(this, { description })
     }
 }
 
 export class Function {
     constructor(name, parameters, returnType) {
-      Object.assign(this, { name, parameters, returnType })
+        Object.assign(this, { name, parameters, returnType })
     }
 }
 
 export class FunctionType extends Type {
     // Example: (boolean,[string]?)->float
     constructor(paramTypes, returnType) {
-      super(`(${paramTypes.map(t => t.description).join(",")})->${returnType.description}`)
-      Object.assign(this, { paramTypes, returnType })
+        super(
+            `(${paramTypes.map((t) => t.description).join(",")})->${
+                returnType.description
+            }`
+        )
+        Object.assign(this, { paramTypes, returnType })
     }
-  }
+}
 
 export class ArrayType extends Type {
     constructor(baseType) {
-      super(`[${baseType.description}]`)
-      this.baseType = baseType
+        super(`[${baseType.description}]`)
+        this.baseType = baseType
     }
 }
 
 export class MapType extends Type {
     constructor(baseKeyType, baseValueType) {
-      super(`{${baseKeyType.description} : ${baseValueType.description}}`)
-      this.baseKeyType = baseKeyType
-      this.baseValueType = baseValueType
+        super(`{${baseKeyType.description} : ${baseValueType.description}}`)
+        this.baseKeyType = baseKeyType
+        this.baseValueType = baseValueType
+    }
+}
+
+export class ClassType extends Type {
+    constructor(name, constructor, methods) {
+        super(`{${name.lexeme}}`)
+        this.constructor = constructor
+        this.methods = methods
     }
 }
 
@@ -56,13 +68,13 @@ export class MapType extends Type {
 
 export class Variable {
     constructor(name) {
-      this.name = name
+        this.name = name
     }
 }
 
 export class VariableDeclaration {
-    constructor(modifier, variable, initializer) {
-        Object.assign(this, { modifier, variable, initializer })
+    constructor(type, variable, initializer) {
+        Object.assign(this, { type, variable, initializer })
     }
 }
 
@@ -75,6 +87,18 @@ export class FunctionDeclaration {
 export class Assignment {
     constructor(target, source) {
         Object.assign(this, { target, source })
+    }
+}
+
+export class DotExpression {
+    constructor(object, member) {
+        Object.assign(this, { object, member })
+    }
+}
+
+export class Field {
+    constructor(type, object, variable, initializer) {
+        Object.assign(this, { type, object, variable, initializer })
     }
 }
 
@@ -128,7 +152,7 @@ export class IfStatement {
 
 export class BreakStatement {
     // Intentionally empty
-  }
+}
 
 export class BinaryExpression {
     constructor(op, left, right) {
@@ -161,7 +185,7 @@ export class MapEntry {
     }
 }
 
-export class NewInstance {
+export class ObjectDec {
     constructor(identifier, args) {
         Object.assign(this, { identifier, args })
     }
@@ -205,9 +229,9 @@ export class Token {
 export class SubscriptExpression {
     // Example: a[20]
     constructor(array, index) {
-      Object.assign(this, { array, index })
+        Object.assign(this, { array, index })
     }
-  }
+}
 
 export class ReturnStatement {
     constructor(expression) {
@@ -222,11 +246,10 @@ export class ShortReturnStatement {
 // Throw an error message that takes advantage of Ohm's messaging
 export function error(message, token) {
     if (token?.source) {
-      throw new Error(`${token.source.getLineAndColumnMessage()}${message}`)
+        throw new Error(`${token.source.getLineAndColumnMessage()}${message}`)
     }
     throw new Error(message)
-  }
-  
+}
 
 // Return a compact and pretty string representation of the node graph,
 // taking care of cycles. Written here from scratch because the built-in

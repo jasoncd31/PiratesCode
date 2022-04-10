@@ -49,7 +49,7 @@ const semanticChecks = [
     ],
     [
         "member exp with function",
-        "ship S { build(int x) {vargh y = x} \n captain T() -> none {ahoy me.y}} \n  S y = S(1) \n y.T()",
+        "ship S { build(int x) {int me.y = x} \n captain T() -> none {ahoy me.y}} \n  S y = new S(1) \n y.T()",
     ],
     // //[ 'member exp', 'ship S { build(int x) {vargh x = x }} \n  S y = S(1) \n ahoy y.x' ],
     // //[ 'array of class objects', 'ship S{ build(){vargh x = 1}} vargh x=[S(), S()]'], // not in analyzer yet

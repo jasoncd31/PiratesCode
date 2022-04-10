@@ -7,6 +7,7 @@ import {
     ArrayType,
     FunctionType,
     MapType,
+    ClassType,
 } from "./core.js"
 import * as stdlib from "./stdlib.js"
 
@@ -250,7 +251,7 @@ class Context {
     }
     VariableDeclaration(d) {
         console.log("in var dec")
-        checkForVargh(d.modifier === "vargh", d)
+        checkForVargh(d.type === "vargh", d)
         this.analyze(d.initializer)
         d.variable.value = new Variable(d.variable.lexeme)
         d.variable.value.type = d.initializer.type
@@ -458,17 +459,29 @@ class Context {
         // if (this.inLoop) {
         //   throw new Error(`Foolish Spirit! You cannot create a class within a Loop!`)
         // }
-        // i dont think this is right
-        const childContext = this.newChildContext({ inClass: true })
+
+        // this is not right
+        console.log("YOU ARE IN A CLASS")
+        console.log(c)
+        // create a new class type every time we see a class
+        const newClassType = new ClassType(c.id, c.constructorDec, c.methods)
+        // create a new context for the type
+        const typeContext = this.newChildContext()
+        // add that class to local
+        // this.locals.set(c.id, newClassType)
+        // c.type = new ClassType(c.id, c.constructorDec, c.methods)
+        // const constructorContext = typeContext.newChildContext({ parent: typeContext })
         console.log("class dec print")
         console.log(c)
-        c.constructorDec = childContext.analyze(c.constructorDec)
+        // handle constructor dec
+        c.constructorDec = typeContext.analyze(c.constructorDec)
+        // handle methods
         this.add(c.name, c)
     }
     ConstructorDeclaration(d) {
+        // this is not finished
         d.returnType = Type.NONE
         d.lexeme = "build"
-        console.log(d)
         d.value = new Function(d.lexeme, d.parameters, d.returnType)
         // When entering a function body, we must reset the inLoop setting,
         // because it is possible to declare a function inside a loop!
@@ -484,18 +497,15 @@ class Context {
             Type.NONE
         )
         // Add before analyzing the body to allow recursion
-        console.log("HIIIIIIIIIIIII")
-        console.log(d.lexeme)
-        console.log(d.value)
-        console.log(d.body)
-        for (let i = 0; i < d.value.type.paramTypes.length; i++) {
-            console.log(d.value.type.paramTypes)
-        }
         this.add(d.lexeme, d.value)
-        console.log("HEEEEEEEEEEEEE3")
-        console.log(d.body)
         childContext.analyze(d.body)
-        console.log("HEEEEEEEEEEEEE")
+    }
+    Field(f) {
+        // this is not correct
+        this.analyze(f.type)
+        console.log(f)
+        if (f.type instanceof Token) f.type = f.type.value
+        checkIsAType(f.type)
     }
 }
 

@@ -12,19 +12,24 @@ PiratesCode {
                | comment
                | Call
                | ClassDec
+               | DotExpression
                    
   VarDec       = (Type | var) id "=" Exp
 
   FunDec       = function id "(" ListOf<Param, ","> ")" "->" Type Block
+  
   Param        = Type id
 
   Assignment   = Exp6 "=" Exp                  -- regular
-               | (this|id) ("." id)+ "=" Exp    -- property
 
   Return      = return Exp 		--exp
-              | return          --short             
-
-  LoopStatement = while Exp Block 							   -- while
+              | return          --short     
+              
+  Call        = id "(" ListOf<Exp, ","> ")"  -- regular
+               
+  DotExpression  = (id | this) "." (Call | id) 
+  
+  LoopStatement = while Exp Block 				     -- while
                | for (Type|"vargh") id "through" id Block           -- ForEach
                | for ("vargh"|"int") id "=" Exp "until" Exp Block   -- For
 
@@ -35,7 +40,9 @@ PiratesCode {
   
   ClassDec    = class id "{" ConstructorDec MethodDec* "}"
 
-  ConstructorDec = construct "(" ListOf<Param, ","> ")" Block
+  ConstructorDec = construct "(" ListOf<Param, ","> ")" "{" Field* "}"
+  
+  Field       =  Type this "." id "=" Exp   
 
   MethodDec    = function id "(" ListOf<Param, ","> ")" "->" Type Block
   Exp     = Exp0 "?" Exp0 ":" Exp               -- ternary
@@ -61,29 +68,27 @@ PiratesCode {
           | ArrayLit
           | MapLit
           | Call
-          | NewInstance
+          | DotExpression
+          | ObjectDec
           | Exp6 "[" Exp "]"			-- subscript
           | id
           | "(" Exp ")"                         -- parens
           | strlit  
 
 
-  Type 	  = "[" Type "]"		-- list
-  		  | "{" Type "," Type "}" 	-- dictionary
-  		  | id				-- id
+  Type 	        = "[" Type "]"		-- list
+  		| "{" Type "," Type "}" 	-- dictionary
+  		| id				-- id
 
-  ArrayLit    = "[" ListOf<Exp, ","> "]"
+  ArrayLit      = "[" ListOf<Exp, ","> "]"
   
-  MapLit      = "{" ListOf<MapEntry, ","> "}"
-  MapEntry    = Exp6 ":" Exp
+  MapLit        = "{" ListOf<MapEntry, ","> "}"
+  MapEntry      = Exp6 ":" Exp
 
   intlit        = digit+
   doublelit     = digit+ "." digit+ (("E" | "e") ("+" | "-")? digit+)?
 
   relop   = "<=" | "<" | "!=" | "==" | ">=" | ">"
-
-  Call    = id "(" ListOf<Exp, ","> ")"  -- regular
-            | (id | this) ("." (Call | id))+  -- property
           
   let         = "vargh" ~alnum
   print       = "ahoy" ~alnum
@@ -114,11 +119,12 @@ PiratesCode {
   keyword     = let | print | function | else | elseif | if | while | repeat
               | for | break | return | true | false | this | new | construct | class          
               
-  /*strlit      = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")*/
-  strlit        = "\"" char* "\""
+  /*strlit    = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")*/
+  strlit      = "\"" char* "\""
               
   char        = ~"\\" ~"\"" ~"\n" ~"~" any
-  NewInstance = new id "(" ListOf<Exp, ","> ")"
+  ObjectDec      = new id "(" ListOf<Exp, ","> ")"
 
  
 } 
+

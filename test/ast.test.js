@@ -1,6 +1,6 @@
-import assert from 'assert';
-import util from 'util';
-import ast from '../src/ast.js';
+import assert from "assert"
+import util from "util"
+import ast from "../src/ast.js"
 
 const source1 = `
     vargh age = 10.5 
@@ -14,7 +14,7 @@ const source1 = `
         }
     }
     ahoy "yer a pirate!"
-    `;
+    `
 
 const source2 = `
     chase vargh x = 0 until 10 {
@@ -23,7 +23,7 @@ const source2 = `
         }
         ahoy x
     }
-`;
+`
 
 const source3 = `
     captain evenOrOdd(int x) -> int {
@@ -37,14 +37,14 @@ const source3 = `
     captain letsAnchor() -> none {
         anchor
     }
-`;
+`
 
 const source4 = `
     map companyMap = {"Gold": "(15,17)", "Dragons": "(101, 666)"}
     chase vargh location through companyMap {
         ahoy location
     }
-`;
+`
 const source5 = `
     yo aye {
         ahoy "true"
@@ -67,17 +67,17 @@ const source5 = `
     ho {
         ahoy "else"
     }
-`;
+`
 
 const source6 = `
     bigboolean = y == 7 and z < 10 or (y == 3 and z < x**2)
-`;
+`
 
 const source7 = `
     ship Rectangle {
         build (doubloon height, int width) {
-            me.height = height
-            me.width = width
+            doubloon me.height = height
+            int me.width = width
         }
         captain area() -> doubloon {
             anchor me.height * me.width
@@ -94,23 +94,23 @@ const source7 = `
     Rectangle p = new Rectangle(3,4)
     ahoy p.getWidth()
     p.setWidth(15)
-`;
+`
 
 const source8 = `
     captain S(int x, int y) -> int {
         yo x == 0 {
             anchor 0 
         } 
-        anchor S(x-1, y) }`;
+        anchor S(x-1, y) }`
 
 const naughty_pirate = `
     shanty x <= []
     
-`;
+`
 
 const expected1 = `   1 | Program statements=[#2,#3,#4,#14]
-   2 | VariableDeclaration modifier='vargh' variable=(Id,"age") initializer=(Double,"10.5")
-   3 | VariableDeclaration modifier='vargh' variable=(Id,"ageLimit") initializer=(Int,"18")
+   2 | VariableDeclaration type='vargh' variable=(Id,"age") initializer=(Double,"10.5")
+   3 | VariableDeclaration type='vargh' variable=(Id,"ageLimit") initializer=(Int,"18")
    4 | WhileLoop test=#5 body=[#6,#7,#9]
    5 | BinaryExpression op='<' left=(Id,"age") right=(Id,"ageLimit")
    6 | PrintStatement argument=(Str,""yer a little lad"")
@@ -121,7 +121,7 @@ const expected1 = `   1 | Program statements=[#2,#3,#4,#14]
   11 | PrintStatement argument=#12
   12 | Conditional test=#13 consequent=(Str,""aye"") alternate=(Str,""nay"")
   13 | BinaryExpression op='<' left=(Id,"age") right=(Id,"ageLimit")
-  14 | PrintStatement argument=(Str,""yer a pirate!"")`;
+  14 | PrintStatement argument=(Str,""yer a pirate!"")`
 
 const expected2 = `   1 | Program statements=[#2]
    2 | ForLoop variable=(Id,"x") start=(Int,"0") end=(Int,"10") body=[#3,#7]
@@ -129,7 +129,7 @@ const expected2 = `   1 | Program statements=[#2]
    4 | BinaryExpression op='==' left=(Id,"x") right=(Int,"5")
    5 | Array 0=#6
    6 | BreakStatement 
-   7 | PrintStatement argument=(Id,"x")`;
+   7 | PrintStatement argument=(Id,"x")`
 
 const expected3 = `   1 | Program statements=[#2,#9,#11,#14]
    2 | FunctionDeclaration fun=(Id,"evenOrOdd") params=[#3] body=[#4,#6] returnType=(Id,"int")
@@ -139,21 +139,21 @@ const expected3 = `   1 | Program statements=[#2,#9,#11,#14]
    6 | ReturnStatement expression=#7
    7 | BinaryExpression op='==' left=#8 right=(Int,"0")
    8 | BinaryExpression op='%' left=(Id,"x") right=(Int,"2")
-   9 | VariableDeclaration modifier='ledger' variable=(Id,"numbers") initializer=#10
+   9 | VariableDeclaration type='ledger' variable=(Id,"numbers") initializer=#10
   10 | ArrayExpression elements=[(Int,"1"),(Int,"2"),(Int,"3")]
   11 | ForEachLoop variable=(Id,"x") expression=(Id,"numbers") body=[#12]
   12 | PrintStatement argument=#13
   13 | Call callee=(Id,"evenOrOdd") args=[(Id,"x")]
   14 | FunctionDeclaration fun=(Id,"letsAnchor") params=[] body=[#15] returnType=(Id,"none")
-  15 | ShortReturnStatement `;
+  15 | ShortReturnStatement `
 
 const expected4 = `   1 | Program statements=[#2,#6]
-   2 | VariableDeclaration modifier='map' variable=(Id,"companyMap") initializer=#3
+   2 | VariableDeclaration type='map' variable=(Id,"companyMap") initializer=#3
    3 | MapExpression elements=[#4,#5]
    4 | MapEntry key=(Str,""Gold"") value=(Str,""(15,17)"")
    5 | MapEntry key=(Str,""Dragons"") value=(Str,""(101, 666)"")
    6 | ForEachLoop variable=(Id,"location") expression=(Id,"companyMap") body=[#7]
-   7 | PrintStatement argument=(Id,"location")`;
+   7 | PrintStatement argument=(Id,"location")`
 
 const expected5 = `   1 | Program statements=[#2,#5,#12]
    2 | IfStatement test=[(Bool,"aye")] consequent=[#3] alternate=[]
@@ -172,7 +172,7 @@ const expected5 = `   1 | Program statements=[#2,#5,#12]
   15 | Array 0=#16
   16 | PrintStatement argument=(Str,""false"")
   17 | Array 0=#18
-  18 | PrintStatement argument=(Str,""else"")`;
+  18 | PrintStatement argument=(Str,""else"")`
 
 const expected6 = `   1 | Program statements=[#2]
    2 | Assignment target=(Id,"bigboolean") source=#3
@@ -183,37 +183,34 @@ const expected6 = `   1 | Program statements=[#2]
    7 | BinaryExpression op='and' left=#8 right=#9
    8 | BinaryExpression op='==' left=(Id,"y") right=(Int,"3")
    9 | BinaryExpression op='<' left=(Id,"z") right=#10
-  10 | BinaryExpression op='**' left=(Id,"x") right=(Int,"2")`;
+  10 | BinaryExpression op='**' left=(Id,"x") right=(Int,"2")`
 
-
-const expected7 = `   1 | Program statements=[#2,#22,#24,#27]
-   2 | ClassDeclaration id='Rectangle' constructorDec=#3 methods=[#10,#15,#18]
-   3 | ConstructorDeclaration parameters=[#4,#5] body=[#6,#8]
+const expected7 = `   1 | Program statements=[#2,#20,#22,#25]
+   2 | ClassDeclaration id='Rectangle' constructorDec=#3 methods=[#8,#13,#16]
+   3 | ConstructorDeclaration parameters=[#4,#5] body=[#6,#7]
    4 | Parameter type=(Id,"doubloon") id=(Id,"height")
    5 | Parameter type=(Id,"int") id=(Id,"width")
-   6 | Assignment target=#7 source=(Id,"height")
-   7 | Call callee=(Sym,"me") args=[(Id,"height")]
-   8 | Assignment target=#9 source=(Id,"width")
-   9 | Call callee=(Sym,"me") args=[(Id,"width")]
-  10 | Method name='area' parameters=[] body=[#11] returnType=(Id,"doubloon")
-  11 | ReturnStatement expression=#12
-  12 | BinaryExpression op='*' left=#13 right=#14
-  13 | Call callee=(Sym,"me") args=[(Id,"height")]
-  14 | Call callee=(Sym,"me") args=[(Id,"width")]
-  15 | Method name='getWidth' parameters=[] body=[#16] returnType=(Id,"int")
-  16 | ReturnStatement expression=#17
-  17 | Call callee=(Sym,"me") args=[(Id,"width")]
-  18 | Method name='setWidth' parameters=[#19] body=[#20] returnType=(Id,"none")
-  19 | Parameter type=(Id,"int") id=(Id,"newWidth")
-  20 | Assignment target=#21 source=(Id,"newWidth")
-  21 | Call callee=(Sym,"me") args=[(Id,"width")]
-  22 | VariableDeclaration modifier='Rectangle' variable=(Id,"p") initializer=#23
-  23 | NewInstance identifier='Rectangle' args=[(Int,"3"),(Int,"4")]
-  24 | PrintStatement argument=#25
-  25 | Call callee=(Id,"p") args=[#26]
-  26 | Call callee=(Id,"getWidth") args=[]
-  27 | Call callee=(Id,"p") args=[#28]
-  28 | Call callee=(Id,"setWidth") args=[(Int,"15")]`;
+   6 | Field type=(Id,"doubloon") object=(Sym,"me") variable=(Id,"height") initializer=(Id,"height")
+   7 | Field type=(Id,"int") object=(Sym,"me") variable=(Id,"width") initializer=(Id,"width")
+   8 | Method name='area' parameters=[] body=[#9] returnType=(Id,"doubloon")
+   9 | ReturnStatement expression=#10
+  10 | BinaryExpression op='*' left=#11 right=#12
+  11 | DotExpression object=(Sym,"me") member=(Id,"height")
+  12 | DotExpression object=(Sym,"me") member=(Id,"width")
+  13 | Method name='getWidth' parameters=[] body=[#14] returnType=(Id,"int")
+  14 | ReturnStatement expression=#15
+  15 | DotExpression object=(Sym,"me") member=(Id,"width")
+  16 | Method name='setWidth' parameters=[#17] body=[#18] returnType=(Id,"none")
+  17 | Parameter type=(Id,"int") id=(Id,"newWidth")
+  18 | Assignment target=#19 source=(Id,"newWidth")
+  19 | DotExpression object=(Sym,"me") member=(Id,"width")
+  20 | VariableDeclaration type='Rectangle' variable=(Id,"p") initializer=#21
+  21 | ObjectDec identifier='Rectangle' args=[(Int,"3"),(Int,"4")]
+  22 | PrintStatement argument=#23
+  23 | DotExpression object=(Id,"p") member=#24
+  24 | Call callee=(Id,"getWidth") args=[]
+  25 | DotExpression object=(Id,"p") member=#26
+  26 | Call callee=(Id,"setWidth") args=[(Int,"15")]`
 
 const expected8 = `   1 | Program statements=[#2]
    2 | FunctionDeclaration fun=(Id,"S") params=[#3,#4] body=[#5,#9] returnType=(Id,"int")
@@ -225,43 +222,42 @@ const expected8 = `   1 | Program statements=[#2]
    8 | ReturnStatement expression=(Int,"0")
    9 | ReturnStatement expression=#10
   10 | Call callee=(Id,"S") args=[#11,(Id,"y")]
-  11 | BinaryExpression op='-' left=(Id,"x") right=(Int,"1")`;
+  11 | BinaryExpression op='-' left=(Id,"x") right=(Int,"1")`
 
 // console.log(ast('vargh x = 1\n ahoy 2*3+5**(-3)/2-5%8'))
-describe('The AST generator:', () => {
-	describe('Produces a correct AST for:', () => {
-		it(' variable assignments, while loops, if statements, print statements', () => {
-			assert.deepStrictEqual(util.format(ast(source1)), expected1);
-		});
-		it('for loops', () => {
-			assert.deepStrictEqual(util.format(ast(source2)), expected2);
-		});
-		it('function declarations, arrays, foreach, returns', () => {
-			assert.deepStrictEqual(util.format(ast(source3)), expected3);
-		});
-		it('dictionary', () => {
-			assert.deepStrictEqual(util.format(ast(source4)), expected4);
-		});
-		it('true and false boolean expression', () => {
-			assert.deepStrictEqual(util.format(ast(source5)), expected5);
-		});
-		it('parens and boolean expression assignment', () => {
-			assert.deepStrictEqual(util.format(ast(source6)), expected6);
-		});
-		it('parens and boolean expression assignment', () => {
-			assert.deepStrictEqual(util.format(ast(source6)), expected6);
-		});
-		it('Class Declarations', () => {
-			assert.deepStrictEqual(util.format(ast(source7)), expected7);
-		});
-		it('Recursive Function', () => {
-			assert.deepStrictEqual(util.format(ast(source8)), expected8);
-		});
-	});
-	describe('Rejects bad programs:', () => {
-		it('Assigning ids to other ids, incorrectly written conditionals', () => {
-			assert.throws(() => ast(naughty_pirate));
-		});
-	});
-});
-
+describe("The AST generator:", () => {
+    describe("Produces a correct AST for:", () => {
+        it(" variable assignments, while loops, if statements, print statements", () => {
+            assert.deepStrictEqual(util.format(ast(source1)), expected1)
+        })
+        it("for loops", () => {
+            assert.deepStrictEqual(util.format(ast(source2)), expected2)
+        })
+        it("function declarations, arrays, foreach, returns", () => {
+            assert.deepStrictEqual(util.format(ast(source3)), expected3)
+        })
+        it("dictionary", () => {
+            assert.deepStrictEqual(util.format(ast(source4)), expected4)
+        })
+        it("true and false boolean expression", () => {
+            assert.deepStrictEqual(util.format(ast(source5)), expected5)
+        })
+        it("parens and boolean expression assignment", () => {
+            assert.deepStrictEqual(util.format(ast(source6)), expected6)
+        })
+        it("parens and boolean expression assignment", () => {
+            assert.deepStrictEqual(util.format(ast(source6)), expected6)
+        })
+        it("Class Declarations", () => {
+            assert.deepStrictEqual(util.format(ast(source7)), expected7)
+        })
+        it("Recursive Function", () => {
+            assert.deepStrictEqual(util.format(ast(source8)), expected8)
+        })
+    })
+    describe("Rejects bad programs:", () => {
+        it("Assigning ids to other ids, incorrectly written conditionals", () => {
+            assert.throws(() => ast(naughty_pirate))
+        })
+    })
+})

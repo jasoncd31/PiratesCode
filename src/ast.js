@@ -43,10 +43,18 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             methodDec.ast()
         )
     },
-    ConstructorDec(_constructor, _left, parameters, _right, body) {
+    ConstructorDec(
+        _constructor,
+        _left,
+        parameters,
+        _right,
+        _open,
+        fields,
+        _close
+    ) {
         return new core.ConstructorDeclaration(
             parameters.asIteration().ast(),
-            body.ast()
+            fields.ast()
         )
     },
     MethodDec(
@@ -70,14 +78,19 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Assignment_regular(id, _eq, expression) {
         return new core.Assignment(id.ast(), expression.ast())
     },
-    Assignment_property(id, _dot, property, _eq, expression) {
-        return new core.Assignment(id.ast(), property.ast(), expression.ast())
+    Field(type, object, _dot, id, _eq, initializer) {
+        return new core.Field(
+            type.ast(),
+            object.ast(),
+            id.ast(),
+            initializer.ast()
+        )
     },
     // Assignment(id, _eq, expression) {
     //     return new core.Assignment(id.ast(), expression.ast())
     // },
-    NewInstance(_new, name, _left, args, _right) {
-        return new core.NewInstance(name.sourceString, args.asIteration().ast())
+    ObjectDec(_new, name, _left, args, _right) {
+        return new core.ObjectDec(name.sourceString, args.asIteration().ast())
     },
     LoopStatement_while(_while, test, body) {
         return new core.WhileLoop(test.ast(), body.ast())
@@ -195,8 +208,11 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Call_regular(callee, _left, args, _right) {
         return new core.Call(callee.ast(), args.asIteration().ast())
     },
-    Call_property(id, _dot, callee) {
-        return new core.Call(id.ast(), callee.ast())
+    // Call_property(id, _dot, callee) {
+    //     return new core.Call(id.ast(), callee.ast())
+    // },
+    DotExpression(id, _dot, callee) {
+        return new core.DotExpression(id.ast(), callee.ast())
     },
     id(_first, _rest) {
         return new core.Token("Id", this.source)

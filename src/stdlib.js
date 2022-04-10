@@ -12,7 +12,6 @@ export const types = Object.freeze({
     booty: Type.BOOLEAN,
     shanty: Type.STRING,
     none: Type.NONE,
-    print: makeFunction("ahoy", new FunctionType([Type.ANY], Type.NONE) )
 })
 
 // export const functions = {
