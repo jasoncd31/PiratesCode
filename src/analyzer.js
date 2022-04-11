@@ -95,8 +95,12 @@ function checkInteger(e) {
 function checkIsAType(e) {
     check(e instanceof Type, "Type expected", e)
 }
-function checkArray(e) {
-    check(e.type.constructor === ArrayType, "Array expected", e)
+function checkIterable(e) {
+    check(
+        e.type.constructor === ArrayType || e.type.constructor === MapType,
+        "Array expected",
+        e
+    )
 }
 function checkAllHaveSameType(expressions) {
     if (
@@ -142,9 +146,10 @@ function checkInLoop(context) {
     check(context.inLoop, "Break can only appear in a loop")
 }
 function checkHaveSameType(e1, e2) {
+    console.log(e1)
     check(
         e1.type.isEquivalentTo(e2.type),
-        `${e2.type} BE DIFFERENT FROM ${e2.type}, YE BLIND LANDLUBBER.`
+        `${e1.type.description} BE DIFFERENT FROM ${e2.type.description}, YE BLIND LANDLUBBER.`
     )
     // check(e1.category === e2.category, `${e2.category} BE DIFFERENT FROM ${e2.category}, YE BLIND LANDLUBBER.`)
 }
@@ -156,6 +161,7 @@ function checkReturnable({ expression: e, from: f }) {
     checkAssignable(e, { toType: f.type.returnType })
 }
 function checkCallable(e) {
+    console.log(e)
     check(e.type.constructor == FunctionType, "Call of non-function")
 }
 
@@ -355,7 +361,7 @@ class Context {
     }
     ForEachLoop(s) {
         this.analyze(s.expression)
-        checkArray(s.expression)
+        checkIterable(s.expression)
         s.variable = new Variable(s.variable.lexeme, true)
         s.variable.type = s.expression.type.baseType
         const bodyContext = this.newChildContext({ inLoop: true })
