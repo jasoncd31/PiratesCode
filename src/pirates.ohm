@@ -13,6 +13,7 @@ PiratesCode {
                | Call
                | ClassDec
                | DotExpression
+               | DotCall
                    
   VarDec       = (Type | var) id "=" Exp
 
@@ -27,7 +28,9 @@ PiratesCode {
               
   Call        = id "(" ListOf<Exp, ","> ")"  -- regular
                
-  DotExpression  = (id | this) "." (Call | id) 
+  DotExpression  = this "." id
+
+  DotCall  = id "." Call 
   
   LoopStatement = while Exp Block 				     -- while
                | for (Type|"vargh") id "through" id Block           -- ForEach
@@ -38,13 +41,13 @@ PiratesCode {
               
   Block        = "{" Statement* "}"
   
-  ClassDec    = class id "{" ConstructorDec MethodDec* "}"
+  ClassDec    = class id "{" ConstructorDec MethodDeclaration* "}"
 
   ConstructorDec = construct "(" ListOf<Param, ","> ")" "{" Field* "}"
   
   Field       =  Type this "." id "=" Exp   
 
-  MethodDec    = function id "(" ListOf<Param, ","> ")" "->" Type Block
+  MethodDeclaration    = function id "(" ListOf<Param, ","> ")" "->" Type Block
   Exp     = Exp0 "?" Exp0 ":" Exp               -- ternary
           | Exp0
   Exp0    = Exp0 or Exp1                        -- binary
@@ -69,6 +72,7 @@ PiratesCode {
           | MapLit
           | Call
           | DotExpression
+          | DotCall
           | ObjectDec
           | Exp6 "[" Exp "]"			-- subscript
           | id

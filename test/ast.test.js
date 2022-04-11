@@ -190,26 +190,26 @@ const expected7 = `   1 | Program statements=[#2,#20,#22,#25]
    3 | ConstructorDeclaration parameters=[#4,#5] body=[#6,#7]
    4 | Parameter type=(Id,"doubloon") id=(Id,"height")
    5 | Parameter type=(Id,"int") id=(Id,"width")
-   6 | Field type=(Id,"doubloon") object=(Sym,"me") variable=(Id,"height") initializer=(Id,"height")
-   7 | Field type=(Id,"int") object=(Sym,"me") variable=(Id,"width") initializer=(Id,"width")
-   8 | Method name='area' parameters=[] body=[#9] returnType=(Id,"doubloon")
+   6 | Field type=(Id,"doubloon") variable=(Id,"height") initializer=(Id,"height")
+   7 | Field type=(Id,"int") variable=(Id,"width") initializer=(Id,"width")
+   8 | MethodDeclaration name=(Id,"area") params=[] body=[#9] returnType=(Id,"doubloon")
    9 | ReturnStatement expression=#10
   10 | BinaryExpression op='*' left=#11 right=#12
   11 | DotExpression object=(Sym,"me") member=(Id,"height")
   12 | DotExpression object=(Sym,"me") member=(Id,"width")
-  13 | Method name='getWidth' parameters=[] body=[#14] returnType=(Id,"int")
+  13 | MethodDeclaration name=(Id,"getWidth") params=[] body=[#14] returnType=(Id,"int")
   14 | ReturnStatement expression=#15
   15 | DotExpression object=(Sym,"me") member=(Id,"width")
-  16 | Method name='setWidth' parameters=[#17] body=[#18] returnType=(Id,"none")
+  16 | MethodDeclaration name=(Id,"setWidth") params=[#17] body=[#18] returnType=(Id,"none")
   17 | Parameter type=(Id,"int") id=(Id,"newWidth")
   18 | Assignment target=#19 source=(Id,"newWidth")
   19 | DotExpression object=(Sym,"me") member=(Id,"width")
   20 | VariableDeclaration type='Rectangle' variable=(Id,"p") initializer=#21
   21 | ObjectDec identifier='Rectangle' args=[(Int,"3"),(Int,"4")]
   22 | PrintStatement argument=#23
-  23 | DotExpression object=(Id,"p") member=#24
+  23 | DotCall object=(Id,"p") member=#24
   24 | Call callee=(Id,"getWidth") args=[]
-  25 | DotExpression object=(Id,"p") member=#26
+  25 | DotCall object=(Id,"p") member=#26
   26 | Call callee=(Id,"setWidth") args=[(Int,"15")]`
 
 const expected8 = `   1 | Program statements=[#2]

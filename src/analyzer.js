@@ -201,9 +201,10 @@ class Context {
         parent = null,
         locals = new Map(),
         inLoop = false,
+        inClass = null,
         function: f = null,
     }) {
-        Object.assign(this, { parent, locals, inLoop, function: f })
+        Object.assign(this, { parent, locals, inLoop, inClass, function: f })
     }
     // sees(name) {
     //     // Search "outward" through enclosing scopes
@@ -461,22 +462,23 @@ class Context {
         // }
 
         // this is not right
-        console.log("YOU ARE IN A CLASS")
-        console.log(c)
         // create a new class type every time we see a class
+        console.log("IN CONTEXT")
+        console.log(this)
         const newClassType = new ClassType(c.id, c.constructorDec, c.methods)
         // create a new context for the type
-        const typeContext = this.newChildContext()
+        const typeContext = this.newChildContext({ inClass: newClassType })
         // add that class to local
         // this.locals.set(c.id, newClassType)
         // c.type = new ClassType(c.id, c.constructorDec, c.methods)
         // const constructorContext = typeContext.newChildContext({ parent: typeContext })
-        console.log("class dec print")
-        console.log(c)
         // handle constructor dec
         c.constructorDec = typeContext.analyze(c.constructorDec)
+        c.methods = typeContext.analyze(c.methods)
         // handle methods
-        this.add(c.name, c)
+        this.add(c.id, newClassType)
+        console.log("CONTEXT AFTER")
+        console.log(this)
     }
     ConstructorDeclaration(d) {
         // this is not finished
@@ -485,12 +487,12 @@ class Context {
         d.value = new Function(d.lexeme, d.parameters, d.returnType)
         // When entering a function body, we must reset the inLoop setting,
         // because it is possible to declare a function inside a loop!
-        const childContext = this.newChildContext({
+        const constructorContext = this.newChildContext({
             inLoop: false,
             function: d.value,
         })
         if (d.value.parameters) {
-            childContext.analyze(d.value.parameters)
+            constructorContext.analyze(d.value.parameters)
         }
         d.value.type = new FunctionType(
             d.value.parameters.map((p) => p.type),
@@ -498,14 +500,49 @@ class Context {
         )
         // Add before analyzing the body to allow recursion
         this.add(d.lexeme, d.value)
-        childContext.analyze(d.body)
+        constructorContext.analyze(d.body)
     }
     Field(f) {
-        // this is not correct
         this.analyze(f.type)
-        console.log(f)
         if (f.type instanceof Token) f.type = f.type.value
         checkIsAType(f.type)
+        this.analyze(f.initializer)
+        f.variable.value = new Variable(f.variable.lexeme)
+        f.variable.value.type = f.initializer.type
+        this.add(f.variable.lexeme, f.variable.value)
+    }
+    MethodDeclaration(d) {
+        if (d.returnType) this.analyze(d.returnType)
+        console.log(d)
+        d.name.value = new Function(
+            d.name.lexeme,
+            d.params,
+            d.returnType?.value ?? d.returnType ?? Type.NONE
+        )
+        checkIsAType(d.name.value.returnType)
+        // When entering a function body, we must reset the inLoop setting,
+        // because it is possible to declare a function inside a loop!
+        const childContext = this.newChildContext({
+            inLoop: false,
+            function: d.name.value,
+        })
+        if (d.name.value.parameters) {
+            childContext.analyze(d.name.value.parameters)
+        }
+        d.name.value.type = new FunctionType(
+            d.name.value.parameters.map((p) => p.type),
+            d.name.value.returnType
+        )
+        //d.fun.value.parameters.map(p => this.add(p.))
+        // Add before analyzing the body to allow recursion
+        this.add(d.name.lexeme, d.name.value)
+        childContext.analyze(d.body)
+    }
+    DotExpression(e) {
+        // check that the member is in
+        console.log("FINALLY IN DOTEXP")
+        console.log(e)
+        this.analyze(e.object)
     }
 }
 

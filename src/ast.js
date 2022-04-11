@@ -57,7 +57,7 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             fields.ast()
         )
     },
-    MethodDec(
+    MethodDeclaration(
         _method,
         name,
         _left,
@@ -67,8 +67,8 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
         returnType,
         body
     ) {
-        return new core.Method(
-            name.sourceString,
+        return new core.MethodDeclaration(
+            name.ast(),
             parameters.asIteration().ast(),
             body.ast(),
             returnType.ast()
@@ -78,13 +78,8 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Assignment_regular(id, _eq, expression) {
         return new core.Assignment(id.ast(), expression.ast())
     },
-    Field(type, object, _dot, id, _eq, initializer) {
-        return new core.Field(
-            type.ast(),
-            object.ast(),
-            id.ast(),
-            initializer.ast()
-        )
+    Field(type, _object, _dot, id, _eq, initializer) {
+        return new core.Field(type.ast(), id.ast(), initializer.ast())
     },
     // Assignment(id, _eq, expression) {
     //     return new core.Assignment(id.ast(), expression.ast())
@@ -213,6 +208,9 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     // },
     DotExpression(id, _dot, callee) {
         return new core.DotExpression(id.ast(), callee.ast())
+    },
+    DotCall(id, _dot, callee) {
+        return new core.DotCall(id.ast(), callee.ast())
     },
     id(_first, _rest) {
         return new core.Token("Id", this.source)

@@ -54,7 +54,7 @@ export class MapType extends Type {
 
 export class ClassType extends Type {
     constructor(name, constructor, methods) {
-        super(`{${name.lexeme}}`)
+        super(name)
         this.constructor = constructor
         this.methods = methods
     }
@@ -96,9 +96,15 @@ export class DotExpression {
     }
 }
 
+export class DotCall {
+    constructor(object, member) {
+        Object.assign(this, { object, member })
+    }
+}
+
 export class Field {
-    constructor(type, object, variable, initializer) {
-        Object.assign(this, { type, object, variable, initializer })
+    constructor(type, variable, initializer) {
+        Object.assign(this, { type, variable, initializer })
     }
 }
 
@@ -203,9 +209,9 @@ export class Parameter {
     }
 }
 
-export class Method {
-    constructor(name, parameters, body, returnType) {
-        Object.assign(this, { name, parameters, body, returnType })
+export class MethodDeclaration {
+    constructor(name, params, body, returnType) {
+        Object.assign(this, { name, params, body, returnType })
     }
 }
 
