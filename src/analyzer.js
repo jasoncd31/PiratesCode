@@ -180,6 +180,13 @@ function checkAssignable(e, { toType: type }) {
     )
 }
 
+function checkMemberDeclared(field, { in: context }) {
+    check(
+        context.fields.map((f) => f.name.lexeme).includes(field),
+        "No such field"
+    )
+}
+
 function checkForVargh(isVargh, m) {
     if (
         m.initializer.constructor.name === "MapExpression" ||
@@ -485,6 +492,7 @@ class Context {
         d.returnType = Type.NONE
         d.lexeme = "build"
         d.value = new Function(d.lexeme, d.parameters, d.returnType)
+        this.add("me", this.inClass)
         // When entering a function body, we must reset the inLoop setting,
         // because it is possible to declare a function inside a loop!
         const constructorContext = this.newChildContext({
@@ -540,9 +548,16 @@ class Context {
     }
     DotExpression(e) {
         // check that the member is in
-        console.log("FINALLY IN DOTEXP")
-        console.log(e)
         this.analyze(e.object)
+        console.log("AFTER ME")
+        console.log(e)
+        // check if the variable is a previously declared field
+        checkMemberDeclared(e.member.lexeme, { in: this })
+
+        e.member = e.object.type.fields.find(
+            (f) => f.name.lexeme === e.field.lexeme
+        )
+        e.type = e.field.type
     }
 }
 
