@@ -315,7 +315,7 @@ vargh fruits = ['Apple', 'Banana']
     
 ```python
 fruit_prices = dict()
-products = set()
+products = []
 ```
 </td>
 <td>
