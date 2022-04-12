@@ -370,12 +370,13 @@ $$ comment goes here
 ### Types of Semantic Errors
 
 -   Use of non-initialized variables
--   Using vargh for arrays and maps
+-   Using vargh for non empty arrays and maps
 -   Incompatible type comparison
 -   Incorrect number of function parameters
 -   Break outside of loops
 -   Return outside of a function
 -   Void return has a return value
+-   Function with return value doesn't return anything
 -   Reassigning a variable with the wrong type
 -   Incrementing and decrementing with non-int variable types
 -   Non-boolean value in conditional
