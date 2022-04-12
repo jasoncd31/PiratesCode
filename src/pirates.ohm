@@ -12,40 +12,43 @@ PiratesCode {
                | comment
                | Call
                | ClassDec
-               
-         
-  VarDec       = (type | var | id) id "=" Exp
+               | DotExpression
+               | DotCall
+                   
+  VarDec       = (Type | let) id "=" Exp
 
-  FunDec       = function id "(" ListOf<id, ","> ")" Block 
-
-  Assignment   = id "=" Exp                  -- regular
-               | (this|id) ("." id)+ "=" Exp    -- property
+  FunDec       = function id "(" ListOf<Param, ","> ")" "->" Type Block
   
-  ArrayLit    = "[" ListOf<Exp, ","> "]"
+  Param        = Type id
 
-  MapLit      = "{" ListOf<MapEntry, ","> "}"
-  MapEntry    = Exp ":" Exp
+  Assignment   = Exp6 "=" Exp                  -- regular
 
   Return      = return Exp 		--exp
-              | return          --short             
+              | return          --short     
+              
+  Call        = id "(" ListOf<Exp, ","> ")"  -- regular
+               
+  DotExpression  = this "." id
 
-  LoopStatement = while Exp Block 							   -- while
-               | for (type|"vargh") id "through" id Block           -- ForEach
-               | for ("vargh"|"int") id "=" Exp "until" Exp Block   -- For
+  DotCall  = id "." Call 
+  
+  LoopStatement = while Exp Block 				     -- while
+               | for (Type|let) id "through" id Block           -- ForEach
+               | for (let|"int") id "=" Exp "until" Exp Block   -- For
 
   IfStmt      = if Exp Block (elseif Exp Block)* (else Block)?         -- long
               | if Exp Block                                           -- short
               
   Block        = "{" Statement* "}"
   
-  ClassDec    = class id "{" ConstructorDec MethodDec* "}"
+  ClassDec    = class id "{" ConstructorDec MethodDeclaration* "}"
 
-  ConstructorDec = construct "(" ListOf<id, ","> ")" Block
+  ConstructorDec = construct "(" ListOf<Param, ","> ")" "{" Field* "}"
+  
+  Field       =  Type this "." id "=" Exp   
 
-  MethodDec    = function id "(" ListOf<id, ","> ")" Block
-
-  Exp     = ("-" | "not") Exp                   -- unary
-          | Exp0 "?" Exp0 ":" Exp               -- ternary
+  MethodDeclaration    = function id "(" ListOf<Param, ","> ")" "->" Type Block
+  Exp     = Exp0 "?" Exp0 ":" Exp               -- ternary
           | Exp0
   Exp0    = Exp0 or Exp1                        -- binary
   	      | Exp1
@@ -58,25 +61,38 @@ PiratesCode {
   Exp4    = Exp4 ("*"|"/"|"%") Exp5             -- binary
           | Exp5
   Exp5    = Exp6 "**" Exp5                      -- binary
+          | ("-" | not) Exp6                    -- unary
           | Exp6
   Exp6    = 
-          | num
+          | doublelit
+          | intlit
           | true
           | false
           | ArrayLit
           | MapLit
           | Call
-          | NewInstance
+          | DotExpression
+          | DotCall
+          | ObjectDec
+          | Exp6 "[" Exp "]"			-- subscript
           | id
           | "(" Exp ")"                         -- parens
-          | strlit ~keyword           
-       
-  num     = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
+          | strlit  
+
+
+  Type 	        = "[" Type "]"		-- list
+  		| "{" Type "," Type "}" 	-- dictionary
+  		| id				-- id
+
+  ArrayLit      = "[" ListOf<Exp, ","> "]"
+  
+  MapLit        = "{" ListOf<MapEntry, ","> "}"
+  MapEntry      = Exp6 ":" Exp
+
+  intlit        = digit+
+  doublelit     = digit+ "." digit+ (("E" | "e") ("+" | "-")? digit+)?
 
   relop   = "<=" | "<" | "!=" | "==" | ">=" | ">"
-
-  Call    = id "(" ListOf<Exp, ","> ")"  -- regular
-            | (this | id) ("." (Call | id))+  -- property
           
   let         = "vargh" ~alnum
   print       = "ahoy" ~alnum
@@ -96,23 +112,22 @@ PiratesCode {
   construct   = "build" ~alnum
   and         = "and" ~alnum
   or          = "or" ~alnum
-  var         = "vargh" ~alnum
+  not         = "not" ~alnum
   new         = "new" ~alnum
   
   comment     = "$$" (~"\n" any)* ("\n" | end)  -- comment
 
-  type        = ("booty"|"shanty"|"int"|"doubloon"|"loot"|"map"|"chest"|"ledger") ~alnum
-
   id          = ~keyword letter alnum*
  
   keyword     = let | print | function | else | elseif | if | while | repeat
-              | for | break | return | true | false | type | this | new | construct | class          
+              | for | break | return | true | false | this | new | construct | class          
               
-  /*strlit      = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")*/
-  strlit        = "\"" char* "\""
+  /*strlit    = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")*/
+  strlit      = "\"" char* "\""
               
   char        = ~"\\" ~"\"" ~"\n" ~"~" any
-  NewInstance = new id "(" ListOf<Exp, ","> ")"
+  ObjectDec      = new id "(" ListOf<Exp, ","> ")"
 
  
 } 
+

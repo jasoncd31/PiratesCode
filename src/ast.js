@@ -18,44 +18,74 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Return_short(_return) {
         return new core.ShortReturnStatement()
     },
-    VarDec(_type, id, _eq, initializer) {
-        return new core.VariableDeclaration(id.ast(), initializer.ast())
+    VarDec(type, id, _eq, initializer) {
+        return new core.VariableDeclaration(
+            type.ast(),
+            id.ast(),
+            initializer.ast()
+        )
     },
-    FunDec(_fun, id, _left, params, _right, body) {
+    FunDec(_fun, id, _left, params, _right, _arrow, returnType, body) {
         return new core.FunctionDeclaration(
             id.ast(),
             params.asIteration().ast(),
-            body.ast()
+            body.ast(),
+            // returnType.sourceString,
+            returnType.ast()
         )
     },
-    ClassDec(_class, name, _open, constructorDec, methods, _close) {
+
+    // this isn't quite working
+    ClassDec(_class, name, _open, constructorDec, methodDec, _close) {
         return new core.ClassDeclaration(
             name.sourceString,
             constructorDec.ast(),
-            methods.ast()
+            methodDec.ast()
         )
     },
-    ConstructorDec(_constructor, _left, parameters, _right, body) {
-        return new core.ConstructorDeclaration(parameters.asIteration().ast(), body.ast())
-    },
-    MethodDec(_method, name, _left, parameters, _right, body) {
-        return new core.Method(
-            name.sourceString,
+    ConstructorDec(
+        _constructor,
+        _left,
+        parameters,
+        _right,
+        _open,
+        fields,
+        _close
+    ) {
+        return new core.ConstructorDeclaration(
             parameters.asIteration().ast(),
-            body.ast()
+            fields.ast()
+        )
+    },
+    MethodDeclaration(
+        _method,
+        name,
+        _left,
+        parameters,
+        _right,
+        _arrow,
+        returnType,
+        body
+    ) {
+        return new core.MethodDeclaration(
+            name.ast(),
+            parameters.asIteration().ast(),
+            body.ast(),
+            returnType.ast()
+            // returnType.sourceString,
         )
     },
     Assignment_regular(id, _eq, expression) {
         return new core.Assignment(id.ast(), expression.ast())
     },
-    Assignment_property(id, _dot, property, _eq, expression) {
-        return new core.Assignment(id.ast(), property.ast(), expression.ast())
+    Field(type, _object, _dot, id, _eq, initializer) {
+        return new core.Field(type.ast(), id.ast(), initializer.ast())
     },
     // Assignment(id, _eq, expression) {
     //     return new core.Assignment(id.ast(), expression.ast())
     // },
-    NewInstance(_new, name, _left, args, _right) {
-        return new core.NewInstance(name.sourceString, args.asIteration().ast())
+    ObjectDec(_new, name, _left, args, _right) {
+        return new core.ObjectDec(name.sourceString, args.asIteration().ast())
     },
     LoopStatement_while(_while, test, body) {
         return new core.WhileLoop(test.ast(), body.ast())
@@ -81,23 +111,33 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
         _else,
         _alternate
     ) {
-        return new core.Conditional(
+        return new core.IfStatement(
             [test.ast(), ..._exp2.ast()],
             [consequent.ast(), ..._consequent2.ast()],
             [..._alternate.ast()]
         )
     },
+    Param(type, id) {
+        return new core.Parameter(type.ast(), id.ast())
+    },
     Block(_open, body, _close) {
         return body.ast()
     },
-    Exp_unary(op, operand) {
+    Type_list(_left, baseType, _right) {
+        return new core.ArrayType(baseType.ast())
+    },
+    Type_dictionary(_left, keyType, _colon, valueType, _right) {
+        return new core.MapType(keyType.ast(),valueType.ast())
+    },
+    Exp5_unary(op, operand) {
         return new core.UnaryExpression(op.sourceString, operand.ast())
     },
     Exp_ternary(test, _questionMark, consequent, _colon, alternate) {
         return new core.Conditional(
             test.ast(),
             consequent.ast(),
-            alternate.ast()
+            alternate.ast(),
+            true
         )
     },
     Exp0_binary(left, op, right) {
@@ -145,6 +185,12 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Exp6_parens(_open, expression, _close) {
         return expression.ast()
     },
+    Exp6_subscript(expression, _bracket, index, _bracket1) {
+        return new core.SubscriptExpression(expression.ast(), index.ast())
+    },
+    break(_break) {
+        return new core.BreakStatement()
+    },
     ArrayLit(_left, args, _right) {
         return new core.ArrayExpression(args.asIteration().ast())
     },
@@ -157,8 +203,17 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Call_regular(callee, _left, args, _right) {
         return new core.Call(callee.ast(), args.asIteration().ast())
     },
-    Call_property(id, _dot, callee) {
-        return new core.Call(id.ast(), callee.ast())
+    // Call_property(id, _dot, callee) {
+    //     return new core.Call(id.ast(), callee.ast())
+    // },
+    DotExpression(id, _dot, callee) {
+        return new core.DotExpression(id.ast(), callee.ast())
+    },
+    DotCall(id, _dot, callee) {
+        return new core.DotCall(id.ast(), callee.ast())
+    },
+    this(_) {
+        return new core.ThisExpression()
     },
     id(_first, _rest) {
         return new core.Token("Id", this.source)
@@ -169,15 +224,18 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     false(_) {
         return new core.Token("Bool", this.source)
     },
-    num(_whole, _point, _fraction, _e, _sign, _exponent) {
-        return new core.Token("Num", this.source)
+    intlit(_digits) {
+        return new core.Token("Int", this.source)
     },
-    strlit(_openQuote, chars, _closeQuote) {
+    doublelit(_whole, _point, _fraction, _e, _sign, _exponent) {
+        return new core.Token("Double", this.source)
+    },
+    strlit(_openQuote, _chars, _closeQuote) {
         return new core.Token("Str", this.source)
     },
     _terminal() {
         return new core.Token("Sym", this.source)
-    },
+      },
     _iter(...children) {
         return children.map((child) => child.ast())
     },

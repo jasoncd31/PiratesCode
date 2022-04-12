@@ -6,21 +6,109 @@ export class Program {
     }
 }
 
+export class Type {
+    // Type of all basic type int, double, string, etc. and superclass of others
+    static BOOLEAN = new Type("booty")
+    static INT = new Type("int")
+    static DOUBLE = new Type("doubloon")
+    static STRING = new Type("shanty")
+    static NONE = new Type("none")
+    static ANY = new Type("any")
+    constructor(description) {
+        Object.assign(this, { description })
+    }
+}
+
+export class Function {
+    constructor(name, parameters, returnType) {
+        Object.assign(this, { name, parameters, returnType })
+    }
+}
+
+export class FunctionType extends Type {
+    // Example: (boolean,[string]?)->float
+    constructor(paramTypes, returnType) {
+        super(
+            `(${paramTypes.map((t) => t.description).join(",")})->${
+                returnType.description
+            }`
+        )
+        Object.assign(this, { paramTypes, returnType })
+    }
+}
+
+export class ArrayType extends Type {
+    constructor(baseType) {
+        super(`[${baseType.description}]`)
+        this.baseType = baseType
+    }
+}
+
+export class MapType extends Type {
+    constructor(keyType, valueType) {
+        super(`{${keyType.description} : ${valueType.description}}`)
+        this.keyType = keyType
+        this.valueType = valueType
+    }
+}
+
+export class ClassType extends Type {
+    constructor(name, constructor, methods) {
+        super(name)
+        this.constructor = constructor
+        this.methods = methods
+    }
+}
+
+// export class SetType extends Type {
+//     constructor(baseType) {
+//       super(`Set(${baseType.description})`)
+//     }
+// }
+
+export class Variable {
+    constructor(name) {
+        this.name = name
+    }
+}
+
 export class VariableDeclaration {
-    constructor(variable, initializer) {
-        Object.assign(this, { variable, initializer })
+    constructor(type, variable, initializer) {
+        Object.assign(this, { type, variable, initializer })
     }
 }
 
 export class FunctionDeclaration {
-    constructor(fun, params, body) {
-        Object.assign(this, { fun, params, body })
+    constructor(fun, params, body, returnType) {
+        Object.assign(this, { fun, params, body, returnType })
     }
 }
 
 export class Assignment {
     constructor(target, source) {
         Object.assign(this, { target, source })
+    }
+}
+
+export class DotExpression {
+    constructor(object, member) {
+        Object.assign(this, { object, member })
+    }
+}
+
+export class ThisExpression {
+    // empty on purpose
+}
+
+export class DotCall {
+    constructor(object, member) {
+        Object.assign(this, { object, member })
+    }
+}
+
+export class Field {
+    constructor(type, variable, initializer) {
+        Object.assign(this, { type, variable, initializer })
     }
 }
 
@@ -66,6 +154,16 @@ export class Conditional {
     }
 }
 
+export class IfStatement {
+    constructor(test, consequent, alternate) {
+        Object.assign(this, { test, consequent, alternate })
+    }
+}
+
+export class BreakStatement {
+    // Intentionally empty
+}
+
 export class BinaryExpression {
     constructor(op, left, right) {
         Object.assign(this, { op, left, right })
@@ -97,7 +195,7 @@ export class MapEntry {
     }
 }
 
-export class NewInstance {
+export class ObjectDec {
     constructor(identifier, args) {
         Object.assign(this, { identifier, args })
     }
@@ -109,9 +207,15 @@ export class ConstructorDeclaration {
     }
 }
 
-export class Method {
-    constructor(name, parameters, body) {
-        Object.assign(this, { name, parameters, body })
+export class Parameter {
+    constructor(type, id) {
+        Object.assign(this, { type, id })
+    }
+}
+
+export class MethodDeclaration {
+    constructor(name, params, body, returnType) {
+        Object.assign(this, { name, params, body, returnType })
     }
 }
 
@@ -126,6 +230,17 @@ export class Token {
         // Ohm holds this for us, nice
         return this.source.contents
     }
+
+    get description() {
+        return this.source.contents
+    }
+}
+
+export class SubscriptExpression {
+    // Example: a[20]
+    constructor(array, index) {
+        Object.assign(this, { array, index })
+    }
 }
 
 export class ReturnStatement {
@@ -136,6 +251,14 @@ export class ReturnStatement {
 
 export class ShortReturnStatement {
     // Intentionally empty
+}
+
+// Throw an error message that takes advantage of Ohm's messaging
+export function error(message, token) {
+    if (token?.source) {
+        throw new Error(`${token.source.getLineAndColumnMessage()}${message}`)
+    }
+    throw new Error(message)
 }
 
 // Return a compact and pretty string representation of the node graph,
@@ -165,7 +288,8 @@ Program.prototype[util.inspect.custom] = function () {
             if (tags.has(e)) return `#${tags.get(e)}`
             if (e?.constructor === Token) {
                 return `(${e.category},"${e.lexeme}"${
-                    e.value ? "," + view(e.value) : ""
+                    // e.value ? "," + view(e.value) : ""
+                    ""
                 })`
             }
             if (Array.isArray(e)) return `[${e.map(view)}]`
