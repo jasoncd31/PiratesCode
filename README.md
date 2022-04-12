@@ -373,3 +373,17 @@ $$ comment goes here
 ```
 </td>
 </table>
+
+###Types of Semantic Errors
+- Use of non-initialized variables
+- Using vargh for arrays and maps
+- Incompatible type comparison
+- Incorrect number of function parameters
+- Break outside of loops
+- Return outside of a function
+- Void return has a return value
+- Reassigning a variable with the wrong type
+- Incrementing and decrementing with non-int variable types
+
+
+
