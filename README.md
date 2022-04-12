@@ -1,24 +1,26 @@
-<img src=./docs/images/piratescodelogo.jpg width="500" height="500"> 
+<img src=./docs/images/piratescodelogo.jpg width="500" height="500">
 
-# [PiratesCode](https://jasoncd31.github.io/PiratesCode/) 
+# [PiratesCode](https://jasoncd31.github.io/PiratesCode/)
 
 Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wide web! Inspired by the swashbuckling buccaneers of legend, PiratesCode be designed to make programming easy and fun for scurvy new programming recruits. PiratesCode be a language for those fixing to get an education and have fun while doing it! Since we’re all swashbuckling corsairs here, PiratesCode specifically helps ye write secure code so ye can protect your loot. All hop on the Flyin’ Dutchman and set your sails for the sea (of code) with PiratesCode!
 
 ### Written by [Maya Epps](https://github.com/mayaepps), [Jennifer Siao](https://github.com/jennifer-s19), [Jason Douglas](https://github.com/jasoncd31), [Tanya Nobal](https://github.com/tnobal), and [Saad Salman](https://github.com/thesaadsalman)
 
 ### Swashbuckling Features:
-- Mix of Python & Javascript: No parenthesis in if/while/for statements, but does have brackets
-- Pirate-themed language and syntax
-- Static typing
-- Object oriented
-- Built-in data structures
-- Extremely rude, but detailed error messages
-- Everything is natively private (protect your booty!)
-- Objects are natively passed by copy for security
-- vargh (equivalent to Java's var) can be used for type inference
-- String interpolation
+
+-   Mix of Python & Javascript: No parenthesis in if/while/for statements, but does have brackets
+-   Pirate-themed language and syntax
+-   Static typing
+-   Object oriented
+-   Built-in data structures
+-   Extremely rude, but detailed error messages
+-   Everything is natively private (protect your booty!)
+-   Objects are natively passed by copy for security
+-   vargh (equivalent to Java's var) can be used for type inference
+-   String interpolation
 
 ### Scurvy Types
+
 <table>
   <tr>
     <th>Javascript Type</th>
@@ -44,14 +46,10 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
     <td>object</td>
     <td>loot</td>
   </tr>
-  <tr>
-    <td>tuple ()</td>
-    <td>tuple ()</td>
-  </tr>
 </table>
 
-
 ### Data Skeletons
+
 <table>
   <tr>
     <th>Data Structure</th>
@@ -60,10 +58,6 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
   <tr>
     <td>Array/List</td>
     <td>ledger</td>
-  </tr>
-  <tr>
-    <td>Set</td>
-    <td>chest</td>
   </tr>
   <tr>
     <td>Dictionary</td>
@@ -89,7 +83,7 @@ console.log(“Hello world!”)
 <td>
 
 ```
-ahoy “world!” 
+ahoy “world!”
 ```
 
 </td>
@@ -141,7 +135,6 @@ captain evenOrOdd(x){
 </td>
 </table>
 
-
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
 </tr>
@@ -187,7 +180,7 @@ yo x < 10 {
   anchor 1
 } yo ho (x < 20) {
   anchor -1
-} yo ho ho {
+} ho {
   anchor 0
 } 
 ```
@@ -251,7 +244,7 @@ for i in array:
 <td>
     
 ```
-chase vargh x through ledger {
+chase vargh x through locations {
      maroon
 }
 ```
@@ -334,7 +327,7 @@ products = set()
 </td>
 </table>
 
-### String Interpolation   
+### String Interpolation
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
@@ -355,7 +348,7 @@ ahoy "The number is ~x~!"
 </td>
 </table>
 
-### Comments   
+### Comments
 
 <table>
 <tr> <th>JavaScript</th><th>PiratesCode</th><tr>
@@ -373,3 +366,19 @@ $$ comment goes here
 ```
 </td>
 </table>
+
+### Types of Semantic Errors
+
+-   Use of non-initialized variables
+-   Using vargh for arrays and maps
+-   Incompatible type comparison
+-   Incorrect number of function parameters
+-   Break outside of loops
+-   Return outside of a function
+-   Void return has a return value
+-   Reassigning a variable with the wrong type
+-   Incrementing and decrementing with non-int variable types
+-   Non-boolean value in conditional
+-   For-Each loop without an iterable object passed
+-   For loop with something other than integer value assigned to iterator
+-   Different types in ternary conditional return
