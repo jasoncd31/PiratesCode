@@ -327,27 +327,6 @@ products = []
 </td>
 </table>
 
-### String Interpolation
-
-<table>
-<tr> <th>JavaScript</th><th>PiratesCode</th><tr>
-</tr>
-<td> 
-    
-```javascript
-var x = 5
-Console.log("The number is ${x}!")
-```
-</td>
-<td>
-    
-```
-vargh x = 5
-ahoy "The number is ~x~!"
-```
-</td>
-</table>
-
 ### Comments
 
 <table>
