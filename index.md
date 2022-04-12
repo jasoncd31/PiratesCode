@@ -279,14 +279,14 @@ vargh fruits = ['Apple', 'Banana']
     
 ```python
 fruit_prices = dict()
-products = set()
+products = []
 ```
 </td>
 <td>
     
 ```
-vargh fruitPrices = map()
-vargh products = chest()
+{shanty:int} fruit prices = {}
+[shanty] products = []
 ```
 </td>
 </table>

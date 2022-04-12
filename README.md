@@ -1,4 +1,4 @@
-<img src=./docs/piratescodelogo.jpg width="500" height="500"> 
+<img src=./docs/images/piratescodelogo.jpg width="500" height="500"> 
 
 # [PiratesCode](https://jasoncd31.github.io/PiratesCode/) 
 
@@ -278,11 +278,20 @@ class Rectangle {
     
 ```
 ship Rectangle {
-    build (height, width) {
-        me.height = height
-        me.width = width
+    build (doubloon height, int width) {
+        doubloon me.height = height
+        int me.width = width
+    }
+    captain getWidth() -> int {
+        anchor me.width
+    }
+    captain setWidth(int newWidth) -> none {
+        me.width = newWidth
     }
 }
+Rectangle p = new Rectangle(3,4)
+ahoy p.getWidth()
+p.setWidth(15)
 ```
 </td>
 </table>
@@ -319,8 +328,8 @@ products = set()
 <td>
     
 ```
-vargh fruitPrices = map()
-vargh products = chest()
+{shanty:int} fruit prices = {}
+[shanty] products = []
 ```
 </td>
 </table>

@@ -273,17 +273,21 @@ ahoy "yer a pirate!"
             <div class="row">
               <div class="offset-sm-4 col-sm-8 offset-lg-2 col-lg-10">
                 <pre><code style="color: #f2e3cc">
-        ship Rectangle {
-            build (height, width) {
-                me.height = height
-                me.width = width
+            ship Rectangle {
+                build (doubloon height, int width) {
+                    doubloon me.height = height
+                    int me.width = width
+                }
+                captain getWidth() -> int {
+                    anchor me.width
+                }
+                captain setWidth(int newWidth) -> none {
+                    me.width = newWidth
+                }
             }
-            captain area() {
-                anchor me.height * me.width
-            }
-        }
-        Rectangle p = new Rectangle(3,4)
-        p.width = 15
+            Rectangle p = new Rectangle(3,4)
+            ahoy p.getWidth()
+            p.setWidth(15)
               </code></pre>
               </div>
             </div>
