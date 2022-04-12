@@ -2,10 +2,6 @@
 
 import { Type, Function, FunctionType } from "./core.js"
 
-function makeFunction(name, type) {
-    return Object.assign(new Function(name), { type })
-}
-
 export const types = Object.freeze({
     int: Type.INT,
     doubloon: Type.DOUBLE,

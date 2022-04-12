@@ -36,26 +36,29 @@ const semanticChecks = [
     ["ok to == arrays", "ahoy [1]==[5,8]"],
     ["ok to != arrays", "ahoy [1]!=[5,8]"],
     ["simple arithmetic", `int x = 2*4`],
-    ["arithmetic", "vargh x = 1\n ahoy 2*3+5**(-3)/2-5%8"], //Something with this is fucked
+    ["arithmetic", "vargh x = 1\n ahoy 2*3+5**(-3)/2-5%8"],
     [
         "recursive functions",
         "captain S(int x, int y) -> int {yo x == 0 {anchor 0 } anchor S(x-1, y) }",
     ],
-    // // ["array length", "print(#[1,2,3]);"], // length function + implment in grammar + how to do this?
     ["variables", "vargh x=[[[[1]]]]\n ahoy x[0][0][0][0]+2"],
     [
         "nested functions",
         "captain T(int x) -> none {vargh y = 1\n vargh n = x\n captain S(int z) -> none {ahoy z}}",
     ],
-    // [
-    //     "member exp with function",
-    //     "ship S { build(int x) {int me.y = x} \n captain T() -> none {ahoy me.y}} \n  S y = new S(1) \n y.T()",
-    // ],
-    // //[ 'member exp', 'ship S { build(int x) {vargh x = x }} \n  S y = S(1) \n ahoy y.x' ],
-    // [
-    //     "array of class objects",
-    //     "ship S{ build(){int me.x = 1}} vargh x=[new S(), new S()]",
-    // ],
+    [
+        "member exp with function",
+        "ship S { build(int x) {int me.y = x} \n captain T() -> none {ahoy me.y}} \n  S y = new S(1) \n y.T()",
+    ],
+    [
+        "nested member exp with function",
+        "ship S { build(int x) {int me.y = x} \n captain T() -> none {yo aye { ahoy me.y}}} \n  S y = new S(1) \n y.T()",
+    ],
+    ["member exp", "ship S { build(int x) {int me.y = x }} \n  S y = new S(1)"],
+    [
+        "array of class objects",
+        "ship S{ build(){int me.x = 1}} vargh x=[new S(), new S()]",
+    ],
     ["subscript exp", "vargh a=[1,2]\n ahoy a[0]\n"],
     [
         "assigned functions",
@@ -73,15 +76,6 @@ const semanticChecks = [
         "call of assigned function in expression",
         `captain f(int x, booty y) -> int {}\n vargh g = f\n ahoy g(1, aye)\n f = g`,
     ],
-
-    // [ // not currently implemented in grammar: need to figure out how to identify passing functions as valid types
-    // 	'pass a function to a function',
-    // 	`captain f(int x, booty -> none y) -> int { anchor 1 }
-    //      captain g(booty g) -> none{}
-    //      f(2, g)`
-    // ], // check type in carlos.ohm for the fix
-
-    // //['function return types',`int x = 1\n captain square(int x) -> int { anchor x * x }\n captain compose() -> int { anchor square }`], //functions as return types?
     [
         "function assign",
         "captain f() -> none {} vargh g = f\n vargh h = [g, f]\n ahoy h[0] ",
@@ -106,6 +100,14 @@ const semanticChecks = [
     [
         "looping through a map",
         '{shanty, shanty} a = {"Gold": "(15,17)", "Dragons": "(101, 666)"}\nchase vargh location through a {ahoy location}',
+    ],
+    [
+        "contexts within contexts",
+        "ship S { build(int x) {int me.y = x} \n captain T() -> none {chase vargh x=0 until 10{ahoy me.y}}} \n",
+    ],
+    [
+        "contexts within contexts",
+        "ship S { build(int x, int a) {int me.y = x \n int me.b = a} \n captain T() -> none {chase vargh x=0 until 10{ yo aye {ahoy me.y}}}} \n",
     ],
 ]
 
@@ -288,19 +290,36 @@ const semanticErrors = [
     ["bad types for negation", "ahoy -aye", /Expected a number/],
     ["bad types for negation", "ahoy not 2", /Expected a boolean/],
     // ["non-integer index", "vargh a=[1] \n ahoy a[nay]", /Expected an integer/], // this doesn't throw. We need a check for subscript
-    // ["cannot access fields outside of class", "ship S{ build(int z){int me.y = z}} vargh x=S(1) \n ahoy x.y", /No such field/],
-    // ["no such field in class", "ship S{ build(int z){int me.y = z} captain f() -> {ahoy me.g}}", /No such field/],
-    // ["no such function in class", "ship S{ build(){}} vargh x=S() \n ahoy x.Y()", /No such field/],
+    [
+        "cannot access fields outside of class",
+        "ship S{ build(int z){int me.y = z}} \n vargh x= new S(1) \n ahoy me.y",
+        /Not in a class/,
+    ],
+    [
+        "no such field in class",
+        "ship S{ build(int z){int me.y = z} captain f() -> none{ahoy me.g}}",
+        /No such field/,
+    ],
+    [
+        "no such function in class",
+        "ship S{ build(){}} vargh x = new S() \n ahoy x.Y()",
+        /No such field/,
+    ],
+    // [
+    //     "no such function in class",
+    //     "ship S{ build(){}} int x = new S()",
+    //     /No such field/,
+    // ], // how do we type check when we declare new functions?
     [
         "diff type array elements",
         "ahoy [3,3.0]",
         /Not all elements have the same type/,
     ],
-    // [
-    //     "shadowing",
-    //     "vargh x = 1\nparrot aye {vargh x = 2}",
-    //     /Identifier x already declared/,
-    // ], // can we rename variable names in our language? is that allowed? this currently doesn't throw
+    [
+        "shadowing",
+        'vargh x = 1\nparrot aye {x = "shanty"}',
+        /Scrub the deck. Cannot assign a shanty to a int/,
+    ],
     ["call of uncallable", "vargh x = 1\nahoy x()", /Call of non-function/],
     [
         "Too many args",
@@ -317,13 +336,6 @@ const semanticErrors = [
         "captain f(int x)->none{}\nf(aye)",
         /Scrub the deck. Cannot assign a booty to a int/,
     ],
-    // [
-    //     "function type mismatch",
-    //     `function f(x: int, y: (boolean)->void): int { return 1; }
-    //      function g(z: boolean): int { return 5; }
-    //      f(2, g);`,
-    //     /Cannot assign a \(boolean\)->int to a \(boolean\)->void/,
-    // ], // are implementing this? We would have to change the grammar again.
     [
         "bad call to a function that doesn't exist",
         "ahoy sin()",
@@ -343,6 +355,11 @@ const semanticErrors = [
         "Non-type in field type",
         "vargh x=1\n ship S {build(x y) {}}",
         /Type expected/,
+    ],
+    [
+        "me outside of class",
+        `captain evenOrOdd(int x) -> shanty {\n me.x = -14 \n anchor "howdy"\n}`,
+        /Not in a class/,
     ],
 ]
 // Test cases for expected semantic graphs after processing the AST. In general

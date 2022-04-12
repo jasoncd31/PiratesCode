@@ -96,6 +96,10 @@ export class DotExpression {
     }
 }
 
+export class ThisExpression {
+    // empty on purpose
+}
+
 export class DotCall {
     constructor(object, member) {
         Object.assign(this, { object, member })

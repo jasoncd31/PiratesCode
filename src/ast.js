@@ -101,9 +101,6 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             body.ast()
         )
     },
-    IfStmt_short(_if, test, consequent) {
-        return new core.IfStatement(test.ast(), consequent.ast())
-    },
     IfStmt_long(
         _if,
         test,
@@ -212,6 +209,9 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     DotCall(id, _dot, callee) {
         return new core.DotCall(id.ast(), callee.ast())
     },
+    this(_) {
+        return new core.ThisExpression()
+    },
     id(_first, _rest) {
         return new core.Token("Id", this.source)
     },
@@ -229,9 +229,6 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     },
     strlit(_openQuote, _chars, _closeQuote) {
         return new core.Token("Str", this.source)
-    },
-    _terminal() {
-        return new core.Token("Sym", this.source)
     },
     _iter(...children) {
         return children.map((child) => child.ast())

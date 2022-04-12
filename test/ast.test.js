@@ -185,8 +185,8 @@ const expected6 = `   1 | Program statements=[#2]
    9 | BinaryExpression op='<' left=(Id,"z") right=#10
   10 | BinaryExpression op='**' left=(Id,"x") right=(Int,"2")`
 
-const expected7 = `   1 | Program statements=[#2,#20,#22,#25]
-   2 | ClassDeclaration id='Rectangle' constructorDec=#3 methods=[#8,#13,#16]
+const expected7 = `   1 | Program statements=[#2,#24,#26,#29]
+   2 | ClassDeclaration id='Rectangle' constructorDec=#3 methods=[#8,#15,#19]
    3 | ConstructorDeclaration parameters=[#4,#5] body=[#6,#7]
    4 | Parameter type=(Id,"doubloon") id=(Id,"height")
    5 | Parameter type=(Id,"int") id=(Id,"width")
@@ -194,23 +194,27 @@ const expected7 = `   1 | Program statements=[#2,#20,#22,#25]
    7 | Field type=(Id,"int") variable=(Id,"width") initializer=(Id,"width")
    8 | MethodDeclaration name=(Id,"area") params=[] body=[#9] returnType=(Id,"doubloon")
    9 | ReturnStatement expression=#10
-  10 | BinaryExpression op='*' left=#11 right=#12
-  11 | DotExpression object=(Sym,"me") member=(Id,"height")
-  12 | DotExpression object=(Sym,"me") member=(Id,"width")
-  13 | MethodDeclaration name=(Id,"getWidth") params=[] body=[#14] returnType=(Id,"int")
-  14 | ReturnStatement expression=#15
-  15 | DotExpression object=(Sym,"me") member=(Id,"width")
-  16 | MethodDeclaration name=(Id,"setWidth") params=[#17] body=[#18] returnType=(Id,"none")
-  17 | Parameter type=(Id,"int") id=(Id,"newWidth")
-  18 | Assignment target=#19 source=(Id,"newWidth")
-  19 | DotExpression object=(Sym,"me") member=(Id,"width")
-  20 | VariableDeclaration type='Rectangle' variable=(Id,"p") initializer=#21
-  21 | ObjectDec identifier='Rectangle' args=[(Int,"3"),(Int,"4")]
-  22 | PrintStatement argument=#23
-  23 | DotCall object=(Id,"p") member=#24
-  24 | Call callee=(Id,"getWidth") args=[]
-  25 | DotCall object=(Id,"p") member=#26
-  26 | Call callee=(Id,"setWidth") args=[(Int,"15")]`
+  10 | BinaryExpression op='*' left=#11 right=#13
+  11 | DotExpression object=#12 member=(Id,"height")
+  12 | ThisExpression 
+  13 | DotExpression object=#14 member=(Id,"width")
+  14 | ThisExpression 
+  15 | MethodDeclaration name=(Id,"getWidth") params=[] body=[#16] returnType=(Id,"int")
+  16 | ReturnStatement expression=#17
+  17 | DotExpression object=#18 member=(Id,"width")
+  18 | ThisExpression 
+  19 | MethodDeclaration name=(Id,"setWidth") params=[#20] body=[#21] returnType=(Id,"none")
+  20 | Parameter type=(Id,"int") id=(Id,"newWidth")
+  21 | Assignment target=#22 source=(Id,"newWidth")
+  22 | DotExpression object=#23 member=(Id,"width")
+  23 | ThisExpression 
+  24 | VariableDeclaration type='Rectangle' variable=(Id,"p") initializer=#25
+  25 | ObjectDec identifier='Rectangle' args=[(Int,"3"),(Int,"4")]
+  26 | PrintStatement argument=#27
+  27 | DotCall object=(Id,"p") member=#28
+  28 | Call callee=(Id,"getWidth") args=[]
+  29 | DotCall object=(Id,"p") member=#30
+  30 | Call callee=(Id,"setWidth") args=[(Int,"15")]`
 
 const expected8 = `   1 | Program statements=[#2]
    2 | FunctionDeclaration fun=(Id,"S") params=[#3,#4] body=[#5,#9] returnType=(Id,"int")

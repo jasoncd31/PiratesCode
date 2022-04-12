@@ -95,6 +95,17 @@ function checkInteger(e) {
 function checkIsAType(e) {
     check(e instanceof Type, "Type expected", e)
 }
+function checkIsAClass(c) {
+    check(c instanceof ClassType, "Not a class", c)
+}
+function findClass(c) {
+    if (c.inClass) {
+        return c.inClass
+    } else if (c.parent !== null) {
+        return findClass(c.parent)
+    }
+    check(c.inClass, "Not in a class", c)
+}
 function checkIterable(e) {
     check(
         e.type.constructor === ArrayType || e.type.constructor === MapType,
@@ -146,7 +157,6 @@ function checkInLoop(context) {
     check(context.inLoop, "Break can only appear in a loop")
 }
 function checkHaveSameType(e1, e2) {
-    console.log(e1)
     check(
         e1.type.isEquivalentTo(e2.type),
         `${e1.type.description} BE DIFFERENT FROM ${e2.type.description}, YE BLIND LANDLUBBER.`
@@ -161,7 +171,6 @@ function checkReturnable({ expression: e, from: f }) {
     checkAssignable(e, { toType: f.type.returnType })
 }
 function checkCallable(e) {
-    console.log(e)
     check(e.type.constructor == FunctionType, "Call of non-function")
 }
 
@@ -186,11 +195,28 @@ function checkAssignable(e, { toType: type }) {
     )
 }
 
-function checkMemberDeclared(field, { in: context }) {
+function checkMemberDeclared(field, { in: inClass }) {
+    console.log("IN CHECK MEM")
+    console.log(field)
+    console.log(inClass)
     check(
-        context.fields.map((f) => f.name.lexeme).includes(field),
+        inClass.constructor.body
+            .map((f) => f.variable.value.name)
+            .includes(field),
         "No such field"
     )
+}
+// function checkMemberDeclared(field, { in: context }) {
+//     check(
+//         Object.keys(context.locals)
+//             .map((f) => f.name.lexeme)
+//             .includes(field),
+//         "No such field"
+//     )
+// }
+
+function checkInLocals(context, id) {
+    check(context.locals.has(id), `Matey, yer variables are not in locals`)
 }
 
 function checkForVargh(isVargh, m) {
@@ -247,6 +273,7 @@ class Context {
             ...this,
             parent: this,
             locals: new Map(),
+            inClass: null,
             ...props,
         })
     }
@@ -264,7 +291,6 @@ class Context {
         // checkNotReadOnly(s.target)
     }
     VariableDeclaration(d) {
-        console.log("in var dec")
         checkForVargh(d.type === "vargh", d)
         this.analyze(d.initializer)
         d.variable.value = new Variable(d.variable.lexeme)
@@ -273,10 +299,7 @@ class Context {
     }
     Token(t) {
         // For ids being used, not defined
-        console.log("IN TOKEN")
         if (t.category === "Id" || t.category === "Sym") {
-            console.log("IN SYM")
-            console.log(t.lexeme)
             t.value = this.lookup(t.lexeme)
             t.type = t.value.type
         }
@@ -304,8 +327,6 @@ class Context {
         }
         e.keyType = e.key.type
         e.valueType = e.value.type
-        console.log("1234567890asdfghjklsdfghjkl")
-        console.log(e)
     }
     Array(a) {
         // check for empty array
@@ -382,17 +403,12 @@ class Context {
         checkInLoop(this)
     }
     Call(c) {
-        console.log("in call")
-        console.log(c)
         this.analyze(c.callee)
         const callee = c.callee?.value ?? c.callee
         checkCallable(callee)
         this.analyze(c.args)
         checkFunctionCallArguments(c.args, callee.type)
         c.type = callee.type.returnType
-        console.log("end of call")
-
-        // TODO: Class methods and constructors
     }
     FunctionDeclaration(d) {
         if (d.returnType) this.analyze(d.returnType)
@@ -470,28 +486,16 @@ class Context {
         checkInteger(e.index)
     }
     ClassDeclaration(c) {
-        // if (this.inLoop) {
-        //   throw new Error(`Foolish Spirit! You cannot create a class within a Loop!`)
-        // }
-
-        // this is not right
         // create a new class type every time we see a class
-        console.log("IN CONTEXT")
-        console.log(this)
         const newClassType = new ClassType(c.id, c.constructorDec, c.methods)
         // create a new context for the type
         const typeContext = this.newChildContext({ inClass: newClassType })
         // add that class to local
-        // this.locals.set(c.id, newClassType)
-        // c.type = new ClassType(c.id, c.constructorDec, c.methods)
-        // const constructorContext = typeContext.newChildContext({ parent: typeContext })
         // handle constructor dec
         c.constructorDec = typeContext.analyze(c.constructorDec)
         c.methods = typeContext.analyze(c.methods)
         // handle methods
         this.add(c.id, newClassType)
-        console.log("CONTEXT AFTER")
-        console.log(this)
     }
     ConstructorDeclaration(d) {
         // this is not finished
@@ -514,6 +518,8 @@ class Context {
         )
         // Add before analyzing the body to allow recursion
         this.add(d.lexeme, d.value)
+        console.log("CONEXT DJFSDF")
+        console.log(constructorContext)
         constructorContext.analyze(d.body)
     }
     Field(f) {
@@ -527,7 +533,6 @@ class Context {
     }
     MethodDeclaration(d) {
         if (d.returnType) this.analyze(d.returnType)
-        console.log(d)
         d.name.value = new Function(
             d.name.lexeme,
             d.params,
@@ -555,15 +560,52 @@ class Context {
     DotExpression(e) {
         // check that the member is in
         this.analyze(e.object)
-        console.log("AFTER ME")
-        console.log(e)
-        // check if the variable is a previously declared field
-        checkMemberDeclared(e.member.lexeme, { in: this })
-
-        e.member = e.object.type.fields.find(
-            (f) => f.name.lexeme === e.field.lexeme
+        checkMemberDeclared(e.member.lexeme, { in: e.object.type })
+        e.member = e.object.type.constructor.body.find(
+            (f) => f.variable.value.name === e.member.lexeme
         )
-        e.type = e.field.type
+        e.type = e.member.type
+    }
+    ThisExpression(c) {
+        c.type = findClass(this)
+    }
+    ObjectDec(o) {
+        // check that identifer is in locals
+        checkInLocals(this, o.identifier)
+        // check that identifer in locals is a classType
+        const cType = this.lookup(o.identifier)
+        checkIsAClass(cType)
+        // trace through to check the paramters
+        this.analyze(o.args)
+        checkArgumentsMatch(
+            o.args,
+            cType.constructor.parameters.map((param) => param.type)
+        )
+        o.type = cType
+        // check the args are the same number and type as parameters
+    }
+    DotCall(c) {
+        console.log("BYYYY")
+        console.log(c)
+        console.log(this.locals)
+        this.analyze(c.object)
+        console.log("HEYYYY")
+        console.log(this.lookup(c.object.lexeme).type)
+        checkMemberDeclared(c.object.lexeme, {
+            in: this.lookup(c.object.lexeme).type,
+        })
+        // console.log(c.object)
+        // e.member = e.object.type.constructor.body.find(
+        //     (f) => f.variable.value.name === e.member.lexeme
+        // )
+        // e.type = e.object.type
+
+        // this.analyze(c.callee)
+        // const callee = c.callee?.value ?? c.callee
+        // checkCallable(callee)
+        // this.analyze(c.args)
+        // checkFunctionCallArguments(c.args, callee.type)
+        // c.type = callee.type.returnType
     }
 }
 
