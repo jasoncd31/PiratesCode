@@ -243,7 +243,7 @@ for i in array:
 <td>
     
 ```
-chase vargh x through ledger {
+chase vargh x through locations {
      maroon
 }
 ```
