@@ -44,10 +44,6 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
     <td>object</td>
     <td>loot</td>
   </tr>
-  <tr>
-    <td>tuple ()</td>
-    <td>tuple ()</td>
-  </tr>
 </table>
 
 
@@ -384,7 +380,6 @@ $$ comment goes here
 - For-Each loop without an iterable object passed
 - For loop with something other than integer value assigned to iterator
 - Different types in ternary conditional return
-- 
 
 
 
