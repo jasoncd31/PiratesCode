@@ -30,12 +30,10 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             id.ast(),
             params.asIteration().ast(),
             body.ast(),
-            // returnType.sourceString,
             returnType.ast()
         )
     },
 
-    // this isn't quite working
     ClassDec(_class, name, _open, constructorDec, methodDec, _close) {
         return new core.ClassDeclaration(
             name.sourceString,
@@ -72,7 +70,6 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
             parameters.asIteration().ast(),
             body.ast(),
             returnType.ast()
-            // returnType.sourceString,
         )
     },
     Assignment_regular(id, _eq, expression) {
@@ -81,9 +78,6 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Field(type, _object, _dot, id, _eq, initializer) {
         return new core.Field(type.ast(), id.ast(), initializer.ast())
     },
-    // Assignment(id, _eq, expression) {
-    //     return new core.Assignment(id.ast(), expression.ast())
-    // },
     ObjectDec(_new, name, _left, args, _right) {
         return new core.ObjectDec(name.sourceString, args.asIteration().ast())
     },
@@ -127,7 +121,7 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
         return new core.ArrayType(baseType.ast())
     },
     Type_dictionary(_left, keyType, _colon, valueType, _right) {
-        return new core.MapType(keyType.ast(),valueType.ast())
+        return new core.MapType(keyType.ast(), valueType.ast())
     },
     Exp5_unary(op, operand) {
         return new core.UnaryExpression(op.sourceString, operand.ast())
@@ -203,9 +197,6 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Call_regular(callee, _left, args, _right) {
         return new core.Call(callee.ast(), args.asIteration().ast())
     },
-    // Call_property(id, _dot, callee) {
-    //     return new core.Call(id.ast(), callee.ast())
-    // },
     DotExpression(id, _dot, callee) {
         return new core.DotExpression(id.ast(), callee.ast())
     },
@@ -235,7 +226,7 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     },
     _terminal() {
         return new core.Token("Sym", this.source)
-      },
+    },
     _iter(...children) {
         return children.map((child) => child.ast())
     },

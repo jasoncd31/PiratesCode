@@ -1,7 +1,7 @@
 ship Rectangle {
-    build (height, weight){
-        me.height = height
-        me.width = width
+    build (int height, int weight){
+        int me.height = height
+        int me.width = width
     }
 
     captain area(){
@@ -18,5 +18,4 @@ ship Rectangle {
 }
 
 vargh sign = new Rectangle(5,5)
-
 ahoy sign.area()

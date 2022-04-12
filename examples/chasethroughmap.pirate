@@ -1,27 +1,5 @@
-$$ Creates a map named companyMap with items
-map companyMap = {"Gold": (15,17), "Dragons": (101, 666)}
-
-$$ Creates a tuple named home with the data (0,0)
-vargh home = (0,0)
-
-$$ Adds items to companyMap as thus: (Key, Value)
-companyMap.pin("Enemies", (84, 189))
-
-$$ Iterates through each Key, Value pair tuple in companyMap
-chase vargh location through companyMap {
-    $$ Calculates the Manhattan Distance between home and location
-    $$ and checks if location is within 50 or 100 units of home
-    $$ and prints the result
-    yo abs(home[0] - location[0]) + abs(home[1] - location[1]) < 50 {
-        ahoy "Within Striking Distance!"
-    }
-    yo ho abs(home[0] - location[0]) + abs(home[1] - location[1]) < 100 {
-        ahoy "We'll Need A Ship"
-    }
-    yo ho ho {
-        ahoy "Too Far!"
-    }
+ledger numbers = [1, 2, 3]
+chase vargh x through numbers {
+    ahoy "you made it!"
 }
 
-$$ Empties companyMap
-companyMap.plunder()

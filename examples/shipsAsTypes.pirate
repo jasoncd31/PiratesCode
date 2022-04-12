@@ -1,0 +1,10 @@
+ship Boat {
+    build (int pirates, int loot) {
+        me.pirates = pirates
+        me.loot = loot
+    }
+}
+[Boat] boats = [new Boat(2, 100), new Boat(3, 1000)]
+
+
+

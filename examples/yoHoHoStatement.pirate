@@ -2,6 +2,6 @@ yo x < 0 {
     anchor -1
 } yo ho x > 9 {
     anchor 1
-} yo ho ho {
+} ho {
     anchor 0
 }

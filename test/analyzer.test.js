@@ -9,10 +9,13 @@ const semanticChecks = [
     ["variable declaration double", "vargh x = 1.2\n"],
     ["variable declaration bool", "vargh x = nay\n"],
     ["variable declaration string", 'vargh x = "please work"\n'],
-    ["array types", 'vargh fruits = ["Apple", "Banana"]'],
+    ["array declaration with vargh", 'vargh fruits = ["Apple", "Banana"]'],
     ["initialize with empty array", "[int] fruits = []"],
-    ["type declaration", 'shanty s = "hello please work!"'],
-    ["assign to array element", "vargh a = [1,2,3]\n a[1]=100\n"],
+    ["type string declaration", 'shanty s = "hello please work!"'],
+    [
+        "assign to array element using indexing",
+        "vargh a = [1,2,3]\n a[1]=100\n",
+    ],
     ["short return", "captain f() -> none { anchor }"],
     ["long return", "captain f() -> booty { anchor aye }"],
     ["return in nested if", "captain f() -> none {yo aye {anchor}}"],
@@ -54,10 +57,21 @@ const semanticChecks = [
         "nested member exp with function",
         "ship S { build(int x) {int me.y = x} \n captain T() -> none {yo aye { ahoy me.y}}} \n  S y = new S(1) \n y.T()",
     ],
-    ["member exp", "ship S { build(int x) {int me.y = x }} \n  S y = new S(1)"],
+    [
+        "nested member exp with function that has parameters",
+        "ship S { build(int x) {int me.y = x} \n captain getY() -> int {anchor me.y} \n captain calculate(int x) -> int {anchor me.y * x}} \n  S y = new S(1) \n vargh c = y.calculate(2)",
+    ],
+    [
+        "object declaration",
+        "ship S { build(int x) {int me.y = x }} \n  S y = new S(1)",
+    ],
     [
         "array of class objects",
         "ship S{ build(){int me.x = 1}} vargh x=[new S(), new S()]",
+    ],
+    [
+        "map of class objects",
+        "ship S{ build(){int me.x = 1}} {int, S} x={1 : new S(), 2 : new S()}",
     ],
     ["subscript exp", "vargh a=[1,2]\n ahoy a[0]\n"],
     [
@@ -71,6 +85,14 @@ const semanticChecks = [
     [
         "type equivalence of nested arrays",
         "captain f([[int]] x) -> none {} ahoy f([[1,2]])",
+    ],
+    [
+        "type equivalence of nested maps",
+        'captain f({ {int, int}, shanty} x) -> none {} ahoy f({{1:2} : "hello"})',
+    ],
+    [
+        "type equivalence of nested maps 2",
+        'captain f({ {int, int}, {shanty, shanty}} x) -> none {} ahoy f({{1:2} : {"hello": "hola"}})',
     ],
     [
         "call of assigned function in expression",
@@ -109,11 +131,27 @@ const semanticChecks = [
         "contexts within contexts",
         "ship S { build(int x, int a) {int me.y = x \n int me.b = a} \n captain T() -> none {chase vargh x=0 until 10{ yo aye {ahoy me.y}}}} \n",
     ],
-    ["long type match in method map", "ship Test { build(shanty x){shanty me.y = x} captain blackbeard(shanty x) -> {int, int} {anchor {1 : 2}}}"],
-    ["long type match in method list", "ship Test { build(shanty x){shanty me.y = x} captain blackbeard(shanty x) -> [{int, int}] {anchor [{1 : 2}]}}"],
-    ["long type match in function list", "captain blackbeard(shanty x) -> [int] {anchor [1,2,3]}"],
-    ["long type match in function map", "captain blackbeard(shanty x) -> {shanty, shanty} {anchor {\"hey\" : \"ho\"}}"],
+    [
+        "long type match in method map",
+        "ship Test { build(shanty x){shanty me.y = x} captain blackbeard(shanty x) -> {int, int} {anchor {1 : 2}}}",
+    ],
+    [
+        "long type match in method list",
+        "ship Test { build(shanty x){shanty me.y = x} captain blackbeard(shanty x) -> [{int, int}] {anchor [{1 : 2}]}}",
+    ],
+    [
+        "long type match in function list",
+        "captain blackbeard(shanty x) -> [int] {anchor [1,2,3]}",
+    ],
+    [
+        "long type match in function map",
+        'captain blackbeard(shanty x) -> {shanty, shanty} {anchor {"hey" : "ho"}}',
+    ],
     ["array expression subscript", "vargh x = [1,2,3]\n vargh y = x[10]"],
+    [
+        "object decclaration with vargh",
+        "ship S{ build(int z){int me.y = z}} vargh x = new S(1)",
+    ],
 ]
 
 // // Programs that are syntactically correct but have semantic errors
@@ -121,18 +159,17 @@ const semanticErrors = [
     [
         "assigning undeclared variable",
         `z = z + 5`,
-        /HEY! You didn't declare identifier z before you tried to use it. Declare it first, ye scurvy dog!/,
+        /AVAST! You didn't declare identifier z before ye tried to use it! Declare it first, ye scurvy dog!/,
     ],
     [
-        "initialize with empty array",
-        "vargh fruits = []",
-        /Hey! What's the type of that - Using vargh with an empty map or array confuses me./,
+        "relations",
+        'ahoy 1<=2 and "x">"y" and 3.5<1.2',
+        /Expected a number, ye knave/,
     ],
-    ["relations", 'ahoy 1<=2 and "x">"y" and 3.5<1.2', /Expected a number/],
     [
         "assigned functions",
         `captain f() -> none {}\n vargh g = f(1) \n s = g`,
-        /0 argument\(s\) required but 1 passed/,
+        /0 arrrghument\(s\) required but 1 passed, ye scallywag/,
     ],
     [
         "no return type in function declaration",
@@ -142,7 +179,7 @@ const semanticErrors = [
     [
         "breaking outside of a loop",
         `yo aye {\n maroon\n }`,
-        /Break can only appear in a loop/,
+        /ye got gout in the brain! Break can only appear in a loop, bucko./,
     ],
     [
         "returning outside of a function",
@@ -178,17 +215,17 @@ const semanticErrors = [
     [
         "non-int increment",
         "booty x=nay \n x = x +1",
-        /Expected a number or string/,
+        /Expected a number or string, ye landlubber/,
     ],
     [
         "non-int decrement",
         'shanty x = "some" \n x = x - 1 ',
-        /Expected a number/,
+        /Expected a number, ye knave/,
     ],
     [
         "undeclared id",
         "ahoy x",
-        /HEY! You didn't declare identifier x before you tried to use it. Declare it first, ye scurvy dog!/,
+        /AVAST! You didn't declare identifier x before ye tried to use it! Declare it first, ye scurvy dog!/,
     ],
     [
         "redeclared id",
@@ -198,7 +235,7 @@ const semanticErrors = [
     [
         "recursive class",
         "ship S { \n build(int x, S y){}}",
-        /HEY! You didn't declare identifier S before you tried to use it. Declare it first, ye scurvy dog!/,
+        /AVAST! You didn't declare identifier S before ye tried to use it! Declare it first, ye scurvy dog!/,
     ],
     [
         "once the type has been declared you cannot reassign the var",
@@ -226,42 +263,50 @@ const semanticErrors = [
         "anchor",
         /YE BILGERAT! A RETURN CAN ONLY BE IN A FUNCTION\./,
     ],
-    // [
-    //     "return nothing from non-void",
-    //     "captain f() -> shanty{anchor \"hi\"}",
-    //     /shanty should be returned here/,
-    // ], // must check that if we say we are returning something that we actually return it
+    [
+        "return nothing from non-void",
+        "captain f() -> shanty{anchor}",
+        /MATEY ARE YE THREE SHEETS TO THE WIND OR DID YOU FORGET TO RETURN SOMETHING\?/,
+    ],
     [
         "return type mismatch",
         "captain f() -> int {anchor nay}",
         /Scrub the deck. Cannot assign a booty to a int/,
-    ], // current error it is giving - but is this the right error?
-    ["non-boolean short if test", "yo 1 {}", /Expected a boolean/],
-    ["non-boolean if test", "yo 1 {} ho {}", /Expected a boolean/],
-    ["non-boolean while test", "parrot 1 {}", /Expected a boolean/],
+    ],
+    ["non-boolean short if test", "yo 1 {}", /Expected a boolean, ye picaroon/],
+    ["non-boolean if test", "yo 1 {} ho {}", /Expected a boolean, ye picaroon/],
+    [
+        "non-boolean while test",
+        "parrot 1 {}",
+        /Expected a boolean, ye picaroon/,
+    ],
     [
         "non-array for loop",
         "booty a = aye \n  chase int i through a {}",
-        /Array expected/,
+        /Array expected, bucko/,
     ],
     [
         "non-integer value 1",
         "chase vargh i = shanty until 2 {}",
-        /Expected an integer/,
+        /Expected an integer, ye rapscallion/,
     ],
     [
         "non-integer value 2",
         "chase vargh i = shanty until close {}",
-        /Expected an integer/,
+        /Expected an integer, ye rapscallion/,
     ],
-    ["non-boolean conditional test", "ahoy 1?2:3 ", /Expected a boolean/],
+    [
+        "non-boolean conditional test",
+        "ahoy 1?2:3 ",
+        /Expected a boolean, ye picaroon/,
+    ],
     [
         "diff types in conditional arms",
         "ahoy aye?1:aye",
         /int BE DIFFERENT FROM booty, YE BLIND LANDLUBBER\./,
     ],
-    ["bad types for or", "ahoy nay or 1", /Expected a boolean/],
-    ["bad types for and", "ahoy nay and 1", /Expected a boolean/],
+    ["bad types for or", "ahoy nay or 1", /Expected a boolean, ye picaroon/],
+    ["bad types for and", "ahoy nay and 1", /Expected a boolean, ye picaroon/],
     [
         "bad types for ==",
         "ahoy nay ==1",
@@ -272,15 +317,19 @@ const semanticErrors = [
         "ahoy nay ==1",
         /booty BE DIFFERENT FROM int, YE BLIND LANDLUBBER./,
     ],
-    ["bad types for +", "ahoy nay +1", /Expected a number or string/],
-    ["bad types for -", "ahoy nay - 1", /Expected a number/],
-    ["bad types for *", "ahoy nay *1", /Expected a number/],
-    ["bad types for /", "ahoy nay/1", /Expected a number/],
-    ["bad types for **", "ahoy nay**1", /Expected a number/],
-    ["bad types for <", "ahoy nay<1", /Expected a number/],
-    ["bad types for <=", "ahoy nay<=1", /Expected a number/],
-    ["bad types for >", "ahoy nay>1", /Expected a number/],
-    ["bad types for >=", "ahoy nay>=1", /Expected a number/],
+    [
+        "bad types for +",
+        "ahoy nay +1",
+        /Expected a number or string, ye landlubber/,
+    ],
+    ["bad types for -", "ahoy nay - 1", /Expected a number, ye knave/],
+    ["bad types for *", "ahoy nay *1", /Expected a number, ye knave/],
+    ["bad types for /", "ahoy nay/1", /Expected a number, ye knave/],
+    ["bad types for **", "ahoy nay**1", /Expected a number, ye knave/],
+    ["bad types for <", "ahoy nay<1", /Expected a number, ye knave/],
+    ["bad types for <=", "ahoy nay<=1", /Expected a number, ye knave/],
+    ["bad types for >", "ahoy nay>1", /Expected a number, ye knave/],
+    ["bad types for >=", "ahoy nay>=1", /Expected a number, ye knave/],
     [
         "bad types for ==",
         "ahoy 2==2.0",
@@ -291,38 +340,42 @@ const semanticErrors = [
         "ahoy nay!=1",
         /booty BE DIFFERENT FROM int, YE BLIND LANDLUBBER\./,
     ],
-    ["bad types for negation", "ahoy -aye", /Expected a number/],
-    ["bad types for negation", "ahoy not 2", /Expected a boolean/],
-    ["non-integer index", "vargh a=[1] \n ahoy a[nay]", /Expected an integer/], // this doesn't throw. We need a check for subscript
+    ["bad types for negation", "ahoy -aye", /Expected a number, ye knave/],
+    ["bad types for negation", "ahoy not 2", /Expected a boolean, ye picaroon/],
+    [
+        "non-integer index",
+        "vargh a=[1] \n ahoy a[nay]",
+        /Expected an integer, ye rapscallion/,
+    ],
     [
         "cannot access fields outside of class",
         "ship S{ build(int z){int me.y = z}} \n vargh x= new S(1) \n ahoy me.y",
-        /Not in a class/,
+        /ITS NOT IN A CLASS, YE COWARDLY SWAB! FIX IT OR ELSE!/,
     ],
     [
         "no such field in class",
         "ship S{ build(int z){int me.y = z} captain f() -> none{ahoy me.g}}",
-        /No such field/,
+        /BELAY, SCALLYWAG! There's no such field so stop! Or else.../,
     ],
     [
         "no such function in class",
         "ship S{ build(){}} vargh x = new S() \n ahoy x.Y()",
-        /No such field/,
+        /BELAY, SCALLYWAG! There's no such field so stop! Or else.../,
     ],
     [
         "object made from class that does not exist",
         "ship S{ build(){}} T x = new T()",
         /Matey, yer variables are not in locals/,
-    ], // how do we type check when we declare new functions?
+    ],
     [
         "mismatching types in variable declaration",
         "ship S{ build(){}} int x = new S()",
         /ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES/,
-    ], // how do we type check when we declare new functions?
+    ],
     [
         "diff type array elements",
         "ahoy [3,3.0]",
-        /Not all elements have the same type/,
+        /Mate, not all elements have the same type/,
     ],
     [
         "shadowing",
@@ -333,12 +386,12 @@ const semanticErrors = [
     [
         "Too many args",
         "captain f(int x) -> none{}\nf(1,2)",
-        /1 argument\(s\) required but 2 passed/,
+        /1 arrrghument\(s\) required but 2 passed, ye scallywag/,
     ],
     [
         "Too few args",
         "captain f(int x) -> none{}\nf()",
-        /1 argument\(s\) required but 0 passed/,
+        /1 arrrghument\(s\) required but 0 passed, ye scallywag/,
     ],
     [
         "Parameter type mismatch",
@@ -348,30 +401,93 @@ const semanticErrors = [
     [
         "bad call to a function that doesn't exist",
         "ahoy sin()",
-        /HEY! You didn't declare identifier sin before you tried to use it. Declare it first, ye scurvy dog!/,
+        /AVAST! You didn't declare identifier sin before ye tried to use it! Declare it first, ye scurvy dog!/,
     ],
     [
         "Non-type in param",
         "vargh x=1\ncaptain f(x y) -> none{}",
-        /Type expected/,
+        /Type expected, mate. Mess up again or ye sleepin' with the fishes./,
     ],
     [
         "Non-type in return type",
         "vargh x=1\ncaptain f() -> x{anchor 1}",
-        /Type expected/,
+        /Type expected, mate. Mess up again or ye sleepin' with the fishes./,
     ],
     [
         "Non-type in field type",
         "vargh x=1\n ship S {build(x y) {}}",
-        /Type expected/,
+        /Type expected, mate. Mess up again or ye sleepin' with the fishes./,
     ],
     [
         "me outside of class",
         `captain evenOrOdd(int x) -> shanty {\n me.x = -14 \n anchor "howdy"\n}`,
-        /Not in a class/,
+        /ITS NOT IN A CLASS, YE COWARDLY SWAB! FIX IT OR ELSE!/,
     ],
-    ["type mismatch", "int x = 3.0", /ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES/],
-    ["long type mismatch in function list", "captain blackbeard(shanty x) -> {int, int} {anchor [1,2,3]}", /Scrub the deck. Cannot assign a \[int\] to a {int : int}/],
+    [
+        "type mismatch",
+        "int x = 3.0",
+        /ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES/,
+    ],
+    [
+        "long type mismatch in function list",
+        "captain blackbeard(shanty x) -> {int, int} {anchor [1,2,3]}",
+        /Scrub the deck. Cannot assign a \[int\] to a {int : int}/,
+    ],
+    [
+        "arrays with multiple types",
+        '[int] x = [1,2, "bye", aye]',
+        /Mate\, not all elements have the same type/,
+    ],
+    [
+        "arrays with incorrect types",
+        "[int] x = [1.0,2.0,3.0]",
+        /ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES/,
+    ],
+    [
+        "arrays with incorrect types",
+        "[int] x = [1.0,2.0,3.0]",
+        /ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES/,
+    ],
+    [
+        "incorrect object declaration with wrong type",
+        "ship S{ build(int z){int me.y = z}} shanty x = new S(1)",
+        /ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES/,
+    ],
+    [
+        "incorrect object declaration with wrong number of paramters",
+        "ship S{ build(int z){int me.y = z}} S x = new S()",
+        /1 arrrghument\(s\) required but 0 passed\, ye scallywag/,
+    ],
+    [
+        "incorrect nest map object declaration",
+        "{{int,int}, shanty} x = {{1:2}:3}",
+        /ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES/,
+    ],
+    [
+        "incorrect empty map declaration",
+        "vargh x = {}",
+        /Error: ARRR! What's the type of that\?\? Using vargh with an empty MapExpression confuses me matey./,
+    ],
+    [
+        "incorrect empty array declaration",
+        "vargh x = []",
+        /ARRR! What's the type of that\?\? Using vargh with an empty ArrayExpression confuses me matey\./,
+    ],
+    [
+        "object declaration with class that hasn't been declared yet",
+        "vargh x = new S()",
+        /Matey, yer variables are not in locals/,
+    ],
+    [
+        "object declaration that doesn't exist",
+        "ship S{ build(){}} ship T{ build(){}} S x = new T()",
+        /ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES/,
+    ],
+    [
+        "incorrect type equivalence of nested maps",
+        'captain f({ {int, int}, {shanty, shanty}} x) -> none {} ahoy f({{1:"aye"} : {"hello": "hola"}})',
+        /Error: Scrub the deck. Cannot assign a {{int : shanty} : {shanty : shanty}} to a {{int : int} : {shanty : shanty}}/,
+    ],
 ]
 // Test cases for expected semantic graphs after processing the AST. In general
 // this suite of cases should have a test for each kind of node, including

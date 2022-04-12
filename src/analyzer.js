@@ -35,7 +35,8 @@ Object.assign(ArrayType.prototype, {
         // [T] equivalent to [U] only when T is equivalent to U.
         return (
             target.constructor === ArrayType &&
-            (this.baseType.isEquivalentTo(target.baseType) || this.baseType.isEquivalentTo(Type.ANY))
+            (this.baseType.isEquivalentTo(target.baseType) ||
+                this.baseType.isEquivalentTo(Type.ANY))
         )
     },
     isAssignableTo(target) {
@@ -49,8 +50,10 @@ Object.assign(MapType.prototype, {
         // [T] equivalent to [U] only when T is equivalent to U.
         return (
             target.constructor === MapType &&
-            (this.keyType.isEquivalentTo(target.keyType) || this.keyType.isEquivalentTo(Type.ANY)) &&
-            (this.valueType.isEquivalentTo(target.valueType) || this.valueType.isEquivalentTo(Type.ANY))
+            (this.keyType.isEquivalentTo(target.keyType) ||
+                this.keyType.isEquivalentTo(Type.ANY)) &&
+            (this.valueType.isEquivalentTo(target.valueType) ||
+                this.valueType.isEquivalentTo(Type.ANY))
         )
     },
     isAssignableTo(target) {
@@ -58,26 +61,6 @@ Object.assign(MapType.prototype, {
         return this.isEquivalentTo(target)
     },
 })
-
-// Object.assign(FunctionType.prototype, {
-//   isEquivalentTo(target) {
-//     return (
-//       target.constructor === FunctionType &&
-//       this.returnType.isEquivalentTo(target.returnType) &&
-//       this.paramTypes.length === target.paramTypes.length &&
-//       this.paramTypes.every((t, i) => target.paramTypes[i].isEquivalentTo(t))
-//     )
-//   },
-//   isAssignableTo(target) {
-//     // Functions are covariant on return types, contravariant on parameters.
-//     return (
-//       target.constructor === FunctionType &&
-//       this.returnType.isAssignableTo(target.returnType) &&
-//       this.paramTypes.length === target.paramTypes.length &&
-//       this.paramTypes.every((t, i) => target.paramTypes[i].isAssignableTo(t))
-//     )
-//   },
-// })
 
 /***************************************
  *  CHECK YE SCURVY TYPES  *
@@ -92,23 +75,31 @@ function checkType(e, types, expectation) {
 }
 
 function checkNumeric(e) {
-    checkType(e, [Type.INT, Type.DOUBLE], "a number")
+    checkType(e, [Type.INT, Type.DOUBLE], "a number, ye knave")
 }
 
 function checkNumericOrString(e) {
-    checkType(e, [Type.INT, Type.FLOAT, Type.STRING], "a number or string")
+    checkType(
+        e,
+        [Type.INT, Type.FLOAT, Type.STRING],
+        "a number or string, ye landlubber"
+    )
 }
 
 function checkBoolean(e) {
-    checkType(e, [Type.BOOLEAN], "a boolean")
+    checkType(e, [Type.BOOLEAN], "a boolean, ye picaroon")
 }
 
 function checkInteger(e) {
-    checkType(e, [Type.INT], "an integer")
+    checkType(e, [Type.INT], "an integer, ye rapscallion")
 }
 
 function checkIsAType(e) {
-    check(e instanceof Type, "Type expected", e)
+    check(
+        e instanceof Type,
+        "Type expected, mate. Mess up again or ye sleepin' with the fishes.",
+        e
+    )
 }
 function checkIsAClass(c) {
     check(c instanceof ClassType, "Not a class", c)
@@ -119,12 +110,12 @@ function findClass(c) {
     } else if (c.parent !== null) {
         return findClass(c.parent)
     }
-    check(c.inClass, "Not in a class", c)
+    check(c.inClass, "ITS NOT IN A CLASS, YE COWARDLY SWAB! FIX IT OR ELSE!", c)
 }
 function checkIterable(e) {
     check(
         e.type.constructor === ArrayType || e.type.constructor === MapType,
-        "Array expected",
+        "Array expected, bucko",
         e
     )
 }
@@ -154,14 +145,14 @@ function checkAllHaveSameType(expressions) {
             expressions
                 .slice(1)
                 .every((e) => e.type.isEquivalentTo(expressions[0].type)),
-            "Not all elements have the same type"
+            "Mate, not all elements have the same type"
         )
     }
 }
 function checkArgumentsMatch(args, targetTypes) {
     check(
         targetTypes.length === args.length,
-        `${targetTypes.length} argument(s) required but ${args.length} passed`
+        `${targetTypes.length} arrrghument(s) required but ${args.length} passed, ye scallywag`
     )
     targetTypes.forEach((type, i) => checkAssignable(args[i], { toType: type }))
 }
@@ -169,14 +160,16 @@ function checkFunctionCallArguments(args, calleeType) {
     checkArgumentsMatch(args, calleeType.paramTypes)
 }
 function checkInLoop(context) {
-    check(context.inLoop, "Break can only appear in a loop")
+    check(
+        context.inLoop,
+        "ye got gout in the brain! Break can only appear in a loop, bucko."
+    )
 }
 function checkHaveSameType(e1, e2) {
     check(
         e1.type.isEquivalentTo(e2.type),
         `${e1.type.description} BE DIFFERENT FROM ${e2.type.description}, YE BLIND LANDLUBBER.`
     )
-    // check(e1.category === e2.category, `${e2.category} BE DIFFERENT FROM ${e2.category}, YE BLIND LANDLUBBER.`)
 }
 
 function checkInFunction(context) {
@@ -215,17 +208,9 @@ function checkMemberDeclared(field, { in: inClass }) {
         inClass.constructor.body
             .map((f) => f.variable.value.name)
             .includes(field),
-        "No such field"
+        "BELAY, SCALLYWAG! There's no such field so stop! Or else..."
     )
 }
-// function checkMemberDeclared(field, { in: context }) {
-//     check(
-//         Object.keys(context.locals)
-//             .map((f) => f.name.lexeme)
-//             .includes(field),
-//         "No such field"
-//     )
-// }
 
 function checkInLocals(context, id) {
     check(context.locals.has(id), `Matey, yer variables are not in locals`)
@@ -238,13 +223,16 @@ function checkForVargh(isVargh, m) {
     ) {
         check(
             !isVargh || m.initializer.elements.length !== 0,
-            `Hey! What's the type of that - Using vargh with an empty map or array confuses me.`
+            `ARRR! What's the type of that?? Using vargh with an empty ${m.initializer.constructor.name} confuses me matey.`
         )
     }
 }
 
 function checkDeclarationAssignable(initializerType, declaredType) {
-    check(initializerType.isAssignableTo(declaredType), "ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES")
+    check(
+        initializerType.isAssignableTo(declaredType),
+        "ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES"
+    )
 }
 
 /*******************************************
@@ -261,10 +249,6 @@ class Context {
     }) {
         Object.assign(this, { parent, locals, inLoop, inClass, function: f })
     }
-    // sees(name) {
-    //     // Search "outward" through enclosing scopes
-    //     return this.locals.has(name) || this.parent?.sees(name)
-    // }
 
     add(name, entity) {
         // Shadowing is allowed hehe
@@ -281,7 +265,7 @@ class Context {
             return this.parent.lookup(name)
         }
         error(
-            `HEY! You didn't declare identifier ${name} before you tried to use it. Declare it first, ye scurvy dog!`
+            `AVAST! You didn't declare identifier ${name} before ye tried to use it! Declare it first, ye scurvy dog!`
         )
     }
     newChildContext(props) {
@@ -303,7 +287,6 @@ class Context {
         this.analyze(s.source)
         this.analyze(s.target)
         checkAssignable(s.source, { toType: s.target.type })
-        // checkNotReadOnly(s.target)
     }
     VariableDeclaration(d) {
         this.analyze(d.initializer)
@@ -322,7 +305,6 @@ class Context {
         d.variable.value = new Variable(d.variable.lexeme)
         d.variable.value.type = d.initializer.type
         this.add(d.variable.lexeme, d.variable.value)
-
     }
     Token(t) {
         // For ids being used, not defined
@@ -348,7 +330,7 @@ class Context {
     MapEntry(e) {
         this.analyze(e.key)
         this.analyze(e.value)
-        if (e.key.value.name !== undefined) {
+        if (e.key?.value?.name !== undefined) {
             let x = this.lookup(e.key.value.name)
             e.key.type = x.type
         }
@@ -439,7 +421,6 @@ class Context {
     }
     Call(c) {
         this.analyze(c.callee)
-        // const callee = c.callee?.value ?? c.callee
         const callee = c.callee
         checkCallable(callee)
         this.analyze(c.args)
@@ -451,7 +432,6 @@ class Context {
         d.fun.value = new Function(
             d.fun.lexeme,
             d.params,
-            // d.returnType?.value ?? d.returnType ?? Type.NONE
             d.returnType.value ?? d.returnType
         )
         checkIsAType(d.fun.value.returnType)
@@ -534,7 +514,6 @@ class Context {
         this.add(c.id, newClassType)
     }
     ConstructorDeclaration(d) {
-        // this is not finished
         d.returnType = Type.NONE
         d.lexeme = "build"
         d.value = new Function(d.lexeme, d.parameters, d.returnType)
@@ -570,7 +549,6 @@ class Context {
         d.name.value = new Function(
             d.name.lexeme,
             d.params,
-            // d.returnType?.value ?? d.returnType ?? Type.NONE
             d.returnType.value ?? d.returnType
         )
         checkIsAType(d.name.value.returnType)
@@ -587,7 +565,6 @@ class Context {
             d.name.value.parameters.map((p) => p.type),
             d.name.value.returnType
         )
-        //d.fun.value.parameters.map(p => this.add(p.))
         // Add before analyzing the body to allow recursion
         this.add(d.name.lexeme, d.name.value)
         childContext.analyze(d.body)
@@ -624,17 +601,6 @@ class Context {
         checkMemberDeclared(c.object.lexeme, {
             in: this.lookup(c.object.lexeme).type,
         })
-        // e.member = e.object.type.constructor.body.find(
-        //     (f) => f.variable.value.name === e.member.lexeme
-        // )
-        // e.type = e.object.type
-
-        // this.analyze(c.callee)
-        // const callee = c.callee?.value ?? c.callee
-        // checkCallable(callee)
-        // this.analyze(c.args)
-        // checkFunctionCallArguments(c.args, callee.type)
-        // c.type = callee.type.returnType
     }
 }
 

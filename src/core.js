@@ -60,12 +60,6 @@ export class ClassType extends Type {
     }
 }
 
-// export class SetType extends Type {
-//     constructor(baseType) {
-//       super(`Set(${baseType.description})`)
-//     }
-// }
-
 export class Variable {
     constructor(name) {
         this.name = name
