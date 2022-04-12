@@ -62,10 +62,6 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
     <td>ledger</td>
   </tr>
   <tr>
-    <td>Set</td>
-    <td>chest</td>
-  </tr>
-  <tr>
     <td>Dictionary</td>
     <td>map</td>
   </tr>
