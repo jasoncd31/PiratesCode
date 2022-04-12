@@ -109,11 +109,15 @@ const semanticChecks = [
         "contexts within contexts",
         "ship S { build(int x, int a) {int me.y = x \n int me.b = a} \n captain T() -> none {chase vargh x=0 until 10{ yo aye {ahoy me.y}}}} \n",
     ],
+    ["long type match in method map", "ship Test { build(shanty x){shanty me.y = x} captain blackbeard(shanty x) -> {int, int} {anchor {1 : 2}}}"],
+    ["long type match in method list", "ship Test { build(shanty x){shanty me.y = x} captain blackbeard(shanty x) -> [{int, int}] {anchor [{1 : 2}]}}"],
+    ["long type match in function list", "captain blackbeard(shanty x) -> [int] {anchor [1,2,3]}"],
+    ["long type match in function map", "captain blackbeard(shanty x) -> {shanty, shanty} {anchor {\"hey\" : \"ho\"}}"],
+    ["array expression subscript", "vargh x = [1,2,3]\n vargh y = x[10]"],
 ]
 
 // // Programs that are syntactically correct but have semantic errors
 const semanticErrors = [
-    ["incorrect initialize with empty array", "vargh fruits = []"],
     [
         "assigning undeclared variable",
         `z = z + 5`,
@@ -195,7 +199,7 @@ const semanticErrors = [
         "recursive class",
         "ship S { \n build(int x, S y){}}",
         /HEY! You didn't declare identifier S before you tried to use it. Declare it first, ye scurvy dog!/,
-    ], // is this the error it should be throwing?
+    ],
     [
         "once the type has been declared you cannot reassign the var",
         'vargh x = 1\n x = "2"',
@@ -224,14 +228,14 @@ const semanticErrors = [
     ],
     // [
     //     "return nothing from non-void",
-    //     "captain f() -> shanty{}",
-    //     /should be returned here/,
+    //     "captain f() -> shanty{anchor \"hi\"}",
+    //     /shanty should be returned here/,
     // ], // must check that if we say we are returning something that we actually return it
-    // [
-    //     "return type mismatch",
-    //     "captain f() -> int {anchor nay}",
-    //     /Scrub the deck. Cannot assign a booty to a int/,
-    // ], // current error it is giving - but is this the right error?
+    [
+        "return type mismatch",
+        "captain f() -> int {anchor nay}",
+        /Scrub the deck. Cannot assign a booty to a int/,
+    ], // current error it is giving - but is this the right error?
     ["non-boolean short if test", "yo 1 {}", /Expected a boolean/],
     ["non-boolean if test", "yo 1 {} ho {}", /Expected a boolean/],
     ["non-boolean while test", "parrot 1 {}", /Expected a boolean/],
@@ -289,7 +293,7 @@ const semanticErrors = [
     ],
     ["bad types for negation", "ahoy -aye", /Expected a number/],
     ["bad types for negation", "ahoy not 2", /Expected a boolean/],
-    // ["non-integer index", "vargh a=[1] \n ahoy a[nay]", /Expected an integer/], // this doesn't throw. We need a check for subscript
+    ["non-integer index", "vargh a=[1] \n ahoy a[nay]", /Expected an integer/], // this doesn't throw. We need a check for subscript
     [
         "cannot access fields outside of class",
         "ship S{ build(int z){int me.y = z}} \n vargh x= new S(1) \n ahoy me.y",
@@ -305,11 +309,16 @@ const semanticErrors = [
         "ship S{ build(){}} vargh x = new S() \n ahoy x.Y()",
         /No such field/,
     ],
-    // [
-    //     "no such function in class",
-    //     "ship S{ build(){}} int x = new S()",
-    //     /No such field/,
-    // ], // how do we type check when we declare new functions?
+    [
+        "object made from class that does not exist",
+        "ship S{ build(){}} T x = new T()",
+        /Matey, yer variables are not in locals/,
+    ], // how do we type check when we declare new functions?
+    [
+        "mismatching types in variable declaration",
+        "ship S{ build(){}} int x = new S()",
+        /ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES/,
+    ], // how do we type check when we declare new functions?
     [
         "diff type array elements",
         "ahoy [3,3.0]",
@@ -361,6 +370,8 @@ const semanticErrors = [
         `captain evenOrOdd(int x) -> shanty {\n me.x = -14 \n anchor "howdy"\n}`,
         /Not in a class/,
     ],
+    ["type mismatch", "int x = 3.0", /ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES/],
+    ["long type mismatch in function list", "captain blackbeard(shanty x) -> {int, int} {anchor [1,2,3]}", /Scrub the deck. Cannot assign a \[int\] to a {int : int}/],
 ]
 // Test cases for expected semantic graphs after processing the AST. In general
 // this suite of cases should have a test for each kind of node, including

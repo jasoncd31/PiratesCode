@@ -109,8 +109,8 @@ const naughty_pirate = `
 `
 
 const expected1 = `   1 | Program statements=[#2,#3,#4,#14]
-   2 | VariableDeclaration type='vargh' variable=(Id,"age") initializer=(Double,"10.5")
-   3 | VariableDeclaration type='vargh' variable=(Id,"ageLimit") initializer=(Int,"18")
+   2 | VariableDeclaration type=(Sym,"vargh") variable=(Id,"age") initializer=(Double,"10.5")
+   3 | VariableDeclaration type=(Sym,"vargh") variable=(Id,"ageLimit") initializer=(Int,"18")
    4 | WhileLoop test=#5 body=[#6,#7,#9]
    5 | BinaryExpression op='<' left=(Id,"age") right=(Id,"ageLimit")
    6 | PrintStatement argument=(Str,""yer a little lad"")
@@ -139,7 +139,7 @@ const expected3 = `   1 | Program statements=[#2,#9,#11,#14]
    6 | ReturnStatement expression=#7
    7 | BinaryExpression op='==' left=#8 right=(Int,"0")
    8 | BinaryExpression op='%' left=(Id,"x") right=(Int,"2")
-   9 | VariableDeclaration type='ledger' variable=(Id,"numbers") initializer=#10
+   9 | VariableDeclaration type=(Id,"ledger") variable=(Id,"numbers") initializer=#10
   10 | ArrayExpression elements=[(Int,"1"),(Int,"2"),(Int,"3")]
   11 | ForEachLoop variable=(Id,"x") expression=(Id,"numbers") body=[#12]
   12 | PrintStatement argument=#13
@@ -148,7 +148,7 @@ const expected3 = `   1 | Program statements=[#2,#9,#11,#14]
   15 | ShortReturnStatement `
 
 const expected4 = `   1 | Program statements=[#2,#6]
-   2 | VariableDeclaration type='map' variable=(Id,"companyMap") initializer=#3
+   2 | VariableDeclaration type=(Id,"map") variable=(Id,"companyMap") initializer=#3
    3 | MapExpression elements=[#4,#5]
    4 | MapEntry key=(Str,""Gold"") value=(Str,""(15,17)"")
    5 | MapEntry key=(Str,""Dragons"") value=(Str,""(101, 666)"")
@@ -208,7 +208,7 @@ const expected7 = `   1 | Program statements=[#2,#24,#26,#29]
   21 | Assignment target=#22 source=(Id,"newWidth")
   22 | DotExpression object=#23 member=(Id,"width")
   23 | ThisExpression 
-  24 | VariableDeclaration type='Rectangle' variable=(Id,"p") initializer=#25
+  24 | VariableDeclaration type=(Id,"Rectangle") variable=(Id,"p") initializer=#25
   25 | ObjectDec identifier='Rectangle' args=[(Int,"3"),(Int,"4")]
   26 | PrintStatement argument=#27
   27 | DotCall object=(Id,"p") member=#28

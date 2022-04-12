@@ -15,7 +15,7 @@ PiratesCode {
                | DotExpression
                | DotCall
                    
-  VarDec       = (Type | var) id "=" Exp
+  VarDec       = (Type | let) id "=" Exp
 
   FunDec       = function id "(" ListOf<Param, ","> ")" "->" Type Block
   
@@ -33,8 +33,8 @@ PiratesCode {
   DotCall  = id "." Call 
   
   LoopStatement = while Exp Block 				     -- while
-               | for (Type|"vargh") id "through" id Block           -- ForEach
-               | for ("vargh"|"int") id "=" Exp "until" Exp Block   -- For
+               | for (Type|let) id "through" id Block           -- ForEach
+               | for (let|"int") id "=" Exp "until" Exp Block   -- For
 
   IfStmt      = if Exp Block (elseif Exp Block)* (else Block)?         -- long
               | if Exp Block                                           -- short
@@ -113,7 +113,6 @@ PiratesCode {
   and         = "and" ~alnum
   or          = "or" ~alnum
   not         = "not" ~alnum
-  var         = "vargh" ~alnum
   new         = "new" ~alnum
   
   comment     = "$$" (~"\n" any)* ("\n" | end)  -- comment

@@ -20,7 +20,7 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     },
     VarDec(type, id, _eq, initializer) {
         return new core.VariableDeclaration(
-            type.sourceString,
+            type.ast(),
             id.ast(),
             initializer.ast()
         )
@@ -126,6 +126,9 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     Type_list(_left, baseType, _right) {
         return new core.ArrayType(baseType.ast())
     },
+    Type_dictionary(_left, keyType, _colon, valueType, _right) {
+        return new core.MapType(keyType.ast(),valueType.ast())
+    },
     Exp5_unary(op, operand) {
         return new core.UnaryExpression(op.sourceString, operand.ast())
     },
@@ -230,6 +233,9 @@ const astBuilder = piratesGrammar.createSemantics().addOperation("ast", {
     strlit(_openQuote, _chars, _closeQuote) {
         return new core.Token("Str", this.source)
     },
+    _terminal() {
+        return new core.Token("Sym", this.source)
+      },
     _iter(...children) {
         return children.map((child) => child.ast())
     },

@@ -45,10 +45,10 @@ export class ArrayType extends Type {
 }
 
 export class MapType extends Type {
-    constructor(baseKeyType, baseValueType) {
-        super(`{${baseKeyType.description} : ${baseValueType.description}}`)
-        this.baseKeyType = baseKeyType
-        this.baseValueType = baseValueType
+    constructor(keyType, valueType) {
+        super(`{${keyType.description} : ${valueType.description}}`)
+        this.keyType = keyType
+        this.valueType = valueType
     }
 }
 
@@ -288,7 +288,8 @@ Program.prototype[util.inspect.custom] = function () {
             if (tags.has(e)) return `#${tags.get(e)}`
             if (e?.constructor === Token) {
                 return `(${e.category},"${e.lexeme}"${
-                    e.value ? "," + view(e.value) : ""
+                    // e.value ? "," + view(e.value) : ""
+                    ""
                 })`
             }
             if (Array.isArray(e)) return `[${e.map(view)}]`

@@ -35,7 +35,22 @@ Object.assign(ArrayType.prototype, {
         // [T] equivalent to [U] only when T is equivalent to U.
         return (
             target.constructor === ArrayType &&
-            this.baseType.isEquivalentTo(target.baseType)
+            (this.baseType.isEquivalentTo(target.baseType) || this.baseType.isEquivalentTo(Type.ANY))
+        )
+    },
+    isAssignableTo(target) {
+        // Arrays are INVARIANT in Carlos!
+        return this.isEquivalentTo(target)
+    },
+})
+
+Object.assign(MapType.prototype, {
+    isEquivalentTo(target) {
+        // [T] equivalent to [U] only when T is equivalent to U.
+        return (
+            target.constructor === MapType &&
+            (this.keyType.isEquivalentTo(target.keyType) || this.keyType.isEquivalentTo(Type.ANY)) &&
+            (this.valueType.isEquivalentTo(target.valueType) || this.valueType.isEquivalentTo(Type.ANY))
         )
     },
     isAssignableTo(target) {
@@ -196,9 +211,6 @@ function checkAssignable(e, { toType: type }) {
 }
 
 function checkMemberDeclared(field, { in: inClass }) {
-    console.log("IN CHECK MEM")
-    console.log(field)
-    console.log(inClass)
     check(
         inClass.constructor.body
             .map((f) => f.variable.value.name)
@@ -229,6 +241,10 @@ function checkForVargh(isVargh, m) {
             `Hey! What's the type of that - Using vargh with an empty map or array confuses me.`
         )
     }
+}
+
+function checkDeclarationAssignable(initializerType, declaredType) {
+    check(initializerType.isAssignableTo(declaredType), "ARGH THOU CANNOT ASSIGN TWO DIFFERENT TYPES")
 }
 
 /*******************************************
@@ -278,7 +294,6 @@ class Context {
         })
     }
     analyze(node) {
-        console.log(node.constructor.name)
         return this[node.constructor.name](node)
     }
     Program(p) {
@@ -291,15 +306,27 @@ class Context {
         // checkNotReadOnly(s.target)
     }
     VariableDeclaration(d) {
-        checkForVargh(d.type === "vargh", d)
         this.analyze(d.initializer)
+        if (d.type.lexeme !== "vargh") {
+            this.analyze(d.type)
+            let type = null
+            if (d.type instanceof MapType || d.type instanceof ArrayType) {
+                type = d.type
+            } else {
+                type = d.type.value
+            }
+            checkDeclarationAssignable(d.initializer.type, type)
+        } else {
+            checkForVargh(d.type.lexeme === "vargh", d)
+        }
         d.variable.value = new Variable(d.variable.lexeme)
         d.variable.value.type = d.initializer.type
         this.add(d.variable.lexeme, d.variable.value)
+
     }
     Token(t) {
         // For ids being used, not defined
-        if (t.category === "Id" || t.category === "Sym") {
+        if (t.category === "Id") {
             t.value = this.lookup(t.lexeme)
             t.type = t.value.type
         }
@@ -344,6 +371,12 @@ class Context {
     ArrayType(t) {
         this.analyze(t.baseType)
         if (t.baseType instanceof Token) t.baseType = t.baseType.value
+    }
+    MapType(t) {
+        this.analyze(t.keyType)
+        this.analyze(t.valueType)
+        if (t.keyType instanceof Token) t.keyType = t.keyType.value
+        if (t.valueType instanceof Token) t.valueType = t.valueType.value
     }
     IfStatement(s) {
         this.analyze(s.test)
@@ -394,17 +427,20 @@ class Context {
         checkReturnsSomething(this.function)
         this.analyze(s.expression)
         checkReturnable({ expression: s.expression, from: this.function })
+        this.return = s.type
     }
     ShortReturnStatement(s) {
         checkInFunction(this)
         checkReturnsNothing(this.function)
+        this.return = Type.NONE
     }
     BreakStatement(s) {
         checkInLoop(this)
     }
     Call(c) {
         this.analyze(c.callee)
-        const callee = c.callee?.value ?? c.callee
+        // const callee = c.callee?.value ?? c.callee
+        const callee = c.callee
         checkCallable(callee)
         this.analyze(c.args)
         checkFunctionCallArguments(c.args, callee.type)
@@ -415,7 +451,8 @@ class Context {
         d.fun.value = new Function(
             d.fun.lexeme,
             d.params,
-            d.returnType?.value ?? d.returnType ?? Type.NONE
+            // d.returnType?.value ?? d.returnType ?? Type.NONE
+            d.returnType.value ?? d.returnType
         )
         checkIsAType(d.fun.value.returnType)
         // When entering a function body, we must reset the inLoop setting,
@@ -431,7 +468,6 @@ class Context {
             d.fun.value.parameters.map((p) => p.type),
             d.fun.value.returnType
         )
-        //d.fun.value.parameters.map(p => this.add(p.))
         // Add before analyzing the body to allow recursion
         this.add(d.fun.lexeme, d.fun.value)
         childContext.analyze(d.body)
@@ -518,8 +554,6 @@ class Context {
         )
         // Add before analyzing the body to allow recursion
         this.add(d.lexeme, d.value)
-        console.log("CONEXT DJFSDF")
-        console.log(constructorContext)
         constructorContext.analyze(d.body)
     }
     Field(f) {
@@ -536,7 +570,8 @@ class Context {
         d.name.value = new Function(
             d.name.lexeme,
             d.params,
-            d.returnType?.value ?? d.returnType ?? Type.NONE
+            // d.returnType?.value ?? d.returnType ?? Type.NONE
+            d.returnType.value ?? d.returnType
         )
         checkIsAType(d.name.value.returnType)
         // When entering a function body, we must reset the inLoop setting,
@@ -585,16 +620,10 @@ class Context {
         // check the args are the same number and type as parameters
     }
     DotCall(c) {
-        console.log("BYYYY")
-        console.log(c)
-        console.log(this.locals)
         this.analyze(c.object)
-        console.log("HEYYYY")
-        console.log(this.lookup(c.object.lexeme).type)
         checkMemberDeclared(c.object.lexeme, {
             in: this.lookup(c.object.lexeme).type,
         })
-        // console.log(c.object)
         // e.member = e.object.type.constructor.body.find(
         //     (f) => f.variable.value.name === e.member.lexeme
         // )
