@@ -374,7 +374,7 @@ $$ comment goes here
 </td>
 </table>
 
-###Types of Semantic Errors
+### Types of Semantic Errors
 - Use of non-initialized variables
 - Using vargh for arrays and maps
 - Incompatible type comparison
@@ -384,6 +384,11 @@ $$ comment goes here
 - Void return has a return value
 - Reassigning a variable with the wrong type
 - Incrementing and decrementing with non-int variable types
+- Non-boolean value in conditional
+- For-Each loop without an iterable object passed
+- For loop with something other than integer value assigned to iterator
+- Different types in ternary conditional return
+- 
 
 
 
