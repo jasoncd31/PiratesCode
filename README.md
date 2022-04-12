@@ -348,17 +348,21 @@ $$ comment goes here
 
 ### Types of Semantic Errors
 
--   Use of non-initialized variables
--   Using vargh for non empty arrays and maps
+-   Use of non-initialized variables and objects
+-   Using vargh for empty arrays and maps
 -   Incompatible type comparison
 -   Incorrect number of function parameters
+-   Incorrect types in arrays
 -   Break outside of loops
 -   Return outside of a function
 -   Void return has a return value
 -   Function with return value doesn't return anything
+-   Calling a function that is not intialized
 -   Reassigning a variable with the wrong type
 -   Incrementing and decrementing with non-int variable types
 -   Non-boolean value in conditional
 -   For-Each loop without an iterable object passed
 -   For loop with something other than integer value assigned to iterator
 -   Different types in ternary conditional return
+-   Declaring an object with the wrong type
+-   Declaring an object with the incorrect number of parameters
