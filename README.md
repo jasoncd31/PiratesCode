@@ -128,7 +128,7 @@ function evenOrOdd(x){
 <td>
     
 ```
-captain evenOrOdd(x){
+captain evenOrOdd(int x) -> booty {
     anchor x % 2 == 0
 }
 ```
