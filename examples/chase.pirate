@@ -1,0 +1,6 @@
+vargh count = 10
+chase int i = 1 until count {
+    ahoy i
+}
+
+ahoy "I have counted the boats on the sea!"
