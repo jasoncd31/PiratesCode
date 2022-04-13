@@ -83,7 +83,7 @@ console.log(“Hello world!”)
 <td>
 
 ```
-ahoy “world!”
+ahoy “Hello world!”
 ```
 
 </td>
@@ -149,8 +149,8 @@ function add(a, b){
 <td>
     
 ```
-captain add(a, b) { 
-   anchor a+b
+captain add(int a, int b) -> int { 
+   anchor a + b
 }
 ```
 </td>
@@ -321,7 +321,7 @@ products = []
 <td>
     
 ```
-{shanty:int} fruit prices = {}
+{shanty, int} fruit prices = {}
 [shanty] products = []
 ```
 </td>
