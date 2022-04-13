@@ -211,6 +211,14 @@ function checkMemberDeclared(field, { in: inClass }) {
         "BELAY, SCALLYWAG! There's no such field so stop! Or else..."
     )
 }
+function checkMethodDeclared(field, { in: methods }) {
+    check(
+        methods
+            .map((f) => f.name.lexeme)
+            .includes(field),
+        "BELAY, SCALLYWAG! There's no such field so stop! Or else..."
+    )
+}
 
 function checkInLocals(context, id) {
     check(context.locals.has(id), `Matey, yer variables are not in locals`)
@@ -598,8 +606,8 @@ class Context {
     }
     DotCall(c) {
         this.analyze(c.object)
-        checkMemberDeclared(c.object.lexeme, {
-            in: this.lookup(c.object.lexeme).type,
+        checkMethodDeclared(c.member.callee.lexeme, {
+            in: this.lookup(c.object.lexeme).type.methods,
         })
     }
 }

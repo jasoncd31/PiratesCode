@@ -152,6 +152,21 @@ const semanticChecks = [
         "object decclaration with vargh",
         "ship S{ build(int z){int me.y = z}} vargh x = new S(1)",
     ],
+    ["long class test", `ship Rectangle {
+        build (doubloon h, int w) {
+            doubloon me.height = h
+            int me.width = w
+        }
+        captain getWidth() -> int {
+            anchor me.width
+        }
+        captain setWidth(int newWidth) -> none {
+            me.width = newWidth
+        }
+    }
+    Rectangle p = new Rectangle(3.0,4)
+    ahoy p.getWidth()
+    p.setWidth(15)`],
 ]
 
 // // Programs that are syntactically correct but have semantic errors
