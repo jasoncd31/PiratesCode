@@ -101,7 +101,6 @@ PiratesCode {
   elseif      = "yo ho" ~alnum
   else        = "ho" ~alnum
   while       = "parrot" ~alnum
-  repeat      = "repeat" ~alnum
   for         = "chase" ~alnum
   return      = "anchor" ~alnum
   true        = "aye" ~alnum
@@ -119,7 +118,7 @@ PiratesCode {
 
   id          = ~keyword letter alnum*
  
-  keyword     = let | print | function | else | elseif | if | while | repeat
+  keyword     = let | print | function | else | elseif | if | while 
               | for | break | return | true | false | this | new | construct | class          
               
   /*strlit    = ("\"" | "\'") char* ("~" applySyntactic<Exp> "~" char*)* ("\"" | "\'")*/
