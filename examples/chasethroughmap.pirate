@@ -1,4 +1,4 @@
-ledger numbers = [1, 2, 3]
+[int] numbers = [1, 2, 3]
 chase vargh x through numbers {
     ahoy "you made it!"
 }
