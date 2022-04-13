@@ -1,12 +1,12 @@
-$$ Function that loops through the ships, and finds the index of the ship given in the list.
-captain whichShip(myShip, ships) {
-    chase int i = 0 until length(ships) {
-        yo ships[i] == myShip {
-            anchor "Yer ship be in index ~index~"
+$$ Function that loops through the ships, and finds whether a ship is in a given list.
+captain whichShip(shanty myShip, [shanty] ships) -> booty {
+    chase vargh s through ships {
+        yo s == myShip {
+            anchor aye
         }
     }
-    anchor "Yer ship doesn't exist, fool."
+    anchor nay
     
 }
 
-ahoy shipIndex("The Flying Dutchman", ["The Barnacle", "The Black Pearl", "The Flying Dutchman"])
+ahoy whichShip("The Flying Dutchman", ["The Barnacle", "The Black Pearl", "The Flying Dutchman"])
