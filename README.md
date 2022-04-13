@@ -264,16 +264,25 @@ class Rectangle {
         this.height = height;
         this.width = width;
     }
+    getWidth() {
+        return this.width
+    }
+    setWidth(newWidth) {
+        this.width = newWidth
+    }
 }
+let p = new Rectangle(3.0, 4);
+console.log(p.getWidth())
+p.setWidth(15)
 ```
 </td>
 <td>
     
 ```
 ship Rectangle {
-    build (doubloon height, int width) {
-        doubloon me.height = height
-        int me.width = width
+    build (doubloon h, int w) {
+        doubloon me.height = h
+        int me.width = w
     }
     captain getWidth() -> int {
         anchor me.width
@@ -282,7 +291,7 @@ ship Rectangle {
         me.width = newWidth
     }
 }
-Rectangle p = new Rectangle(3,4)
+Rectangle p = new Rectangle(3.0, 4)
 ahoy p.getWidth()
 p.setWidth(15)
 ```
