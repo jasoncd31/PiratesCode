@@ -1,7 +1,9 @@
-yo x < 0 {
-    anchor -1
-} yo ho x > 9 {
-    anchor 1
-} ho {
-    anchor 0
+captain blackbeard(int x) -> int {
+    yo x < 0 {
+        anchor -1
+    } yo ho x > 9 {
+        anchor 1
+    } ho {
+        anchor 0
+    }
 }
