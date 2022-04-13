@@ -9,7 +9,6 @@ PiratesCode {
                | IfStmt
                | Return           
                | break          
-               | comment
                | Call
                | ClassDec
                | DotExpression
@@ -114,7 +113,7 @@ PiratesCode {
   not         = "not" ~alnum
   new         = "new" ~alnum
   
-  comment     = "$$" (~"\n" any)* ("\n" | end)  -- comment
+  space      += "$$" (~"\n" any)* ("\n" | end)                --comment
 
   id          = ~keyword letter alnum*
  
