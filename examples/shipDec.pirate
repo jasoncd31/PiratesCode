@@ -1,18 +1,18 @@
 ship Rectangle {
-    build (int height, int weight){
-        int me.height = height
-        int me.width = width
+    build (int h, int w){
+        int me.height = h
+        int me.width = w
     }
 
-    captain area(){
+    captain area() -> int {
         anchor me.width * me.height
     }
 
-    captain getHeight(){
+    captain getHeight() -> int {
         anchor me.height
     }
 
-    captain getWidth(){
+    captain getWidth() -> int {
         anchor me.width
     }
 }
