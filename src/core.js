@@ -44,6 +44,12 @@ export class ArrayType extends Type {
     }
 }
 
+export class EmptyArray{
+    constructor(baseType) {
+        this.baseType = baseType
+    }
+}
+
 export class MapType extends Type {
     constructor(keyType, valueType) {
         super(`{${keyType.description} : ${valueType.description}}`)
