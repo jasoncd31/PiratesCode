@@ -59,9 +59,15 @@ export default function optimize(node) {
       s.test = optimize(s.test)
       s.consequent = optimize(s.consequent)
       s.alternate = optimize(s.alternate)
-      if (s.test.constructor === Boolean) {
-        return s.test ? s.consequent : s.alternate
-      } 
+      for (let i = 0; i < s.test.length; i++) {
+        if (s.test[i].constructor === Boolean && s.test[i]) { // Ask Dr. Toal what to do if we have lots of else-ifs because we can't rely on recursion.
+          return s.consequent[i]
+        } 
+        if (i === s.test.length - 1 && s.test[i].constructor === Boolean && !s.test[i]) {
+          return s.alternate
+        }
+      }
+      
       return s
     },
     Conditional(e) {
@@ -186,8 +192,9 @@ export default function optimize(node) {
       return f
     },
     MethodDeclaration(d) { // TODO: How to do this?
-      d.fun = optimize(d.fun)
-      d.parameters = optimize(d.parameters)
+      d.name = optimize(d.name)
+      d.returnType = optimize(d.returnType)
+      d.params = optimize(d.params)
       if (d.body) d.body = optimize(d.body)
       return d
     },
@@ -199,14 +206,18 @@ export default function optimize(node) {
       return e    
     },
     ObjectDec(e) { // TODO: How to do this?
+      e.identifier = optimize(e.identifier)
+      e.args = optimize(e.args)
       return e    
     },
     DotCall(e) { // TODO: How to do this?
+      e.object = optimize(e.object)
+      e.member = optimize(e.member)
       return e
     },
     FunctionDeclaration(d) {
       d.fun = optimize(d.fun)
-      d.parameters = optimize(d.parameters)
+      d.params = optimize(d.params)
       if (d.body) d.body = optimize(d.body)
       return d
     },
@@ -232,6 +243,7 @@ export default function optimize(node) {
       return e 
     },
     String(e) { 
+      console.log(e)
       return e 
     },
     Number(e) { 
