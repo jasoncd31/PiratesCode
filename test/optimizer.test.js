@@ -7,6 +7,8 @@ const x = new core.Variable("x", false)
 const return1p1 = new core.ReturnStatement(new core.BinaryExpression("+", 1, 1))
 const return2 = new core.ReturnStatement(2)
 const returnX = new core.ReturnStatement(x)
+const shortRetun = new core.ShortReturnStatement()
+const breakStmt = new core.BreakStatement()
 const onePlusTwo = new core.BinaryExpression("+", 1, 2)
 const identity = Object.assign(new core.Function("id"), { body: returnX })
 const intFun = body => new core.FunctionDeclaration("f", [], "int", body)
@@ -18,6 +20,7 @@ const eq = (x, y) => new core.BinaryExpression("==", x, y)
 const times = (x, y) => new core.BinaryExpression("*", x, y)
 const neg = x => new core.UnaryExpression("-", x)
 const array = (...elements) => new core.ArrayExpression(elements)
+const map = (...entries) => new core.MapExpression(entries)
 const emptyArray = new core.EmptyArray(core.Type.INT)
 const sub = (a, e) => new core.SubscriptExpression(a, e)
 const conditional = (x, y, z) => new core.Conditional(x, y, z)
@@ -51,48 +54,50 @@ const tests = [
   ["removes right false from or", or(less(x, 1), false), less(x, 1)],
   ["removes left true from and", and(true, less(x, 1)), less(x, 1)],
   ["removes right true from and", and(less(x, 1), true), less(x, 1)],
-  // ["removes x=x at beginning", [new core.Assignment(x, x), xpp], [xpp]],
-  // ["removes x=x at end", [xpp, new core.Assignment(x, x)], [xpp]],
-  // ["removes x=x in middle", [xpp, new core.Assignment(x, x), xpp], [xpp, xpp]],
+  ["removes x=x at beginning", [new core.Assignment(x, x), return1p1], [return2]],
+  ["removes x=x at end", [return1p1, new core.Assignment(x, x)], [return2]],
+  ["removes x=x in middle", [return1p1, new core.Assignment(x, x), return1p1], [return2, return2]],
   ["optimizes if-true", new core.IfStatement([true], [returnX], return1p1), returnX],
-
   ["optimizes if-false", new core.IfStatement([false,false], [returnX, return1p1], return2), return2],
-  ["optimizes elseif-true", new core.IfStatement([false,false,true], [returnX, return1p1, return2], returnX), return2],
+  ["optimizes elseif-true", new core.IfStatement([false,false,true], [returnX, return1p1, breakStmt], returnX), breakStmt],
   ["optimizes elseif-true 2", new core.IfStatement([false,true,true], [returnX, return1p1, return2], returnX), return1p1],
   ["optimizes while-false", [new core.WhileLoop(false, x)], []],
-  // ["optimizes for-range", [new core.ForLoop(x, 5, "...", 3, returnX)], []],
-  // ["optimizes for-empty-array", [new core.ForEachLoop(x, emptyArray, xpp)], []],
-  // ["applies if-false after folding", new core.IfStatement(eq(1, 1), returnX), returnX],
+  //["optimizes forLoop", [new core.ForLoop(x, 3, 2,[])], []],
+  //["optimizes for-empty-array", [new core.ForEachLoop(x, emptyArray, xpp)], []],
+  ["applies if-false after folding", new core.IfStatement([eq(1, 1)], [return2], shortRetun), shortRetun],
   ["optimizes left conditional true", conditional(true, 55, 89), 55],
   ["optimizes left conditional false", conditional(false, 55, 89), 89],
   ["optimizes in functions", intFun(return1p1), intFun(return2)],
   ["optimizes object declaration", new core.ObjectDec("lmao", [and(true, less(x, 1)), 69]), new core.ObjectDec("lmao", [less(x, 1), 69])],
   ["optimizes object method call", new core.DotCall("varName", new core.MethodDeclaration("name", [], [], "none")), new core.DotCall("varName", new core.MethodDeclaration("name", [], [], "none"))],
-  ["optimizes maps", new core.VariableDeclaration(new MapType(Type.INT, Type.INT), ), ]
+  ["optimizes through maps", map(new core.MapEntry(onePlusTwo,and(true, less(x, 1)))), map(new core.MapEntry(3, less(x, 1)))],
   ["optimizes in subscripts", sub(x, onePlusTwo), sub(x, 3)],
-  // ["optimizes in array literals", array(0, onePlusTwo, 9), array(0, 3, 9)],
-  // ["optimizes in arguments", callIdentity([times(3, 5)]), callIdentity([15])],
-  // [
-  //   "passes through nonoptimizable constructs",
-  //   ...Array(2).fill([
-  //     new core.Program([new core.ShortReturnStatement()]),
-  //     new core.VariableDeclaration("x", true, "z"),
-  //     new core.TypeDeclaration([new core.Field("x", core.Type.INT)]),
-  //     new core.Assignment(x, new core.BinaryExpression("*", x, "z")),
-  //     new core.Assignment(x, new core.UnaryExpression("not", x)),
-  //     new core.Call(identity, new core.MemberExpression(x, "f")),
-  //     new core.VariableDeclaration("q", false, new core.EmptyArray(core.Type.FLOAT)),
-  //     new core.VariableDeclaration("r", false, new core.EmptyOptional(core.Type.INT)),
-  //     new core.WhileStatement(true, [new core.BreakStatement()]),
-  //     new core.RepeatStatement(5, [new core.ReturnStatement(1)]),
-  //     conditional(x, 1, 2),
-  //     unwrapElse(some(x), 7),
-  //     new core.IfStatement(x, [], []),
-  //     new core.ShortIfStatement(x, []),
-  //     new core.ForRangeStatement(x, 2, "..<", 5, []),
-  //     new core.ForStatement(x, array(1, 2, 3), []),
-  //   ]),
-  // ],
+  ["optimizes in array literals", array(0, onePlusTwo, 9), array(0, 3, 9)],
+  ["optimizes in arguments", callIdentity([times(3, 5)]), callIdentity([15])],
+  ["optimiizes field calls", new core.DotExpression("varName", new core.MethodDeclaration("name", [], [], "none")), new core.DotExpression("varName", new core.MethodDeclaration("name", [], [], "none"))],
+  ["optimizes fields", new core.Field(core.Type.INT, new core.Token("Id", "x"), 4), new core.Field(core.Type.INT, "x", 4)],
+  [
+    "passes through nonoptimizable constructs",
+    ...Array(2).fill([
+      new core.Program([new core.ShortReturnStatement()]),
+      new core.VariableDeclaration("x", true, "z"),
+      new core.Assignment(x, new core.BinaryExpression("*", x, "z")),
+      new core.Assignment(x, new core.UnaryExpression("not", x)),
+      new core.Call(identity, new core.DotExpression(x, "f")),
+      new core.VariableDeclaration(new core.ArrayType(core.Type.INT), "q", array(1)),
+      new core.VariableDeclaration(core.Type.INT, "r", 1),
+      new core.WhileLoop(true, [new core.BreakStatement()]),
+      conditional(x, 1, 2),
+      new core.IfStatement(x, [], []),
+      // new core.ShortIfStatement(x, []),
+      // new core.ForRangeStatement(x, 2, "..<", 5, []),
+      new core.ForEachLoop(x, array(1, 2, 3), []),
+      new core.ThisExpression(),
+      new core.ArrayType(core.Type.BOOLEAN),
+      new core.MapType(core.Type.STRING, core.Type.DOUBLE),
+      new core.Parameter(core.Type.DOUBLE, x),
+    ]),
+  ],
 ]
 
 describe("The optimizer", () => {

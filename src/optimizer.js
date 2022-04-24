@@ -1,10 +1,9 @@
 import * as core from "./core.js"
 
 export default function optimize(node) {
-  console.log(node.constructor.name)
+  // console.log(node.constructor.name)
     return optimizers[node.constructor.name](node)
-  }
-  
+  }  
   const optimizers = {
     Program(p) {
       p.statements = optimize(p.statements)
@@ -67,7 +66,6 @@ export default function optimize(node) {
           return s.alternate
         }
       }
-      
       return s
     },
     Conditional(e) {
@@ -83,9 +81,9 @@ export default function optimize(node) {
       s.variable = optimize(s.variable)
       s.expression = optimize(s.expression)
       s.body = optimize(s.body)
-      // if (s.expression.constructor === core.EmptyArray) {
-      //   return []
-      // } TODO !!!
+      if (s.expression.constructor === core.EmptyArray) {
+        return []
+      } // TODO !!!
       return s
     },
     WhileLoop(s) {
@@ -98,10 +96,14 @@ export default function optimize(node) {
       return s
     },
     ForLoop(s) {
+      console.log("DJFSJFSLDF")
+      console.log(s.iterator)
       s.iterator = optimize(s.iterator)
       s.start = optimize(s.start)
+      
       s.end = optimize(s.end)
       s.body = optimize(s.body)
+      
       if (s.start.constructor === Number) {
         if (s.end.constructor === Number) {
           if (s.start > s.end) {
@@ -222,16 +224,9 @@ export default function optimize(node) {
       return d
     },
     Parameter(p) {
-      p.name = optimize(p.name)
+      console.log(p)
+      p.id = optimize(p.id)
       return p
-    },
-    TypeDeclaration(d) {
-      d.type = optimize(d.type)
-      return d
-    },
-    Field(f) {
-      f.name = f.name.lexeme
-      return f
     },
     Variable(v) {
       return v
@@ -243,7 +238,7 @@ export default function optimize(node) {
       return e 
     },
     String(e) { 
-      console.log(e)
+      // console.log(e)
       return e 
     },
     Number(e) { 
