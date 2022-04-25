@@ -1,7 +1,7 @@
 import * as core from "./core.js"
 
 export default function optimize(node) {
-    console.log(node.constructor.name)
+    //console.log(node.constructor.name)
     return optimizers[node.constructor.name](node)
 }
 const optimizers = {
@@ -104,8 +104,6 @@ const optimizers = {
         return s
     },
     ForLoop(s) {
-        console.log("in ForLoop")
-        console.log(s)
         s.variable = optimize(s.variable)
         s.start = optimize(s.start)
         s.end = optimize(s.end)
@@ -264,8 +262,6 @@ const optimizers = {
         return e
     },
     String(e) {
-        console.log("in string")
-        console.log(e)
         return e
     },
     Number(e) {
