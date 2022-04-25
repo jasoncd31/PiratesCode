@@ -31,6 +31,7 @@ const tests = [
     ["folds *", new core.BinaryExpression("*", 5, 8), 40],
     ["folds /", new core.BinaryExpression("/", 5, 8), 0.625],
     ["folds **", new core.BinaryExpression("**", 5, 8), 390625],
+    ["folds %", new core.BinaryExpression("%", 5, 8), 5],
     ["folds <", new core.BinaryExpression("<", 5, 8), true],
     ["folds <=", new core.BinaryExpression("<=", 5, 8), true],
     ["folds ==", new core.BinaryExpression("==", 5, 8), false],
