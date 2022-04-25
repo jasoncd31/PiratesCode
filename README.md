@@ -35,11 +35,11 @@ Ahoy mateys! Real pirates no longer surf the seven seas, they surf the world wid
     <td>shanty</td>
   </tr>
   <tr>
-    <td>int</td>
+    <td>Number</td>
     <td>int</td>
   </tr>
   <tr>
-    <td>double</td>
+    <td>Number</td>
     <td>doubloon</td>
   </tr>
   <tr>
