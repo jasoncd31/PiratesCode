@@ -22,11 +22,16 @@ const optimizers = {
         d.initializer = optimize(d.initializer)
         return d
     },
+    PrintStatement(p) {
+        p.argument = optimize(p.argument)
+        return p
+    },
     Token(t) {
         // All tokens get optimized away and basically replace with either their
         // value (obtained by the analyzer for literals and ids) or simply with
         // lexeme (if a plain symbol like an operator)
-        return t.value ?? t.lexeme ?? t.source
+        // ?? t.source
+        return t.value ?? t.lexeme
     },
     MapExpression(e) {
         e.elements = optimize(e.elements)
@@ -204,8 +209,8 @@ const optimizers = {
     },
     Field(f) {
         // TODO: should we optimize this for our language?
-        f.variable = optimize(f.variable)
-        //f.variable = f.variable.source
+        //f.variable = optimize(f.variable)
+        f.variable = f.variable.source
         return f
     },
     MethodDeclaration(d) {
