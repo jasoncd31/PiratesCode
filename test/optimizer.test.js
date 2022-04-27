@@ -173,6 +173,7 @@ const tests = [
             new core.WhileLoop(true, [new core.BreakStatement()]),
             conditional(x, 1, 2),
             new core.IfStatement(x, [], []),
+            new core.PrintStatement(x),
             // new core.ShortIfStatement(x, []),
             // new core.ForRangeStatement(x, 2, "..<", 5, []),
             new core.ForEachLoop(x, array(1, 2, 3), []),

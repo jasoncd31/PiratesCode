@@ -22,6 +22,10 @@ const optimizers = {
         d.initializer = optimize(d.initializer)
         return d
     },
+    PrintStatement(p) {
+        p.argument = optimize(p.argument)
+        return p
+    },
     Token(t) {
         // All tokens get optimized away and basically replace with either their
         // value (obtained by the analyzer for literals and ids) or simply with
