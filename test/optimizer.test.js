@@ -158,6 +158,7 @@ const tests = [
         "passes through nonoptimizable constructs",
         ...Array(2).fill([
             new core.Program([new core.ShortReturnStatement()]),
+
             new core.VariableDeclaration(core.Type.DOUBLE, "var", 1.0),
             new core.VariableDeclaration("x", true, "z"),
             new core.Assignment(x, new core.BinaryExpression("*", x, "z")),
@@ -176,6 +177,7 @@ const tests = [
             // new core.ForRangeStatement(x, 2, "..<", 5, []),
             new core.ForEachLoop(x, array(1, 2, 3), []),
             new core.ThisExpression(),
+            new core.ForLoop(x, 1, 3, []),
             new core.ArrayType(core.Type.BOOLEAN),
             new core.MapType(core.Type.STRING, core.Type.DOUBLE),
             new core.Parameter(core.Type.DOUBLE, x),
