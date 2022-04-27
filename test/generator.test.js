@@ -12,17 +12,17 @@ const fixtures = [
     {
         name: "small",
         source: `
-      let x = 3 * 7;
-      x++;
-      x--;
-      let y = true;
-      y = 5 ** -x / -100 > - x || false;
-      print((y && y) || false || (x*2) != 5);
+      vargh x = 3 * 7
+      x = x + 1
+      x = x - 1
+      vargh y = aye
+      y = 5 ** -x / -100 > - x or nay
+      ahoy (y and y) or nay or (x*2) != 5
     `,
         expected: dedent`
       let x_1 = 21;
-      x_1++;
-      x_1--;
+      x_1 = x_1 + 1;
+      x_1 = x_1 - 1;
       let y_2 = true;
       y_2 = (((5 ** -(x_1)) / -(100)) > -(x_1));
       console.log(((y_2 && y_2) || ((x_1 * 2) !== 5)));
@@ -31,14 +31,14 @@ const fixtures = [
     {
         name: "if",
         source: `
-      let x = 0;
-      if (x == 0) { print("1"); }
-      if (x == 0) { print(1); } else { print(2); }
-      if (x == 0) { print(1); } else if (x == 2) { print(3); }
-      if (x == 0) { print(1); } else if (x == 2) { print(3); } else { print(4); }
+      vargh x = 0
+      yo x == 0 { ahoy "1" }
+      yo x == 0 { ahoy 1 } ho { ahoy 2 }
+      yo x == 0 { ahoy 1 } yo ho x == 2 { ahoy 3 }
+      yo x == 0 { ahoy 1 } yo ho x == 2 { ahoy 3 } ho { ahoy 4 }
     `,
         expected: dedent`
-      let x_1 = 0;
+      vargh x_1 = 0;
       if ((x_1 === 0)) {
         console.log("1");
       }
@@ -67,15 +67,15 @@ const fixtures = [
     {
         name: "while",
         source: `
-      let x = 0;
-      while x < 5 {
-        let y = 0;
-        while y < 5 {
-          print(x * y);
-          y = y + 1;
-          break;
+      vargh x = 0
+      parrot x < 5 {
+        vargh y = 0
+        parrot y < 5 {
+          ahoy x * y
+          y = y + 1
+          maroon
         }
-        x = x + 1;
+        x = x + 1
       }
     `,
         expected: dedent`
@@ -94,18 +94,18 @@ const fixtures = [
     {
         name: "functions",
         source: `
-      let z = 0.5;
-      function f(x: float, y: boolean) {
-        print(sin(x) > π);
-        return;
+      vargh z = 0.5
+      captain f(doubloon x, doubloon y) -> none {
+        ahoy x < y
+        anchor
       }
-      function g(): boolean {
-        return false;
+      captain g() -> doubloon {
+        anchor 3.0
       }
-      f(z, g());
+      f(z, g())
     `,
         expected: dedent`
-      let z_1 = 0.5;
+      vargh z_1 = 0.5
       function f_2(x_3, y_4) {
         console.log((Math.sin(x_3) > Math.PI));
         return;
@@ -119,10 +119,10 @@ const fixtures = [
     {
         name: "arrays",
         source: `
-      let a = [true, false, true];
-      let b = [10, 40 - 20, 30];
-      const c = [](of [int]);
-      print(a[1] || (b[0] < 88 ? false : true));
+      vargh a = [aye, nay, aye]
+      vargh b = [10, 40 - 20, 30]
+      [int] c = []
+      ahoy a[1] or (b[0] < 88 ? nay : aye)
     `,
         expected: dedent`
       let a_1 = [true,false,true];
@@ -132,86 +132,91 @@ const fixtures = [
     `,
     },
     {
-        name: "structs",
+        name: "classes",
         source: `
-      struct S { x: int }
-      let x = S(3);
-      print(x.x);
+      ship S { 
+        build(int x) {int me.shipX = x} 
+        captain getX() -> int { anchor me.shipX }
+      }
+      vargh x = S(3)
+      print(x.getX())
     `,
         expected: dedent`
       class S_1 {
-      constructor(x_2) {
-      this["x_2"] = x_2;
-      }
+        constructor(x_2) {
+        this["x_2"] = x_2;
+        }
+        function getX() {
+          return this["X_2"]
+        }
       }
       let x_3 = new S_1(3);
       console.log((x_3["x_2"]));
     `,
     },
-    {
-        name: "optionals",
-        source: `
-      let x = no int;
-      let y = x ?? 2;
-      struct S {x: int}
-      let z = some S(1);
-      let w = z?.x;
-    `,
-        expected: dedent`
-      let x_1 = undefined;
-      let y_2 = (x_1 ?? 2);
-      class S_3 {
-      constructor(x_4) {
-      this["x_4"] = x_4;
-      }
-      }
-      let z_5 = (new S_3(1));
-      let w_6 = (z_5?.["x_4"]);
-    `,
-    },
+    // {
+    //     name: "optionals",
+    //     source: `
+    //   let x = no int;
+    //   let y = x ?? 2;
+    //   struct S {x: int}
+    //   let z = some S(1);
+    //   let w = z?.x;
+    // `,
+    //     expected: dedent`
+    //   let x_1 = undefined;
+    //   let y_2 = (x_1 ?? 2);
+    //   class S_3 {
+    //   constructor(x_4) {
+    //   this["x_4"] = x_4;
+    //   }
+    //   }
+    //   let z_5 = (new S_3(1));
+    //   let w_6 = (z_5?.["x_4"]);
+    // `,
+    // },
     {
         name: "for loops",
         source: `
-      for i in 1..<50 {
-        print(i);
+      chase int i = 0 until 50 {
+        ahoy i
       }
-      for j in [10, 20, 30] {
-        print(j);
+      vargh list = [10, 20, 30]
+      chase vargh j through list {
+        ahoy j
       }
-      repeat 3 {
-        // hello
-      }
-      for k in 1...10 {
+      chase vargh k = 1 until 10 {
       }
     `,
         expected: dedent`
-      for (let i_1 = 1; i_1 < 50; i_1++) {
+      for (let i_1 = 0; i_1 < 50; i_1++) {
         console.log(i_1);
       }
-      for (let j_2 of [10,20,30]) {
+      let list_3 = [10,20,30];
+      for (let j_2 of list_3) {
         console.log(j_2);
       }
-      for (let i_3 = 0; i_3 < 3; i_3++) {
+      for (let i_4 = 0; i_4 < 3; i_4++) {
       }
-      for (let k_4 = 1; k_4 <= 10; k_4++) {
+      for (let k_5 = 1; k_5 < 10; k_5++) {
       }
     `,
     },
-    {
-        name: "standard library",
-        source: `
-      let x = 0.5;
-      print(sin(x) - cos(x) + exp(x) * ln(x) / hypot(2.3, x));
-      print(bytes("∞§¶•"));
-      print(codepoints("💪🏽💪🏽🖖👩🏾💁🏽‍♀️"));
-    `,
-        expected: dedent`
-      let x_1 = 0.5;
-      console.log(((Math.sin(x_1) - Math.cos(x_1)) + ((Math.exp(x_1) * Math.log(x_1)) / Math.hypot(2.3,x_1))));
-      console.log([...Buffer.from("∞§¶•", "utf8")]);
-      console.log([...("💪🏽💪🏽🖖👩🏾💁🏽‍♀️")].map(s=>s.codePointAt(0)));
-    `,
-    },
+    // {
+    //     name: "standard library",
+    //     source: `
+    //   vargh x = 0.5;
+    //   ahoy sin(x) - cos(x) + exp(x) * ln(x) / hypot(2.3, x)
+    //   ahoy bytes("∞§¶•")
+    //   ahoy codepoints("💪🏽💪🏽🖖👩🏾💁🏽‍♀️")
+    // `,
+    //     expected: dedent`
+    //   let x_1 = 0.5;
+    //   console.log(((Math.sin(x_1) - Math.cos(x_1)) + ((Math.exp(x_1) * Math.log(x_1)) / Math.hypot(2.3,x_1))));
+    //   console.log([...Buffer.from("∞§¶•", "utf8")]);
+    //   console.log([...("💪🏽💪🏽🖖👩🏾💁🏽‍♀️")].map(s=>s.codePointAt(0)));
+    // `,
+    // },
 ]
 
 describe("The code generator", () => {
