@@ -213,11 +213,15 @@ captain evenOrOdd(int x) -> booty {
             <div class="row">
               <div class="offset-sm-3 col-sm-6 col-lg-8 offset-lg-4">
                 <pre><code style="color: #f2e3cc">
-chase vargh x = 0 until 10 {
-    yo x == 5 {
+vargh pirates = [1, 4, 3, 4, -1]
+chase int i = 0 until 5 {
+    yo pirates[i] < 0 {
+        ahoy "invalid pirate!"
         maroon
+    } yo ho pirates[i] % 2 == 1 {
+        ahoy "found an odd pirate!"
+        ahoy pirates[i]
     }
-    ahoy x
 }
 [int] numbers = [1, 2, 3]
 chase vargh x through numbers {
@@ -235,11 +239,11 @@ chase vargh x through numbers {
 vargh age = 10 
 vargh ageLimit = 18
 parrot age < ageLimit {
-    ahoy "yer a little lad" 
-    age = age + 1
+    ahoy "yer a little lad?" 
     yo aye {
         ahoy age < ageLimit ? "aye" : "nay"
     }
+    age = age + 1
 }
 ahoy "yer a pirate!"
                   </code></pre>
@@ -274,9 +278,9 @@ ahoy "yer a pirate!"
               <div class="offset-sm-4 col-sm-8 offset-lg-2 col-lg-10">
                 <pre><code style="color: #f2e3cc">
             ship Rectangle {
-                build (doubloon height, int width) {
-                    doubloon me.height = height
-                    int me.width = width
+                build (doubloon h, int w) {
+                    doubloon me.height = h
+                    int me.width = w
                 }
                 captain getWidth() -> int {
                     anchor me.width
