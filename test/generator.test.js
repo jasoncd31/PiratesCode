@@ -21,8 +21,8 @@ const fixtures = [
     `,
         expected: dedent`
       let x_1 = 21;
-      x_1 = x_1 + 1;
-      x_1 = x_1 - 1;
+      x_1 = (x_1 + 1);
+      x_1 = (x_1 - 1);
       let y_2 = true;
       y_2 = (((5 ** -(x_1)) / -(100)) > -(x_1));
       console.log(((y_2 && y_2) || ((x_1 * 2) !== 5)));
@@ -38,7 +38,7 @@ const fixtures = [
       yo x == 0 { ahoy 1 } yo ho x == 2 { ahoy 3 } ho { ahoy 4 }
     `,
         expected: dedent`
-      vargh x_1 = 0;
+      let x_1 = 0;
       if ((x_1 === 0)) {
         console.log("1");
       }
@@ -49,19 +49,16 @@ const fixtures = [
       }
       if ((x_1 === 0)) {
         console.log(1);
-      } else {
-        if ((x_1 === 2)) {
+      } else if ((x_1 === 2)) {
           console.log(3);
-        }
       }
       if ((x_1 === 0)) {
         console.log(1);
-      } else
-        if ((x_1 === 2)) {
+      } else if ((x_1 === 2)) {
           console.log(3);
-        } else {
-          console.log(4);
-        }
+      } else {
+        console.log(4);
+      }
     `,
     },
     {
@@ -105,13 +102,13 @@ const fixtures = [
       f(z, g())
     `,
         expected: dedent`
-      vargh z_1 = 0.5
+      let z_1 = 0.5;
       function f_2(x_3, y_4) {
-        console.log((Math.sin(x_3) > Math.PI));
+        console.log((x_3 < y_4));
         return;
       }
       function g_5() {
-        return false;
+        return 3.0;
       }
       f_2(z_1, g_5());
     `,
@@ -192,13 +189,11 @@ const fixtures = [
       for (let i_1 = 0; i_1 < 50; i_1++) {
         console.log(i_1);
       }
-      let list_3 = [10,20,30];
-      for (let j_2 of list_3) {
-        console.log(j_2);
+      let list_2 = [10,20,30];
+      for (let j_3 of list_2) {
+        console.log(j_3);
       }
-      for (let i_4 = 0; i_4 < 3; i_4++) {
-      }
-      for (let k_5 = 1; k_5 < 10; k_5++) {
+      for (let k_4 = 1; k_4 < 10; k_4++) {
       }
     `,
     },

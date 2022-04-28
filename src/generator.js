@@ -3,7 +3,7 @@
 // Invoke generate(program) with the program node to get back the JavaScript
 // translation as a string.
 
-import { Type } from "./core.js"
+import { ClassType, Type } from "./core.js"
 import * as stdlib from "./stdlib.js"
 
 export default function generate(program) {
@@ -18,7 +18,7 @@ export default function generate(program) {
             if (!mapping.has(entity)) {
                 mapping.set(entity, mapping.size + 1)
             }
-            return `${entity.name ?? entity.description}_${mapping.get(entity)}`
+            return `${entity.name ?? entity.description ?? entity.id}_${mapping.get(entity)}`
         }
     })(new Map())
 
@@ -37,17 +37,19 @@ export default function generate(program) {
             // already checked that we never updated a const, so let is always fine.
             output.push(`let ${gen(d.variable)} = ${gen(d.initializer)};`)
         },
-        Type(d) {
+        ClassDeclaration(d) {
             // TODO
-            // The only type declaration in Carlos is the struct! Becomes a JS class.
-            output.push(`class ${gen(d.type)} {`)
-            output.push(`constructor(${gen(d.type.fields).join(",")}) {`)
-            for (let field of d.type.fields) {
-                output.push(
-                    `this[${JSON.stringify(gen(field))}] = ${gen(field)};`
-                )
+            output.push(`class ${gen(d.id)} {`)
+            // output.push(`constructor(${gen(d.type.fields).join(",")}) {`)
+            gen(d.constructorDec)
+            // for (let field of d.type.fields) {
+            //     output.push(
+            //         `this[${JSON.stringify(gen(field))}] = ${gen(field)};`
+            //     )
+            // }
+            for (let method of d.methods) {
+                gen(method)
             }
-            output.push("}")
             output.push("}")
         },
         ClassType(t) {
@@ -59,7 +61,7 @@ export default function generate(program) {
         },
         FunctionDeclaration(d) {
             output.push(
-                `function ${gen(d.fun)}(${gen(d.fun.params).join(", ")}) {`
+                `function ${gen(d.fun)}(${gen(d.fun.parameters).join(", ")}) {`
             )
             gen(d.body)
             output.push("}")
@@ -90,15 +92,18 @@ export default function generate(program) {
             output.push("return;")
         },
         IfStatement(s) {
+            let e = ""
             for (let i = 0; i < s.test.length; i++) {
-                output.push(`if (${gen(s.test[i])}) {`)
+                output.push(`${e}if (${gen(s.test[i])}) {`)
                 gen(s.consequent[i])
                 if (i < s.test.length - 1) {
-                    output.push(`} else`)
+                    e = `} else `
                 }
             }
-            output.push("} else {")
-            gen(s.alternate)
+            if (s.alternate.length > 0) {
+                output.push("} else {")
+                gen(s.alternate)
+            }
             output.push("}")
         },
         WhileLoop(s) {
@@ -129,7 +134,13 @@ export default function generate(program) {
             )}))`
         },
         BinaryExpression(e) {
-            const op = { "==": "===", "!=": "!==" }[e.op] ?? e.op
+            let op = { "==": "===", "!=": "!==" }[e.op] ?? e.op
+            if (op === 'or') {
+                op = '||'
+            }
+            if (op === 'and') {
+                op = '&&'
+            }
             return `(${gen(e.left)} ${op} ${gen(e.right)})`
         },
         UnaryExpression(e) {
@@ -153,21 +164,31 @@ export default function generate(program) {
         ThisExpression(e) {
             return "this"
         },
-        ClassDeclaration(c) {},
-        ConstructorDeclaraction(c) {},
-        PrintStatement(e) {},
+        ConstructorDeclaraction(c) {
+            console.log("UYEEEET")
+            output.push(`constructor(${gen(c.parameters).join(",")}) {`)
+            for (let field of d.type.fields) {
+                output.push(`this[${JSON.stringify(gen(field))}] = ${gen(field)};`)
+            }
+            output.push("}")
+        },
+        PrintStatement(e) {
+            const argument = gen(e.argument)
+            output.push(`console.log(${argument});`)
+        },
         DotCall(c) {},
         MethodDeclaration(c) {},
         Call(c) {
             // TODO
-            const targetCode =
-                c.callee.constructor === ClassType
-                    ? `new ${gen(c.callee)}(${gen(c.args).join(", ")})`
-                    : `${gen(c.callee)}(${gen(c.args).join(", ")})`
+            console.log(c)
+            const targetCode = `${gen(c.callee)}(${gen(c.args).join(", ")})`
+                // c.callee.constructor === ClassType
+                //     ? `new ${gen(c.callee)}(${gen(c.args).join(", ")})`
+                //     : `${gen(c.callee)}(${gen(c.args).join(", ")})`
             // Calls in expressions vs in statements are handled differently
             if (
                 c.callee instanceof Type ||
-                c.callee.type.returnType !== Type.VOID
+                c.callee.type.returnType !== Type.NONE
             ) {
                 return targetCode
             }
