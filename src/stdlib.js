@@ -9,7 +9,3 @@ export const types = Object.freeze({
     shanty: Type.STRING,
     none: Type.NONE,
 })
-
-// export const functions = {
-//     print: makeFunction("ahoy", Type.NONE )
-// }

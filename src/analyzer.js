@@ -467,7 +467,7 @@ class Context {
         this.add(p.id.lexeme, p)
     }
     PrintStatement(s) {
-        s.argument = this.analyze(s.argument)
+        this.analyze(s.argument)
     }
     BinaryExpression(e) {
         this.analyze(e.left)
