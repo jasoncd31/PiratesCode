@@ -1,0 +1,6 @@
+ ship S { 
+     build(int x) {vargh y = x}
+     captain T() -> none {ahoy me.y}
+}
+S y = new S(1)
+y.T()

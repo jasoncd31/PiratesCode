@@ -4,6 +4,10 @@ import * as core from "../src/core.js"
 
 // Make some test cases easier to read
 const x = new core.Variable("x", false)
+const token1 = Object.assign(new core.Token("Num", "1"), { value: 1 })
+const tokenZ = Object.assign(new core.Token("Id", "z"), {
+    source: { contents: "z" },
+})
 const return1p1 = new core.ReturnStatement(new core.BinaryExpression("+", 1, 1))
 const return2 = new core.ReturnStatement(2)
 const returnX = new core.ReturnStatement(x)
@@ -154,10 +158,13 @@ const tests = [
         new core.Field(core.Type.INT, new core.Token("Id", "x"), 4),
         new core.Field(core.Type.INT, "x", 4),
     ],
+    ["optimizes number tokens", token1, 1],
+    ["optimizes identifier tokens", tokenZ, "z"],
     [
         "passes through nonoptimizable constructs",
         ...Array(2).fill([
             new core.Program([new core.ShortReturnStatement()]),
+
             new core.VariableDeclaration(core.Type.DOUBLE, "var", 1.0),
             new core.VariableDeclaration("x", true, "z"),
             new core.Assignment(x, new core.BinaryExpression("*", x, "z")),
@@ -172,10 +179,12 @@ const tests = [
             new core.WhileLoop(true, [new core.BreakStatement()]),
             conditional(x, 1, 2),
             new core.IfStatement(x, [], []),
+            new core.PrintStatement(x),
             // new core.ShortIfStatement(x, []),
             // new core.ForRangeStatement(x, 2, "..<", 5, []),
             new core.ForEachLoop(x, array(1, 2, 3), []),
             new core.ThisExpression(),
+            new core.ForLoop(x, 1, 3, []),
             new core.ArrayType(core.Type.BOOLEAN),
             new core.MapType(core.Type.STRING, core.Type.DOUBLE),
             new core.Parameter(core.Type.DOUBLE, x),
