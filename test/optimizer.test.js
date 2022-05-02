@@ -4,6 +4,10 @@ import * as core from "../src/core.js"
 
 // Make some test cases easier to read
 const x = new core.Variable("x", false)
+const token1 = Object.assign(new core.Token("Num", "1"), { value: 1 })
+const tokenZ = Object.assign(new core.Token("Id", "z"), {
+    source: { contents: "z" },
+})
 const return1p1 = new core.ReturnStatement(new core.BinaryExpression("+", 1, 1))
 const return2 = new core.ReturnStatement(2)
 const returnX = new core.ReturnStatement(x)
@@ -154,6 +158,8 @@ const tests = [
         new core.Field(core.Type.INT, new core.Token("Id", "x"), 4),
         new core.Field(core.Type.INT, "x", 4),
     ],
+    ["optimizes number tokens", token1, 1],
+    ["optimizes identifier tokens", tokenZ, "z"],
     [
         "passes through nonoptimizable constructs",
         ...Array(2).fill([
