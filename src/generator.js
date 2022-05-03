@@ -4,7 +4,6 @@
 // translation as a string.
 
 import { ClassType, Type } from "./core.js"
-import * as stdlib from "./stdlib.js"
 
 export default function generate(program) {
     const output = []
@@ -18,11 +17,14 @@ export default function generate(program) {
             if (!mapping.has(entity)) {
                 mapping.set(entity, mapping.size + 1)
             }
-            return `${entity.name ?? entity.description ?? entity.id}_${mapping.get(entity)}`
+            return `${
+                entity.name ?? entity.description ?? entity.id
+            }_${mapping.get(entity)}`
         }
     })(new Map())
 
     function gen(node) {
+        // console.log(node.constructor)
         return generators[node.constructor.name](node)
     }
 
@@ -41,7 +43,7 @@ export default function generate(program) {
             // TODO
             output.push(`class ${gen(d.id)} {`)
             // output.push(`constructor(${gen(d.type.fields).join(",")}) {`)
-            gen(d.constructorDec)
+            gen(d.constructorDec) // replace this call with genning the ctor inline
             // for (let field of d.type.fields) {
             //     output.push(
             //         `this[${JSON.stringify(gen(field))}] = ${gen(field)};`
@@ -70,10 +72,6 @@ export default function generate(program) {
             return targetName(p)
         },
         Variable(v) {
-            // Standard library constants just get special treatment
-            // if (v === stdlib.contents.π) {
-            //     return "Math.PI"
-            // }
             return targetName(v)
         },
         Function(f) {
@@ -134,13 +132,8 @@ export default function generate(program) {
             )}))`
         },
         BinaryExpression(e) {
-            let op = { "==": "===", "!=": "!==" }[e.op] ?? e.op
-            if (op === 'or') {
-                op = '||'
-            }
-            if (op === 'and') {
-                op = '&&'
-            }
+            let op =
+                { "==": "===", "!=": "!==", or: "||", and: "&&" }[e.op] ?? e.op
             return `(${gen(e.left)} ${op} ${gen(e.right)})`
         },
         UnaryExpression(e) {
@@ -158,17 +151,17 @@ export default function generate(program) {
         DotExpression(e) {
             const object = gen(e.object)
             const member = JSON.stringify(gen(e.member))
-            // const chain = e.isOptional ? "?." : ""
             return `(${object}${chain}[${member}])`
         },
         ThisExpression(e) {
             return "this"
         },
         ConstructorDeclaraction(c) {
-            console.log("UYEEEET")
             output.push(`constructor(${gen(c.parameters).join(",")}) {`)
             for (let field of d.type.fields) {
-                output.push(`this[${JSON.stringify(gen(field))}] = ${gen(field)};`)
+                output.push(
+                    `this[${JSON.stringify(gen(field))}] = ${gen(field)};`
+                )
             }
             output.push("}")
         },
@@ -182,9 +175,9 @@ export default function generate(program) {
             // TODO
             console.log(c)
             const targetCode = `${gen(c.callee)}(${gen(c.args).join(", ")})`
-                // c.callee.constructor === ClassType
-                //     ? `new ${gen(c.callee)}(${gen(c.args).join(", ")})`
-                //     : `${gen(c.callee)}(${gen(c.args).join(", ")})`
+            // c.callee.constructor === ClassType
+            //     ? `new ${gen(c.callee)}(${gen(c.args).join(", ")})`
+            //     : `${gen(c.callee)}(${gen(c.args).join(", ")})`
             // Calls in expressions vs in statements are handled differently
             if (
                 c.callee instanceof Type ||

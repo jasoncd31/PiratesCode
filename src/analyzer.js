@@ -179,7 +179,7 @@ function checkReturnable({ expression: e, from: f }) {
     checkAssignable(e, { toType: f.type.returnType })
 }
 function checkCallable(e) {
-    check(e.type.constructor == FunctionType, "Call of non-function")
+    check(e.type?.constructor === FunctionType, "Call of non-function")
 }
 
 function checkReturnsNothing(f) {
@@ -213,9 +213,7 @@ function checkMemberDeclared(field, { in: inClass }) {
 }
 function checkMethodDeclared(field, { in: methods }) {
     check(
-        methods
-            .map((f) => f.name.lexeme)
-            .includes(field),
+        methods.map((f) => f.name.lexeme).includes(field),
         "BELAY, SCALLYWAG! There's no such field so stop! Or else..."
     )
 }
@@ -320,8 +318,10 @@ class Context {
             t.value = this.lookup(t.lexeme)
             t.type = t.value.type
         }
-        if (t.category === "Int") [t.value, t.type] = [t.lexeme, Type.INT]
-        if (t.category === "Double") [t.value, t.type] = [t.lexeme, Type.DOUBLE]
+        if (t.category === "Int")
+            [t.value, t.type] = [BigInt(t.lexeme), Type.INT]
+        if (t.category === "Double")
+            [t.value, t.type] = [Number(t.lexeme), Type.DOUBLE]
         if (t.category === "Str") [t.value, t.type] = [t.lexeme, Type.STRING]
         if (t.category === "Bool")
             [t.value, t.type] = [t.lexeme === "aye", Type.BOOLEAN]
@@ -516,8 +516,8 @@ class Context {
         const typeContext = this.newChildContext({ inClass: newClassType })
         // add that class to local
         // handle constructor dec
-        c.constructorDec = typeContext.analyze(c.constructorDec)
-        c.methods = typeContext.analyze(c.methods)
+        typeContext.analyze(c.constructorDec)
+        typeContext.analyze(c.methods)
         // handle methods
         this.add(c.id, newClassType)
     }

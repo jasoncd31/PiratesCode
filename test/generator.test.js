@@ -108,7 +108,7 @@ const fixtures = [
         return;
       }
       function g_5() {
-        return 3.0;
+        return 3;
       }
       f_2(z_1, g_5());
     `,
@@ -128,29 +128,29 @@ const fixtures = [
       console.log((a_1[1] || (((b_2[0] < 88)) ? (false) : (true))));
     `,
     },
-    {
-        name: "classes",
-        source: `
-      ship S { 
-        build(int x) {int me.shipX = x} 
-        captain getX() -> int { anchor me.shipX }
-      }
-      vargh x = S(3)
-      print(x.getX())
-    `,
-        expected: dedent`
-      class S_1 {
-        constructor(x_2) {
-        this["x_2"] = x_2;
-        }
-        function getX() {
-          return this["X_2"]
-        }
-      }
-      let x_3 = new S_1(3);
-      console.log((x_3["x_2"]));
-    `,
-    },
+    // {
+    //     name: "classes",
+    //     source: `
+    //   ship S {
+    //     build(int x) {int me.shipX = x}
+    //     captain getX() -> int { anchor me.shipX }
+    //   }
+    //   vargh x = new S(3)
+    //   ahoy x.getX()
+    // `,
+    //     expected: dedent`
+    //   class S_1 {
+    //     constructor(x_2) {
+    //     this["x_2"] = x_2;
+    //     }
+    //     function getX() {
+    //       return this["X_2"]
+    //     }
+    //   }
+    //   let x_3 = new S_1(3);
+    //   console.log((x_3["x_2"]));
+    // `,
+    // },
     // {
     //     name: "optionals",
     //     source: `
