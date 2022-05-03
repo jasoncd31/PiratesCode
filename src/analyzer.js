@@ -548,6 +548,8 @@ class Context {
         if (f.type instanceof Token) f.type = f.type.value
         checkIsAType(f.type)
         this.analyze(f.initializer)
+
+        // this.analyze(f.variable)
         f.variable.value = new Variable(f.variable.lexeme)
         f.variable.value.type = f.initializer.type
         this.add(f.variable.lexeme, f.variable.value)
