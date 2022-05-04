@@ -40,28 +40,15 @@ export default function generate(program) {
             output.push(`let ${gen(d.variable)} = ${gen(d.initializer)};`)
         },
         ClassDeclaration(d) {
-            // TODO
             output.push(`class ${targetName(d)} {`)
-            // output.push(`constructor(${gen(d.type.fields).join(",")}) {`)
-            gen(d.constructorDec) // replace this call with genning the ctor inline
-            // for (let field of d.type.fields) {
-            //     output.push(
-            //         `this[${JSON.stringify(gen(field))}] = ${gen(field)};`
-            //     )
-            // }
+            gen(d.constructorDec)
             for (let method of d.methods) {
                 gen(method)
             }
             output.push("}")
         },
-        ClassType(t) {
-            // TODO
-            return targetName(t)
-        },
         Field(f) {
-            console.log("HEY")
-            console.log(f.variable)
-            return `${targetName(f.variable)}`
+            return `this["${targetName(f.variable)}"] = ${targetName(f.initializer)};`
         },
         FunctionDeclaration(d) {
             output.push(
@@ -71,6 +58,7 @@ export default function generate(program) {
             output.push("}")
         },
         Parameter(p) {
+            console.log(p)
             return targetName(p)
         },
         Variable(v) {
@@ -147,15 +135,12 @@ export default function generate(program) {
         ArrayExpression(e) {
             return `[${gen(e.elements).join(",")}]`
         },
-        EmptyArray(e) {
-            return "[]"
-        },
         DotExpression(e) {
+            console.log("sdjfsdf")
+            console.log(e)
             const object = gen(e.object)
-            console.log("DOTEXP")
-            // console.log(e.member.variable._contents)
-            e.member.id = e.member.variable._contents
-            return `(${object}["${targetName(e.member)}"])`
+            const member = gen(e.member.variable)
+            return `(${object}["${member}"])`
         },
         ThisExpression(e) {
             return "this"
@@ -165,12 +150,8 @@ export default function generate(program) {
         },
         ConstructorDeclaration(c) {
             output.push(`constructor(${gen(c.parameters).join(",")}) {`)
-            console.log("HIIIII")
-            console.log(c)
-            for (let param of c.value.parameters) {
-                output.push(
-                    `this[${JSON.stringify(gen(param))}] = ${gen(param)};`
-                )
+            for (let field of c.body) {
+                output.push(`${gen(field)}`)
             }
             output.push("}")
         },
@@ -179,11 +160,21 @@ export default function generate(program) {
             output.push(`console.log(${argument});`)
         },
         DotCall(c) {
-            return `${targetName(c.object)}.${gen(c.member.callee)}(${gen(c.member.args).join(",")})`
+            console.log("DOFJSDFSDF")
+            console.log(c.member)
+            let targetCode = `${targetName(c.object)}.${targetName(c.member.callee.name)}()`
+            if (
+                c.member.callee instanceof Type ||
+                c.member.callee.name.returnType !== Type.NONE
+            ) {
+                return targetCode
+            }
+            //output.push(`${targetCode};`)
+
         },
         MethodDeclaration(c) {
             output.push(
-                `function ${gen(c.name)}(${gen(c.name.parameters).join(", ")}) {`
+                `function ${targetName(c.name)}(${gen(c.name.parameters).join(", ")}) {`
             )
             gen(c.body)
             output.push("}")

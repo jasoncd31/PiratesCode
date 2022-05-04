@@ -141,14 +141,14 @@ const fixtures = [
         expected: dedent`
       class S_1 {
         constructor(x_2) {
-        this["shipX_2"] = x_2;
+        this["shipX_3"] = x_2;
         }
-        function getX_3() {
-          return this["shipX_2"]
+        function getX_4() {
+          return (this["shipX_3"]);
         }
       }
-      let x_4 = new S_5(3);
-      console.log(x_4.getX_3());
+      let x_5 = new S_6(3);
+      console.log(x_5.getX_4());
     `,
     },
 
@@ -176,6 +176,15 @@ const fixtures = [
       for (let k_4 = 1; k_4 < 10; k_4++) {
       }
     `,
+    },
+    {
+      name: 'misc tests',
+      source: `
+    [int] a  = []
+    `,
+      expected: dedent`
+    let a_1 = [];
+      `
     },
     // {
     //     name: "standard library",

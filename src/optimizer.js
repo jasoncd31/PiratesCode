@@ -209,8 +209,8 @@ const optimizers = {
     },
     Field(f) {
         // TODO: should we optimize this for our language?
-        //f.variable = optimize(f.variable)
-        f.variable = f.variable.source
+        f.variable = optimize(f.variable)
+        f.initializer  = f.initializer.value
         return f
     },
     MethodDeclaration(d) {

@@ -6,7 +6,7 @@ import * as core from "../src/core.js"
 const x = new core.Variable("x", false)
 const token1 = Object.assign(new core.Token("Num", "1"), { value: 1 })
 const tokenZ = Object.assign(new core.Token("Id", "z"), {
-    source: { contents: "z" },
+    value: "z",
 })
 const return1p1 = new core.ReturnStatement(new core.BinaryExpression("+", 1, 1))
 const return2 = new core.ReturnStatement(2)
@@ -155,8 +155,8 @@ const tests = [
     ],
     [
         "optimizes fields",
-        new core.Field(core.Type.INT, new core.Token("Id", "x"), 4),
-        new core.Field(core.Type.INT, "x", 4),
+        new core.Field(core.Type.INT, tokenZ, token1),
+        new core.Field(core.Type.INT, "z", 1),
     ],
     ["optimizes number tokens", token1, 1],
     ["optimizes identifier tokens", tokenZ, "z"],

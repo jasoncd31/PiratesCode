@@ -428,6 +428,8 @@ class Context {
         checkInLoop(this)
     }
     Call(c) {
+        console.log("DHFHDF")
+        console.log(c)
         this.analyze(c.callee)
         const callee = c.callee
         checkCallable(callee)
@@ -548,11 +550,11 @@ class Context {
         if (f.type instanceof Token) f.type = f.type.value
         checkIsAType(f.type)
         this.analyze(f.initializer)
-
-        // this.analyze(f.variable)
         f.variable.value = new Variable(f.variable.lexeme)
         f.variable.value.type = f.initializer.type
         this.add(f.variable.lexeme, f.variable.value)
+        console.log("FDJSDFJDSF")
+        console.log(f)
     }
     MethodDeclaration(d) {
         if (d.returnType) this.analyze(d.returnType)
@@ -586,6 +588,7 @@ class Context {
         e.member = e.object.type.constructor.body.find(
             (f) => f.variable.value.name === e.member.lexeme
         )
+        console.log(e.member)
         e.type = e.member.type
     }
     ThisExpression(c) {
@@ -608,9 +611,13 @@ class Context {
     }
     DotCall(c) {
         this.analyze(c.object)
+        let methods = this.lookup(c.object.lexeme).type.methods
         checkMethodDeclared(c.member.callee.lexeme, {
-            in: this.lookup(c.object.lexeme).type.methods,
+            in: methods,
         })
+        c.member.callee.value = methods.find(method => method.name.lexeme === c.member.callee.lexeme)
+        c.member.function = c.member.callee.value.name.value
+        c.type = c.member.function.returnType
     }
 }
 
