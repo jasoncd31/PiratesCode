@@ -39,7 +39,6 @@ export default function generate(program) {
             output.push(`let ${gen(d.variable)} = ${gen(d.initializer)};`)
         },
         ClassDeclaration(d) {
-            console.log(d)
             output.push(`class ${targetName(d.typeCreated)} {`)
             gen(d.constructorDec)
             for (let method of d.methods) {
@@ -143,7 +142,6 @@ export default function generate(program) {
             return "this"
         },
         ObjectDec(o) {
-            console.log(o)
             return `new ${targetName(o.type)}(${gen(o.args)})`
         },
         ConstructorDeclaration(c) {
@@ -165,12 +163,12 @@ export default function generate(program) {
             ) {
                 return targetCode
             }
-            //output.push(`${targetCode};`)
+            output.push(`${targetCode};`)
 
         },
         MethodDeclaration(c) {
             output.push(
-                `function ${targetName(c.name)}(${gen(c.name.parameters).join(", ")}) {`
+                `${targetName(c.name)}(${gen(c.name.parameters).join(", ")}) {`
             )
             gen(c.body)
             output.push("}")

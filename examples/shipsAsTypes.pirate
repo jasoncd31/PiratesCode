@@ -5,3 +5,4 @@ ship Boat {
     }
 }
 [Boat] boats = [new Boat(2, 100), new Boat(3, 1000)]
+ahoy boats

@@ -143,7 +143,7 @@ const fixtures = [
         constructor(x_2) {
         this["shipX_3"] = x_2;
         }
-        function getX_4() {
+        getX_4() {
           return (this["shipX_3"]);
         }
       }
@@ -181,9 +181,29 @@ const fixtures = [
       name: 'misc tests',
       source: `
     [int] a  = []
+    ship S { 
+      build(int x) {
+          int me.y = x
+      }
+      captain T() -> none {
+          ahoy me.y
+      }
+  } 
+  S y = new S(1)
+  y.T()
     `,
       expected: dedent`
     let a_1 = [];
+    class S_2 {
+      constructor(x_3) {
+        this["y_4"] = x_3;
+      }
+      T_5() {
+        console.log((this["y_4"]));
+      }
+    }
+    let y_6 = new S_2(1);
+    y_6.T_5();
       `
     },
     {
@@ -207,6 +227,32 @@ const fixtures = [
         let boats_6 = [new Boat_1(2,100),new Boat_1(3,1000)];
     `,
     },
+    {
+      name: "example test 2",
+      source: `
+    $$ Function that loops through the ships, and finds whether a ship is in a given list.
+    captain whichShip(shanty myShip, [shanty] ships) -> booty {
+      chase vargh s through ships {
+        yo s == myShip {
+            anchor aye
+        }
+      }
+      anchor nay
+    }
+    ahoy whichShip("The Flying Dutchman", ["The Barnacle", "The Black Pearl", "The Flying Dutchman"])
+  `,
+      expected: dedent`
+  function whichShip_1(myShip_2, ships_3) {
+    for (let s_4 of ships_3) {
+      if ((s_4 === myShip_2)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  console.log(whichShip_1("The Flying Dutchman", ["The Barnacle","The Black Pearl","The Flying Dutchman"]));
+  `,
+  },
 ]
 
 describe("The code generator", () => {

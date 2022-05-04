@@ -1,5 +1,6 @@
 [int] numbers = [1, 2, 3]
 chase vargh x through numbers {
+    ahoy x
     ahoy "you made it!"
 }
 
