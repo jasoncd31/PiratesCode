@@ -1,5 +1,5 @@
-ship S {
-  build(int x) {int me.shipX = x}
+ship S { 
+  build(int x) {int me.shipX = x} 
   captain getX() -> int { anchor me.shipX }
 }
 vargh x = new S(3)

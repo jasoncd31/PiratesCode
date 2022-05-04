@@ -179,7 +179,7 @@ function checkReturnable({ expression: e, from: f }) {
     checkAssignable(e, { toType: f.type.returnType })
 }
 function checkCallable(e) {
-    check(e.type.constructor == FunctionType, "Call of non-function")
+    check(e.type?.constructor === FunctionType, "Call of non-function")
 }
 
 function checkReturnsNothing(f) {
@@ -213,9 +213,7 @@ function checkMemberDeclared(field, { in: inClass }) {
 }
 function checkMethodDeclared(field, { in: methods }) {
     check(
-        methods
-            .map((f) => f.name.lexeme)
-            .includes(field),
+        methods.map((f) => f.name.lexeme).includes(field),
         "BELAY, SCALLYWAG! There's no such field so stop! Or else..."
     )
 }
@@ -320,8 +318,10 @@ class Context {
             t.value = this.lookup(t.lexeme)
             t.type = t.value.type
         }
-        if (t.category === "Int") [t.value, t.type] = [t.lexeme, Type.INT]
-        if (t.category === "Double") [t.value, t.type] = [t.lexeme, Type.DOUBLE]
+        if (t.category === "Int")
+            [t.value, t.type] = [BigInt(t.lexeme), Type.INT]
+        if (t.category === "Double")
+            [t.value, t.type] = [Number(t.lexeme), Type.DOUBLE]
         if (t.category === "Str") [t.value, t.type] = [t.lexeme, Type.STRING]
         if (t.category === "Bool")
             [t.value, t.type] = [t.lexeme === "aye", Type.BOOLEAN]
@@ -514,10 +514,11 @@ class Context {
         const newClassType = new ClassType(c.id, c.constructorDec, c.methods)
         // create a new context for the type
         const typeContext = this.newChildContext({ inClass: newClassType })
+        c.typeCreated = newClassType
         // add that class to local
         // handle constructor dec
-        c.constructorDec = typeContext.analyze(c.constructorDec)
-        c.methods = typeContext.analyze(c.methods)
+        typeContext.analyze(c.constructorDec)
+        typeContext.analyze(c.methods)
         // handle methods
         this.add(c.id, newClassType)
     }
@@ -606,9 +607,13 @@ class Context {
     }
     DotCall(c) {
         this.analyze(c.object)
+        let methods = this.lookup(c.object.lexeme).type.methods
         checkMethodDeclared(c.member.callee.lexeme, {
-            in: this.lookup(c.object.lexeme).type.methods,
+            in: methods,
         })
+        c.member.callee.value = methods.find(method => method.name.lexeme === c.member.callee.lexeme)
+        c.member.function = c.member.callee.value.name.value
+        c.type = c.member.function.returnType
     }
 }
 

@@ -1,7 +1,6 @@
 import * as core from "./core.js"
 
 export default function optimize(node) {
-    //console.log(node.constructor.name)
     return optimizers[node.constructor.name](node)
 }
 const optimizers = {
@@ -209,8 +208,8 @@ const optimizers = {
     },
     Field(f) {
         // TODO: should we optimize this for our language?
-        //f.variable = optimize(f.variable)
-        f.variable = f.variable.source
+        f.variable = optimize(f.variable)
+        f.initializer  = f.initializer.value
         return f
     },
     MethodDeclaration(d) {

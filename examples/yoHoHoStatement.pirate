@@ -7,3 +7,5 @@ captain blackbeard(int x) -> int {
         anchor 0
     }
 }
+
+ahoy blackbeard(0)

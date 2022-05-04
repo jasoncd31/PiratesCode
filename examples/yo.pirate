@@ -1,3 +1,4 @@
-yo aye {
-    ahoy 1
+vargh x =  1
+yo x == 1 {
+    ahoy "Yer vargh be 1"
 }

@@ -1,6 +1,6 @@
 // STANDARD LIBRARY
 
-import { Type, Function, FunctionType } from "./core.js"
+import { Type } from "./core.js"
 
 export const types = Object.freeze({
     int: Type.INT,
