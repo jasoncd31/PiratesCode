@@ -514,6 +514,7 @@ class Context {
         const newClassType = new ClassType(c.id, c.constructorDec, c.methods)
         // create a new context for the type
         const typeContext = this.newChildContext({ inClass: newClassType })
+        c.typeCreated = newClassType
         // add that class to local
         // handle constructor dec
         typeContext.analyze(c.constructorDec)

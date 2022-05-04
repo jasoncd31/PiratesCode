@@ -18,7 +18,7 @@ export default function generate(program) {
                 mapping.set(entity, mapping.size + 1)
             }
             return `${
-                entity.name ?? entity.description ?? entity.id ?? entity.identifier
+                entity.name ?? entity.description ?? entity.id
             }_${mapping.get(entity)}`
         }
     })(new Map())
@@ -39,7 +39,8 @@ export default function generate(program) {
             output.push(`let ${gen(d.variable)} = ${gen(d.initializer)};`)
         },
         ClassDeclaration(d) {
-            output.push(`class ${targetName(d)} {`)
+            console.log(d)
+            output.push(`class ${targetName(d.typeCreated)} {`)
             gen(d.constructorDec)
             for (let method of d.methods) {
                 gen(method)
@@ -142,7 +143,8 @@ export default function generate(program) {
             return "this"
         },
         ObjectDec(o) {
-            return `new ${targetName(o)}(${gen(o.args)})`
+            console.log(o)
+            return `new ${targetName(o.type)}(${gen(o.args)})`
         },
         ConstructorDeclaration(c) {
             output.push(`constructor(${gen(c.parameters).join(",")}) {`)
@@ -174,11 +176,7 @@ export default function generate(program) {
             output.push("}")
         },
         Call(c) {
-            // TODO
             const targetCode = `${gen(c.callee)}(${gen(c.args).join(", ")})`
-            // c.callee.constructor === ClassType
-            //     ? `new ${gen(c.callee)}(${gen(c.args).join(", ")})`
-            //     : `${gen(c.callee)}(${gen(c.args).join(", ")})`
             // Calls in expressions vs in statements are handled differently
             if (
                 c.callee instanceof Type ||

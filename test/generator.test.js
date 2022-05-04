@@ -147,7 +147,7 @@ const fixtures = [
           return (this["shipX_3"]);
         }
       }
-      let x_5 = new S_6(3);
+      let x_5 = new S_1(3);
       console.log(x_5.getX_4());
     `,
     },
@@ -186,21 +186,27 @@ const fixtures = [
     let a_1 = [];
       `
     },
-    // {
-    //     name: "standard library",
-    //     source: `
-    //   vargh x = 0.5;
-    //   ahoy sin(x) - cos(x) + exp(x) * ln(x) / hypot(2.3, x)
-    //   ahoy bytes("∞§¶•")
-    //   ahoy codepoints("💪🏽💪🏽🖖👩🏾💁🏽‍♀️")
-    // `,
-    //     expected: dedent`
-    //   let x_1 = 0.5;
-    //   console.log(((Math.sin(x_1) - Math.cos(x_1)) + ((Math.exp(x_1) * Math.log(x_1)) / Math.hypot(2.3,x_1))));
-    //   console.log([...Buffer.from("∞§¶•", "utf8")]);
-    //   console.log([...("💪🏽💪🏽🖖👩🏾💁🏽‍♀️")].map(s=>s.codePointAt(0)));
-    // `,
-    // },
+    {
+        name: "example test",
+        source: `
+        ship Boat {
+          build (int p, int l) {
+              int me.pirates = p
+              int me.loot = l
+          }
+      }
+      [Boat] boats = [new Boat(2, 100), new Boat(3, 1000)]
+    `,
+        expected: dedent`
+        class Boat_1 {
+            constructor(p_2,l_3) {
+            this["pirates_4"] = p_2;
+            this["loot_5"] = l_3;
+          }
+        }
+        let boats_6 = [new Boat_1(2,100),new Boat_1(3,1000)];
+    `,
+    },
 ]
 
 describe("The code generator", () => {
