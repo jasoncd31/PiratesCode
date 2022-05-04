@@ -428,8 +428,6 @@ class Context {
         checkInLoop(this)
     }
     Call(c) {
-        console.log("DHFHDF")
-        console.log(c)
         this.analyze(c.callee)
         const callee = c.callee
         checkCallable(callee)
@@ -553,8 +551,6 @@ class Context {
         f.variable.value = new Variable(f.variable.lexeme)
         f.variable.value.type = f.initializer.type
         this.add(f.variable.lexeme, f.variable.value)
-        console.log("FDJSDFJDSF")
-        console.log(f)
     }
     MethodDeclaration(d) {
         if (d.returnType) this.analyze(d.returnType)
@@ -588,7 +584,6 @@ class Context {
         e.member = e.object.type.constructor.body.find(
             (f) => f.variable.value.name === e.member.lexeme
         )
-        console.log(e.member)
         e.type = e.member.type
     }
     ThisExpression(c) {

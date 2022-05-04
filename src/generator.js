@@ -24,7 +24,6 @@ export default function generate(program) {
     })(new Map())
 
     function gen(node) {
-        console.log(node.constructor)
         return generators[node.constructor.name](node)
     }
 
@@ -58,7 +57,6 @@ export default function generate(program) {
             output.push("}")
         },
         Parameter(p) {
-            console.log(p)
             return targetName(p)
         },
         Variable(v) {
@@ -136,8 +134,6 @@ export default function generate(program) {
             return `[${gen(e.elements).join(",")}]`
         },
         DotExpression(e) {
-            console.log("sdjfsdf")
-            console.log(e)
             const object = gen(e.object)
             const member = gen(e.member.variable)
             return `(${object}["${member}"])`
@@ -160,8 +156,6 @@ export default function generate(program) {
             output.push(`console.log(${argument});`)
         },
         DotCall(c) {
-            console.log("DOFJSDFSDF")
-            console.log(c.member)
             let targetCode = `${targetName(c.object)}.${targetName(c.member.callee.name)}()`
             if (
                 c.member.callee instanceof Type ||
